@@ -59,17 +59,13 @@ def gerar_acorde(acorde):
 
     notas = [lista[(i+x)%12] for x in tipos[tipo]]
 
-    return {
-        "notas": notas,
-        "baixo": baixo
-    }
+    return {"notas": notas, "baixo": baixo}
 
 # =========================================
 # 🌐 CONFIG
 # =========================================
 
 st.set_page_config(page_title="🎹 Acordes App", page_icon="🎹")
-
 st.title("🎹 Sistema Completo de Acordes + Teoria")
 
 pagina = st.sidebar.selectbox(
@@ -78,7 +74,7 @@ pagina = st.sidebar.selectbox(
 )
 
 # =========================================
-# 📚 TEORIA COMPLETA (100% ORGANIZADA + VÍDEOS)
+# 📚 TEORIA (100% ESTÁVEL)
 # =========================================
 
 if pagina == "📚 Teoria":
@@ -86,36 +82,16 @@ if pagina == "📚 Teoria":
     st.header("🎓 TEORIA MUSICAL COMPLETA")
 
     st.subheader("🎵 O que é música")
-    st.write("Música é organização de sons no tempo: altura, duração, intensidade e timbre.")
-
-    st.video("https://www.youtube.com/watch?v=7Yc6m2kQ0XQ")
+    st.write("Música é organização de sons: altura, duração, intensidade e timbre.")
 
     st.subheader("🎼 Notas musicais")
     st.code("C D E F G A B")
-    st.write("Essas são as notas naturais da música ocidental.")
 
-    st.video("https://www.youtube.com/watch?v=5rX0q7mK9sA")
-
-    st.subheader("🎹 Tons e semitons")
-    st.write("Semitom = menor distância entre duas notas")
+    st.subheader("🎹 Semitom e Tom")
+    st.write("Semitom = menor distância")
     st.write("Tom = 2 semitons")
 
-    st.video("https://www.youtube.com/watch?v=9kQ3mT8xP7A")
-
     st.subheader("🎼 Sustenidos e bemóis")
-    st.write("# sobe meio tom")
-    st.write("b desce meio tom")
-
-    st.code("C# = Db")
-    st.code("D# = Eb")
-    st.code("F# = Gb")
-    st.code("G# = Ab")
-    st.code("A# = Bb")
-
-    st.video("https://www.youtube.com/watch?v=3mQ8pT7xK9A")
-
-    st.subheader("🎼 Enarmonia")
-    st.write("Mesma nota, nomes diferentes:")
     st.code("C# = Db")
     st.code("D# = Eb")
     st.code("F# = Gb")
@@ -124,41 +100,25 @@ if pagina == "📚 Teoria":
 
     st.subheader("🎼 Escala maior")
     st.code("T - T - S - T - T - T - S")
-    st.code("C D E F G A B")
-
-    st.video("https://www.youtube.com/watch?v=6kT9mQ2xP7A")
 
     st.subheader("🎼 Escala menor")
-    st.write("Escala mais triste, base de muitos estilos musicais.")
+    st.code("T - S - T - T - S - T - T")
 
-    st.video("https://www.youtube.com/watch?v=8mQ7pT9xK2A")
+    st.subheader("🎹 Acordes maiores")
+    st.code("1 + 3 + 5")
 
-    st.subheader("🎹 Intervalos musicais")
-    st.write("3ª define maior/menor")
-    st.write("5ª define estabilidade")
-    st.write("7ª cria tensão")
+    st.subheader("🎹 Acordes menores")
+    st.code("1 + b3 + 5")
 
-    st.video("https://www.youtube.com/watch?v=4pQ9mT7xK2A")
-
-    st.subheader("🎼 Acordes maiores e menores")
-    st.code("1 + 3 + 5 = maior")
-    st.code("1 + b3 + 5 = menor")
-
-    st.video("https://www.youtube.com/watch?v=2pQ7mT8xK9A")
-
-    st.subheader("🎼 Acordes com sétima")
+    st.subheader("🎼 Sétima")
     st.code("C7 = C E G Bb")
     st.code("Cmaj7 = C E G B")
-
-    st.video("https://www.youtube.com/watch?v=1mQ8pT7xK9A")
 
     st.subheader("🎼 Campo harmônico")
     st.code("C Dm Em F G Am Bdim")
 
-    st.video("https://www.youtube.com/watch?v=7pQ8mT7xK9A")
-
     st.markdown("---")
-    st.success("🎯 FIM DA TEORIA — agora vá para PRÁTICA ou QUIZ")
+    st.success("🎯 Fim da teoria — agora vá para prática ou quiz")
 
 # =========================================
 # 🎹 PRÁTICA
@@ -176,22 +136,16 @@ elif pagina == "🎹 Teste de Acordes":
         if resultado:
             st.success(f"🎵 Notas: {resultado['notas']}")
 
-            if resultado["baixo"]:
-                st.info(f"🎸 Baixo: {resultado['baixo']}")
-
             base = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"]
 
             teclado = ""
             for nota in base:
-                if nota in resultado["notas"]:
-                    teclado += f"[{nota}] "
-                else:
-                    teclado += f" {nota}  "
+                teclado += f"[{nota}] " if nota in resultado["notas"] else f" {nota}  "
 
             st.text(teclado)
 
         else:
-            st.error("❌ Acorde não reconhecido!")
+            st.error("❌ Acorde inválido")
 
 # =========================================
 # 🎯 QUIZ
@@ -201,7 +155,7 @@ elif pagina == "🎯 Quiz":
 
     st.header("🎯 Quiz de Acordes")
 
-    banco_perguntas = [
+    banco = [
         ("C = ?", ["C D E", "C E G", "C F G"], "C E G"),
         ("Cm = ?", ["C Eb G", "C E G", "C F G"], "C Eb G"),
         ("D# = ?", ["D# F# A#", "D E A", "D# G A#"], "D# F# A#"),
@@ -215,44 +169,42 @@ elif pagina == "🎯 Quiz":
     ]
 
     if "quiz" not in st.session_state:
-        st.session_state.quiz = random.sample(banco_perguntas, 4)
+        st.session_state.quiz = random.sample(banco, 4)
         st.session_state.finalizado = False
 
     perguntas = st.session_state.quiz
     respostas = []
     acertos = 0
 
-    st.info("Depois de enviar não pode alterar respostas.")
+    st.info("Depois de enviar não pode alterar")
 
-    for i, (enunciado, opcoes, correta) in enumerate(perguntas):
+    for i, (q, op, c) in enumerate(perguntas):
 
         escolha = st.radio(
-            enunciado,
-            opcoes,
+            q,
+            op,
             key=f"q{i}",
             disabled=st.session_state.finalizado
         )
 
-        respostas.append((escolha, correta))
+        respostas.append((escolha, c))
 
-    if st.button("Ver resultado final"):
+    if st.button("Ver resultado"):
 
         st.session_state.finalizado = True
 
-        st.divider()
+        for i, (e, c) in enumerate(respostas):
 
-        for i, (escolha, correta) in enumerate(respostas):
-
-            if escolha == correta:
-                st.success(f"✔ Pergunta {i+1} correta")
+            if e == c:
+                st.success(f"✔ Q{i+1} correta")
                 acertos += 1
             else:
-                st.error(f"❌ Pergunta {i+1} errada")
-                st.info(f"👉 Correta: {correta}")
+                st.error(f"❌ Q{i+1} errada")
+                st.info(f"Resposta certa: {c}")
 
-        st.success(f"🎯 Você acertou {acertos}/4 perguntas!")
+        st.success(f"🎯 Acertos: {acertos}/4")
 
-    if st.button("🔄 Novo quiz"):
-        st.session_state.quiz = random.sample(banco_perguntas, 4)
+    if st.button("Novo quiz"):
+        st.session_state.quiz = random.sample(banco, 4)
         st.session_state.finalizado = False
         st.rerun()
