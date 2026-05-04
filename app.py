@@ -1,134 +1,76 @@
+import streamlit as st
+import random
+
 # =========================================
-# 📚 TEORIA (MELHORADA E MAIS COMPLETA)
+# 🎹 LÓGICA DOS ACORDES
 # =========================================
 
-if pagina == "📚 Teoria":
+notas_sharp = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
+notas_flat  = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"]
 
-    st.header("🎓 Teoria Musical Completa")
+def usar_bemol(acorde):
+    return "b" in acorde
 
-    st.subheader("🎵 O que é música?")
-    st.write("""
-Música é a organização dos sons no tempo.
+def pegar_lista(acorde):
+    return notas_flat if usar_bemol(acorde) else notas_sharp
 
-Ela é formada por 4 elementos principais:
+def separar_acorde(acorde):
+    if len(acorde) > 1 and acorde[1] in ["#", "b"]:
+        return acorde[:2], acorde[2:].lower()
+    return acorde[0], acorde[1:].lower()
 
-✔ Melodia (sequência de notas)  
-✔ Harmonia (notas tocadas ao mesmo tempo)  
-✔ Ritmo (organização do tempo e batidas)  
-✔ Timbre (característica do som de cada instrumento)  
-""")
+def gerar_acorde(acorde):
+    acorde = acorde.strip()
 
-    st.subheader("🎼 Notas musicais")
-    st.write("""
-As notas são a base da música:
+    if "/" in acorde:
+        acorde_principal, baixo = acorde.split("/")
+        baixo = baixo.strip()
+    else:
+        acorde_principal = acorde
+        baixo = None
 
-C D E F G A B
+    raiz, tipo = separar_acorde(acorde_principal)
 
-Elas se repetem em diferentes alturas chamadas oitavas.
-""")
+    lista = notas_flat if "b" in raiz else notas_sharp
 
-    st.code("C D E F G A B")
+    if raiz not in lista:
+        return None
 
-    st.subheader("🎹 Tom e semitom")
-    st.write("""
-- Semitom = menor distância entre duas notas
-- Tom = dois semitons
+    i = lista.index(raiz)
 
-Exemplos:
-C → C# = 1 semitom  
-C → D = 1 tom
-""")
+    tipos = {
+        "": [0,4,7],
+        "m": [0,3,7],
+        "7": [0,4,7,10],
+        "m7": [0,3,7,10],
+        "7m": [0,3,7,10],
+        "7M": [0,4,7,11],
+        "M7": [0,4,7,11],
+        "9": [0,4,7,10,14],
+        "m9": [0,3,7,10,14],
+        "add9": [0,4,7,14],
+        "sus2": [0,2,7],
+        "sus4": [0,5,7],
+        "dim": [0,3,6],
+        "aug": [0,4,8],
+    }
 
-    st.subheader("🎼 Sustenidos e bemóis")
-    st.write("""
-# = sobe meio tom  
-b = desce meio tom
-""")
+    if tipo not in tipos:
+        return None
 
-    st.code("""
-C# = Db
-D# = Eb
-F# = Gb
-G# = Ab
-A# = Bb
-""")
+    notas = [lista[(i + x) % 12] for x in tipos[tipo]]
 
-    st.subheader("🎼 Enarmonia")
-    st.write("""
-Enarmonia significa a mesma nota com nomes diferentes.
+    return {"notas": notas, "baixo": baixo}
 
-Exemplo:
-C# = Db (mesmo som, nome diferente)
-""")
 
-    st.subheader("🎼 Escala maior")
-    st.write("""
-Fórmula:
-T - T - S - T - T - T - S
-""")
+# =========================================
+# 🌐 CONFIG
+# =========================================
 
-    st.code("C D E F G A B")
+st.set_page_config(page_title="🎹 Acordes App", page_icon="🎹")
 
-    st.write("""
-A escala maior é a base da maioria das músicas ocidentais.
-""")
+st.title("🎹 Sistema Completo de Acordes + Teoria")
 
-    st.subheader("🎼 Escala menor")
-    st.write("""
-Fórmula:
-T - S - T - T - S - T - T
-""")
-
-    st.code("A B C D E F G")
-
-    st.write("""
-A escala menor tem um som mais triste ou emocional.
-""")
-
-    st.subheader("🎹 Formação de acordes")
-    st.write("""
-Acordes são formados por notas da escala.
-
-✔ Acorde maior: 1 + 3 + 5  
-✔ Acorde menor: 1 + b3 + 5
-""")
-
-    st.code("""
-C maior = C E G
-C menor = C Eb G
-""")
-
-    st.subheader("🎼 Intervalos")
-    st.write("""
-Intervalos são as distâncias entre as notas:
-
-- 3ª maior → som feliz  
-- 3ª menor → som triste  
-- 5ª → estabilidade do acorde  
-- 7ª → tensão e emoção
-""")
-
-    st.subheader("🎼 Acordes com sétima")
-    st.code("""
-C7 = C E G Bb
-Cmaj7 = C E G B
-""")
-
-    st.subheader("🎼 Campo harmônico")
-    st.write("""
-É o conjunto de acordes de uma escala.
-
-Exemplo em Dó maior:
-
-C Dm Em F G Am Bdim
-""")
-
-    st.subheader("🎯 Resumo final")
-    st.write("""
-ESCALA → INTERVALOS → ACORDES → HARMONIA → MÚSICA
-
-Tudo na música começa pelas notas.
-""")
 pagina = st.sidebar.selectbox(
     "📌 Menu",
     ["📚 Teoria", "🎹 Prática", "🎯 Quiz"]
@@ -144,9 +86,7 @@ if pagina == "📚 Teoria":
     st.header("🎓 Teoria Musical Completa")
 
     st.subheader("🎵 O que é música?")
-    st.write("""
-Música é organização de sons no tempo: melodia, harmonia, ritmo e timbre.
-""")
+    st.write("Música é organização de sons no tempo: melodia, harmonia, ritmo e timbre.")
 
     st.subheader("🎼 Notas musicais")
     st.code("C D E F G A B")
@@ -199,24 +139,17 @@ elif pagina == "🎹 Prática":
 
 
 # =========================================
-# 🎯 QUIZ NOVO (CORRIGIDO E ESTÁVEL)
-# =========================================
-
-# =========================================
-# 🎯 QUIZ NOVO (CORRIGIDO 100% MUSICAL)
+# 🎯 QUIZ FINAL CORRIGIDO
 # =========================================
 
 elif pagina == "🎯 Quiz":
 
     st.header("🎯 Quiz de Acordes")
 
-    # escala cromática completa (base correta)
     escala = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 
-    # mapa de posições
     mapa = {nota: i for i, nota in enumerate(escala)}
 
-    # intervalos reais
     maior = [0, 4, 7]
     menor = [0, 3, 7]
 
@@ -225,7 +158,6 @@ elif pagina == "🎯 Quiz":
         intervalos = maior if tipo == "maior" else menor
         return " ".join([escala[(i + x) % 12] for x in intervalos])
 
-    # gerar perguntas fixas na sessão
     def gerar_perguntas():
         pool = []
         for n in escala:
@@ -249,53 +181,43 @@ elif pagina == "🎯 Quiz":
 
     perguntas = st.session_state.quiz[:6]
 
-    # =========================================
-    # 🎯 OPÇÕES 100% CORRETAS (SEM BUG)
-    # =========================================
-    def gerar_opcoes(qid, correta, tipo):
+    def gerar_opcoes(qid, correta):
 
         if qid in st.session_state.opcoes:
             return st.session_state.opcoes[qid]
 
-        opcoes = {correta}
+        opcoes = [correta]
 
-        notas_erradas = [
+        distratores = [
             "C Eb G", "C D G", "C E G#",
             "D F A", "D F# A", "E G B",
-            "F A C", "F Ab C", "G B D",
-            "G Bb D", "A C E", "A C# E",
+            "F A C", "F Ab C",
+            "G B D", "G Bb D",
+            "A C E", "A C# E",
             "B D F", "B D# F#"
         ]
 
-        # garante alternativas falsas plausíveis
         while len(opcoes) < 4:
-            opcoes.add(random.choice(notas_erradas))
+            escolha = random.choice(distratores)
+            if escolha not in opcoes:
+                opcoes.append(escolha)
 
-        lista = list(opcoes)
+        random.shuffle(opcoes)
 
-        # FIXA ORDEM (não muda ao clicar)
-        lista.sort()
+        st.session_state.opcoes[qid] = opcoes
+        return opcoes
 
-        st.session_state.opcoes[qid] = lista[:4]
-        return lista[:4]
-
-    # =========================================
-    # BLOQUEIO DE RESPOSTA
-    # =========================================
     if not st.session_state.finalizado:
 
         for i, (q, correta, tipo) in enumerate(perguntas):
 
             st.session_state.respostas[i] = st.radio(
                 q,
-                options=gerar_opcoes(i, correta, tipo),
+                options=gerar_opcoes(i, correta),
                 key=f"q_{i}",
                 index=None
             )
 
-    # =========================================
-    # RESULTADO FINAL
-    # =========================================
     else:
 
         acertos = 0
