@@ -1,198 +1,105 @@
-import streamlit as st
-import random
-
 # =========================================
-# 🎹 LÓGICA DOS ACORDES
-# =========================================
-
-notas_sharp = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
-notas_flat  = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"]
-
-def usar_bemol(acorde):
-    return "b" in acorde
-
-def pegar_lista(acorde):
-    return notas_flat if usar_bemol(acorde) else notas_sharp
-
-def separar_acorde(acorde):
-    if len(acorde) > 1 and acorde[1] in ["#", "b"]:
-        return acorde[:2], acorde[2:].lower()
-    return acorde[0], acorde[1:].lower()
-
-def gerar_acorde(acorde):
-    acorde = acorde.strip()
-
-    if "/" in acorde:
-        acorde_principal, baixo = acorde.split("/")
-        baixo = baixo.strip()
-    else:
-        acorde_principal = acorde
-        baixo = None
-
-    raiz, tipo = separar_acorde(acorde_principal)
-    lista = pegar_lista(acorde_principal)
-
-    if raiz not in lista:
-        return None
-
-    i = lista.index(raiz)
-
-    tipos = {
-        "": [0,4,7],
-        "m": [0,3,7],
-        "7": [0,4,7,10],
-        "m7": [0,3,7,10],
-        "7m": [0,3,7,10],
-        "7M": [0,4,7,11],
-        "M7": [0,4,7,11],
-        "9": [0,4,7,10,14],
-        "m9": [0,3,7,10,14],
-        "add9": [0,4,7,14],
-        "sus2": [0,2,7],
-        "sus4": [0,5,7],
-        "dim": [0,3,6],
-        "aug": [0,4,8],
-    }
-
-    if tipo not in tipos:
-        return None
-
-    notas = [lista[(i+x)%12] for x in tipos[tipo]]
-
-    return {
-        "notas": notas,
-        "baixo": baixo
-    }
-
-# =========================================
-# 🌐 INTERFACE
-# =========================================
-
-st.set_page_config(page_title="🎹 Acordes App", page_icon="🎹")
-
-st.title("🎹 Sistema Completo de Acordes + Teoria")
-
-pagina = st.sidebar.selectbox(
-    "📌 Menu",
-    ["📚 Teoria", "🎹 Teste de Acordes", "🎯 Quiz"]
-)
-
-# =========================================
-# 📚 TEORIA
+# 📚 TEORIA (EXPANDIDA E EXPLICATIVA)
 # =========================================
 
 if pagina == "📚 Teoria":
 
     st.header("🎓 Teoria dos Acordes")
 
-    st.write("Acorde é quando tocamos várias notas ao mesmo tempo.")
+    st.subheader("🎵 O que é um acorde?")
+    st.write(
+        "Um acorde é a combinação de 3 ou mais notas tocadas ao mesmo tempo. "
+        "Essas notas são organizadas a partir de uma escala musical."
+    )
 
-    st.code("C = C E G")
-    st.code("Cm = C Eb G")
-    st.code("C# / Db = C# E# G#")
-    st.code("D# / Eb = D# F# A#")
-    st.code("F# / Gb = F# A# C#")
-    st.code("G# / Ab = G# C D#")
-    st.code("A# / Bb = A# D F")
+    st.subheader("🎼 Como um acorde é formado?")
 
-# =========================================
-# 🎹 PRÁTICA
-# =========================================
+    st.write("Todo acorde básico maior segue essa estrutura:")
 
-elif pagina == "🎹 Teste de Acordes":
+    st.code("1 (tônica) + 3 (terça maior) + 5 (quinta justa)")
 
-    st.header("🎹 Pratique Acordes")
+    st.write("Exemplo no acorde de C maior:")
 
-    acorde = st.text_input("Digite um acorde")
+    st.code("C = C (tônica) + E (terça maior) + G (quinta justa)")
 
-    if st.button("Analisar"):
-        resultado = gerar_acorde(acorde)
+    st.write("👉 Isso significa que começamos na nota C e pulamos notas na escala:")
 
-        if resultado:
-            st.success(f"🎵 Notas: {resultado['notas']}")
+    st.write("C → D → E → F → G")
 
-            if resultado["baixo"]:
-                st.info(f"🎸 Baixo: {resultado['baixo']}")
+    st.success("Resultado: C E G")
 
-            base = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"]
+    st.divider()
 
-            teclado = ""
-            for nota in base:
-                if nota in resultado["notas"]:
-                    teclado += f"[{nota}] "
-                else:
-                    teclado += f" {nota}  "
+    st.subheader("🎼 Acordes menores")
 
-            st.text(teclado)
+    st.write("No acorde menor, a única mudança é a terça:")
 
-        else:
-            st.error("❌ Acorde não reconhecido!")
+    st.code("1 + b3 + 5")
 
-# =========================================
-# 🎯 QUIZ PROFISSIONAL (TRAVADO + FEEDBACK)
-# =========================================
+    st.write("A terça é abaixada meio tom (fica mais ‘triste’ no som).")
 
-elif pagina == "🎯 Quiz":
+    st.write("Exemplo:")
 
-    st.header("🎯 Quiz de Acordes")
+    st.code("Cm = C + Eb + G")
 
-    banco_perguntas = [
-        ("C = ?", ["C D E", "C E G", "C F G"], "C E G"),
-        ("Cm = ?", ["C Eb G", "C E G", "C F G"], "C Eb G"),
-        ("D# = ?", ["D# F# A#", "D E A", "D# G A#"], "D# F# A#"),
-        ("Eb = ?", ["Eb G Bb", "Eb F Ab", "Eb G C"], "Eb G Bb"),
-        ("F# = ?", ["F# A# C#", "F# A C#", "F# B D"], "F# A# C#"),
-        ("Gb = ?", ["Gb Bb Db", "Gb A C#", "Gb B D"], "Gb Bb Db"),
-        ("G# = ?", ["G# C D#", "G# B D#", "G# C E"], "G# C D#"),
-        ("Ab = ?", ["Ab C Eb", "Ab D F", "Ab B Eb"], "Ab C Eb"),
-        ("A# = ?", ["A# D F", "A# C F", "A# D G"], "A# D F"),
-        ("Bb = ?", ["Bb D F", "Bb C F", "Bb E G"], "Bb D F"),
-    ]
+    st.write("C → D → Eb → F → G")
 
-    # 🔒 gera só uma vez
-    if "quiz" not in st.session_state:
-        st.session_state.quiz = random.sample(banco_perguntas, 4)
-        st.session_state.finalizado = False
+    st.success("Resultado: C Eb G")
 
-    perguntas = st.session_state.quiz
+    st.divider()
 
-    respostas = []
-    acertos = 0
+    st.subheader("🎼 Acordes com sétima")
 
-    st.info("⚠️ Depois de enviar, não é possível alterar as respostas.")
+    st.write("A sétima adiciona mais tensão e cor ao som.")
 
-    for i, (enunciado, opcoes, resposta_certa) in enumerate(perguntas):
+    st.write("Existem dois principais tipos:")
 
-        # trava depois de enviado
-        disabled = st.session_state.finalizado
+    st.code("C7 = 1 + 3 + 5 + b7")
+    st.code("C7M = 1 + 3 + 5 + 7")
 
-        escolha = st.radio(
-            enunciado,
-            opcoes,
-            key=f"q{i}",
-            disabled=disabled
-        )
+    st.write("Exemplo C7:")
 
-        respostas.append((escolha, resposta_certa))
+    st.code("C E G Bb")
 
-    if st.button("Ver resultado final"):
+    st.write("Exemplo C7M:")
 
-        st.session_state.finalizado = True
+    st.code("C E G B")
 
-        st.divider()
+    st.divider()
 
-        for i, (escolha, correta) in enumerate(respostas):
+    st.subheader("🎼 Sustenidos (#) e bemóis (b)")
 
-            if escolha == correta:
-                st.success(f"✔ Pergunta {i+1} correta")
-                acertos += 1
-            else:
-                st.error(f"❌ Pergunta {i+1} errada")
-                st.info(f"👉 Resposta correta: {correta}")
+    st.write("Esses símbolos alteram a altura da nota:")
 
-        st.success(f"🎯 Você acertou {acertos}/4 perguntas!")
+    st.write("🔼 Sustenido (#) sobe meio tom")
+    st.write("🔽 Bemol (b) desce meio tom")
 
-    if st.button("🔄 Novo quiz"):
-        st.session_state.quiz = random.sample(banco_perguntas, 4)
-        st.session_state.finalizado = False
-        st.rerun()
+    st.code("C# = C sobe meio tom")
+    st.code("Eb = E desce meio tom")
+
+    st.divider()
+
+    st.subheader("🎼 Enarmonia (mesma nota com nomes diferentes)")
+
+    st.write("Algumas notas têm dois nomes diferentes, mas soam igual:")
+
+    st.code("C# = Db")
+    st.code("D# = Eb")
+    st.code("F# = Gb")
+    st.code("G# = Ab")
+    st.code("A# = Bb")
+
+    st.info("Isso depende do contexto musical.")
+
+    st.divider()
+
+    st.subheader("🎯 Resumo")
+
+    st.write("""
+    - Acorde maior = som mais aberto e feliz  
+    - Acorde menor = som mais triste  
+    - Sustenido/bemol = ajusta meio tom  
+    - Sétima = adiciona tensão e emoção  
+    """)
+
+    st.success("Agora você já entende como os acordes são construídos 🎹")
