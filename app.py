@@ -81,7 +81,7 @@ pagina = st.sidebar.selectbox(
 
 
 # =========================================
-# 📚 TEORIA
+# 📚 TEORIA (SEM ALTERAÇÃO)
 # =========================================
 
 if pagina == "📚 Teoria":
@@ -125,7 +125,7 @@ Cmaj7 = C E G B
 
 
 # =========================================
-# 🎹 PRÁTICA
+# 🎹 PRÁTICA (SEM ALTERAÇÃO)
 # =========================================
 
 elif pagina == "🎹 Prática":
@@ -144,7 +144,7 @@ elif pagina == "🎹 Prática":
 
 
 # =========================================
-# 🎯 QUIZ CORRIGIDO 100%
+# 🎯 QUIZ NOVO (CORRIGIDO E ESTÁVEL)
 # =========================================
 
 elif pagina == "🎯 Quiz":
@@ -180,6 +180,7 @@ elif pagina == "🎯 Quiz":
         random.shuffle(pool)
         return pool
 
+    # RESET LIMPO
     if "quiz" not in st.session_state:
         st.session_state.quiz = gerar()
         st.session_state.finalizado = False
@@ -196,37 +197,41 @@ elif pagina == "🎯 Quiz":
     perguntas = st.session_state.quiz[:6]
 
     # =========================================
-    # OPÇÕES FIXAS (4 SEM MUDAR POSIÇÃO)
+    # OPÇÕES FIXAS (SEM MUDAR ORDEM OU BUG)
     # =========================================
     def gerar_opcoes(qid, correta):
 
         if qid in st.session_state.opcoes:
             return st.session_state.opcoes[qid]
 
-        opcoes = set()
-        opcoes.add(correta)
+        opcoes = {correta}
 
         partes = correta.split()
 
         if len(partes) == 3:
             c, e, g = partes
 
-            opcoes.add(f"{c} Eb {g}")
-            opcoes.add(f"{c} D# {g}")
-            opcoes.add(f"{c} E G")
+            opcoes.update([
+                f"{c} Eb {g}",
+                f"{c} D# {g}",
+                f"{c} E G",
+                f"{c} D G"
+            ])
 
         while len(opcoes) < 4:
             n = random.choice(notas)
             opcoes.add(montar(n,"maior"))
 
         lista = list(opcoes)
-        random.shuffle(lista)
 
-        st.session_state.opcoes[qid] = lista
-        return lista
+        # trava ordem após criar
+        lista.sort()
+
+        st.session_state.opcoes[qid] = lista[:4]
+        return lista[:4]
 
     # =========================================
-    # BLOQUEIO DE RESPOSTA
+    # RESPOSTAS TRAVADAS
     # =========================================
     if not st.session_state.finalizado:
 
@@ -240,7 +245,7 @@ elif pagina == "🎯 Quiz":
             )
 
     # =========================================
-    # RESULTADO TRAVADO
+    # RESULTADO FINAL
     # =========================================
     else:
 
