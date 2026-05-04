@@ -61,6 +61,7 @@ def gerar_acorde(acorde):
 
     return {"notas": notas, "baixo": baixo}
 
+
 # =========================================
 # 🌐 CONFIG
 # =========================================
@@ -74,24 +75,128 @@ pagina = st.sidebar.selectbox(
     ["📚 Teoria", "🎹 Prática", "🎯 Quiz"]
 )
 
+
 # =========================================
-# 📚 TEORIA
+# 📚 TEORIA COMPLETA (100% DETALHADA)
 # =========================================
 
 if pagina == "📚 Teoria":
 
     st.header("🎓 Teoria Musical Completa")
 
-    st.write("Música = organização de sons no tempo")
+    st.subheader("🎵 O que é música?")
+    st.write("""
+Música é a organização dos sons no tempo.
+
+Ela envolve 4 elementos principais:
+
+✔ Melodia (sequência de notas)  
+✔ Harmonia (notas ao mesmo tempo)  
+✔ Ritmo (organização do tempo)  
+✔ Timbre (identidade do som)  
+""")
+
+    st.subheader("🎼 Notas musicais")
+    st.write("""
+As notas são os blocos básicos da música:
+
+C D E F G A B
+
+Elas se repetem em diferentes alturas (oitavas).
+""")
 
     st.code("C D E F G A B")
 
-    st.write("# = sobe meio tom | b = desce meio tom")
+    st.subheader("🎹 Tom e semitom")
+    st.write("""
+- Semitom = menor distância entre notas
+- Tom = 2 semitons
 
-    st.code("C# = Db | D# = Eb | F# = Gb | G# = Ab | A# = Bb")
+Exemplo:
+C → C# = 1 semitom
+C → D = 1 tom
+""")
 
-    st.code("Maior: 1 3 5 → C E G")
-    st.code("Menor: 1 b3 5 → C Eb G")
+    st.subheader("🎼 Sustenidos e bemóis")
+    st.write("""
+# sobe meio tom
+b desce meio tom
+
+Exemplos reais:
+""")
+
+    st.code("""
+C# = Db
+D# = Eb
+F# = Gb
+G# = Ab
+A# = Bb
+""")
+
+    st.subheader("🎼 Enarmonia")
+    st.write("""
+Enarmonia significa mesma nota com nomes diferentes.
+
+Exemplo:
+C# = Db (mesmo som)
+
+A diferença é apenas teórica.
+""")
+
+    st.subheader("🎼 Escala maior")
+    st.write("""
+Fórmula:
+T - T - S - T - T - T - S
+""")
+
+    st.code("C D E F G A B")
+
+    st.write("""
+É a base da música ocidental.
+""")
+
+    st.subheader("🎼 Escala menor")
+    st.write("""
+Fórmula:
+T - S - T - T - S - T - T
+""")
+
+    st.code("A B C D E F G")
+
+    st.subheader("🎹 Formação de acordes")
+    st.write("""
+Acordes são combinações de notas da escala.
+
+Maior:
+1 + 3 + 5 → C E G
+
+Menor:
+1 + b3 + 5 → C Eb G
+""")
+
+    st.subheader("🎼 Intervalos")
+    st.write("""
+Intervalos definem os acordes:
+
+- 3ª = maior ou menor
+- 5ª = estabilidade
+- 7ª = tensão
+""")
+
+    st.subheader("🎼 Acordes com sétima")
+    st.code("""
+C7 = C E G Bb
+Cmaj7 = C E G B
+""")
+
+    st.subheader("🎼 Campo harmônico")
+    st.code("C Dm Em F G Am Bdim")
+
+    st.subheader("🎯 Conclusão")
+    st.write("""
+ESCALA → INTERVALOS → ACORDES → HARMONIA → MÚSICA
+""")
+
 
 # =========================================
 # 🎹 PRÁTICA
@@ -111,15 +216,19 @@ elif pagina == "🎹 Prática":
         else:
             st.error("❌ Acorde inválido")
 
+
 # =========================================
-# 🎯 QUIZ (CORRIGIDO 100%)
+# 🎯 QUIZ (CORRIGIDO + DÚVIDA REAL)
 # =========================================
 
 elif pagina == "🎯 Quiz":
 
     st.header("🎯 Quiz de Acordes")
 
-    notas = ["C","C#","Db","D","D#","Eb","E","F","F#","Gb","G","G#","Ab","A","A#","Bb","B"]
+    notas = [
+        "C","C#","Db","D","D#","Eb","E","F","F#","Gb",
+        "G","G#","Ab","A","A#","Bb","B"
+    ]
 
     base = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"]
 
@@ -161,7 +270,7 @@ elif pagina == "🎯 Quiz":
     perguntas = st.session_state.quiz[:6]
 
     # =========================================
-    # 🔥 OPÇÕES 100% CONSISTENTES
+    # 🎯 OPÇÕES INTELIGENTES (COM DÚVIDA REAL)
     # =========================================
 
     def gerar_opcoes(qid, correta):
@@ -177,29 +286,17 @@ elif pagina == "🎯 Quiz":
         if len(partes) == 3:
             c, e, g = partes
 
-            # erro de terça (real)
-            base.add(f"{c} Eb {g}")
+            # erros MUITO parecidos (terça/quinta alterada)
             base.add(f"{c} D {g}")
-
-            # erro de quinta (real)
+            base.add(f"{c} Eb {g}")
             base.add(f"{c} E Gb")
             base.add(f"{c} E F#")
 
-        # alternativas reais seguras
         extras = [
-            "C E G",
-            "C Eb G",
-            "D F A",
-            "D F# A",
-            "E G B",
-            "F A C",
-            "F Ab C",
-            "G B D",
-            "G Bb D",
-            "A C E",
-            "A C# E",
-            "B D F",
-            "B D# F#"
+            "C E G","C Eb G","D F A","D F# A",
+            "E G B","F A C","F Ab C",
+            "G B D","G Bb D","A C E",
+            "A C# E","B D F","B D# F#"
         ]
 
         while len(base) < 5:
@@ -213,7 +310,7 @@ elif pagina == "🎯 Quiz":
         return lista[:5]
 
     # =========================================
-    # RESPOSTAS
+    # RESPOSTAS (TRAVADAS)
     # =========================================
 
     if not st.session_state.finalizado:
@@ -228,7 +325,7 @@ elif pagina == "🎯 Quiz":
             )
 
     # =========================================
-    # RESULTADO
+    # RESULTADO FINAL
     # =========================================
 
     else:
@@ -253,3 +350,4 @@ elif pagina == "🎯 Quiz":
     if st.button("Ver resultado"):
         st.session_state.finalizado = True
         st.rerun()
+
