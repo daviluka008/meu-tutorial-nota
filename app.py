@@ -72,56 +72,66 @@ st.set_page_config(page_title="🎹 Acordes App", page_icon="🎹")
 
 st.title("🎹 Sistema Completo de Acordes + Teoria")
 
-# 🔥 IMPORTANTE: pagina ANTES de tudo
 pagina = st.sidebar.selectbox(
     "📌 Menu",
     ["📚 Teoria", "🎹 Teste de Acordes", "🎯 Quiz"]
 )
 
 # =========================================
-# 📚 TEORIA COMPLETA
+# 📚 TEORIA COMPLETA (100% INTEGRADA)
 # =========================================
 
 if pagina == "📚 Teoria":
 
-    st.header("🎓 Teoria dos Acordes")
+    st.header("🎓 Teoria Completa dos Acordes")
 
     st.subheader("🎵 O que é um acorde?")
     st.write("Um acorde é a combinação de 3 ou mais notas tocadas ao mesmo tempo.")
+    st.write("Ele nasce a partir de uma escala musical.")
 
-    st.subheader("🎼 Como ele é formado?")
-    st.write("Todo acorde maior segue a fórmula:")
-
-    st.code("1 (tônica) + 3 (terça maior) + 5 (quinta justa)")
-
-    st.write("Exemplo: C maior")
-
-    st.code("C = C + E + G")
-
-    st.write("Escala de C:")
+    st.write("Exemplo de escala maior:")
     st.code("C D E F G A B")
+
+    st.divider()
+
+    st.subheader("🎼 Como montar um acorde maior")
+
+    st.write("Fórmula:")
+    st.code("1 + 3 + 5")
+
+    st.write("Exemplo em C:")
+    st.write("Escala:")
+    st.code("C D E F G A B")
+
+    st.write("Aplicação:")
+    st.code("C + E + G")
 
     st.success("Resultado: C E G")
 
     st.divider()
 
-    st.subheader("🎼 Acordes menores")
+    st.subheader("🎼 Como montar um acorde menor")
 
-    st.write("No acorde menor, a terça é abaixada meio tom:")
-
+    st.write("Fórmula:")
     st.code("1 + b3 + 5")
 
-    st.code("Cm = C + Eb + G")
+    st.write("Exemplo em Cm:")
+
+    st.code("C + Eb + G")
+
+    st.success("Resultado: C Eb G")
 
     st.divider()
 
-    st.subheader("🎼 Sustenidos e bemóis")
+    st.subheader("🎹 Sustenidos (#) e bemóis (b)")
+
+    st.write("Alteram a nota em meio tom:")
 
     st.write("🔼 # sobe meio tom")
     st.write("🔽 b desce meio tom")
 
-    st.code("C# = C sobe meio tom")
-    st.code("Eb = E desce meio tom")
+    st.code("C → C#")
+    st.code("E → Eb")
 
     st.divider()
 
@@ -137,12 +147,49 @@ if pagina == "📚 Teoria":
 
     st.divider()
 
-    st.subheader("🎼 Sétimas")
+    st.subheader("🎼 Acordes com sétima")
+
+    st.write("Fórmulas:")
+
+    st.code("C7 = 1 + 3 + 5 + b7")
+    st.code("C7M = 1 + 3 + 5 + 7")
+
+    st.write("Exemplos:")
 
     st.code("C7 = C E G Bb")
     st.code("C7M = C E G B")
 
-    st.success("Agora você entende como os acordes são construídos 🎹")
+    st.divider()
+
+    st.subheader("🎼 Como pensar qualquer acorde")
+
+    st.write("Passo 1: pegar a escala")
+    st.code("C D E F G A B")
+
+    st.write("Passo 2: aplicar fórmula")
+
+    st.code("Maior = 1 3 5")
+    st.code("Menor = 1 b3 5")
+
+    st.write("Passo 3: montar notas")
+
+    st.success("Agora você consegue montar qualquer acorde")
+
+    st.divider()
+
+    st.subheader("🎯 Resumo final")
+
+    st.write("""
+    ✔ Acorde = combinação de notas  
+    ✔ Maior = som aberto  
+    ✔ Menor = som triste  
+    ✔ # sobe meio tom  
+    ✔ b desce meio tom  
+    ✔ 7 adiciona emoção  
+    ✔ tudo vem da escala  
+    """)
+
+    st.success("Agora você domina a base da harmonia 🎹")
 
 # =========================================
 # 🎹 PRÁTICA
@@ -209,7 +256,7 @@ elif pagina == "🎯 Quiz":
     respostas = []
     acertos = 0
 
-    st.info("⚠️ Depois de enviar, não pode alterar respostas.")
+    st.info("⚠️ Depois de enviar não pode alterar respostas.")
 
     for i, (enunciado, opcoes, correta) in enumerate(perguntas):
 
