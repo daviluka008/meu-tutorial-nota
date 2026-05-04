@@ -74,7 +74,7 @@ pagina = st.sidebar.selectbox(
 )
 
 # =========================================
-# 📚 TEORIA COMPLETA (APOSTILA)
+# 📚 TEORIA
 # =========================================
 
 if pagina == "📚 Teoria":
@@ -82,31 +82,16 @@ if pagina == "📚 Teoria":
     st.header("🎓 Teoria Musical Completa")
 
     st.subheader("🎵 O que é música")
-    st.write("""
-Música é a organização de sons no tempo.  
-Ela possui 4 elementos principais:
-- altura (grave/agudo)
-- duração
-- intensidade
-- timbre
-""")
+    st.write("Música é organização de sons no tempo: altura, duração, intensidade e timbre.")
 
     st.subheader("🎼 Notas musicais")
     st.code("C D E F G A B")
 
-    st.write("Essas são as 7 notas naturais da música ocidental.")
-
     st.subheader("🎹 Semitom e Tom")
-    st.write("""
-- Semitom = menor distância entre duas notas  
-- Tom = 2 semitons  
-""")
+    st.write("Semitom = menor distância | Tom = 2 semitons")
 
     st.subheader("🎼 Sustenidos e bemóis")
-    st.write("""
-# sobe meio tom  
-b desce meio tom  
-""")
+    st.write("# sobe meio tom | b desce meio tom")
 
     st.code("""
 C# = Db
@@ -117,37 +102,16 @@ A# = Bb
 """)
 
     st.subheader("🎼 Escala maior")
-    st.write("Fórmula:")
     st.code("T - T - S - T - T - T - S")
 
-    st.write("Exemplo em C:")
-    st.code("C D E F G A B")
+    st.subheader("🎼 Acordes básicos")
 
-    st.subheader("🎼 Escala menor")
-    st.code("T - S - T - T - S - T - T")
-
-    st.subheader("🎼 Acordes")
-
-    st.write("✔ Maior:")
-    st.code("1 + 3 + 5 → C E G")
-
-    st.write("✔ Menor:")
-    st.code("1 + b3 + 5 → C Eb G")
-
-    st.write("✔ Sétima:")
-    st.code("C7 → C E G Bb")
-
-    st.write("✔ Maj7:")
-    st.code("Cmaj7 → C E G B")
+    st.code("Maior: 1 + 3 + 5 → C E G")
+    st.code("Menor: 1 + b3 + 5 → C Eb G")
+    st.code("7: C7 → C E G Bb")
 
     st.subheader("🎼 Campo harmônico")
     st.code("C Dm Em F G Am Bdim")
-
-    st.subheader("🎯 Resumo")
-    st.write("""
-Tudo na música vem de:
-Escala → Intervalos → Acordes → Harmonia
-""")
 
 # =========================================
 # 🎹 PRÁTICA
@@ -165,9 +129,6 @@ elif pagina == "🎹 Prática":
         if resultado:
             st.success(f"🎵 Notas: {resultado['notas']}")
 
-            if resultado["baixo"]:
-                st.info(f"🎸 Baixo: {resultado['baixo']}")
-
             base = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"]
 
             teclado = ""
@@ -180,7 +141,7 @@ elif pagina == "🎹 Prática":
             st.error("❌ Acorde não reconhecido")
 
 # =========================================
-# 🎯 QUIZ DINÂMICO
+# 🎯 QUIZ (CORRIGIDO COMPLETO)
 # =========================================
 
 elif pagina == "🎯 Quiz":
@@ -193,48 +154,65 @@ elif pagina == "🎯 Quiz":
         ("D = ?", ["D F# A", "D F A", "D E A"], "D F# A"),
         ("E = ?", ["E G# B", "E G B", "E A B"], "E G# B"),
         ("F = ?", ["F A C", "F G C", "F A D"], "F A C"),
-        ("G = ?", ["G B D", "G A D", "G B E"], "G B D"),
-        ("A = ?", ["A C# E", "A C E", "A D E"], "A C# E"),
-        ("B = ?", ["B D# F#", "B D F#", "B E G"], "B D# F#"),
-        ("C# = ?", ["C# E# G#", "C# E G#", "C D G#"], "C# E# G#"),
-        ("Eb = ?", ["Eb G Bb", "Eb F Ab", "Eb G C"], "Eb G Bb"),
     ]
 
     if "quiz" not in st.session_state:
         st.session_state.quiz = random.sample(banco, 5)
         st.session_state.finalizado = False
+        st.session_state.respostas = {}
 
     perguntas = st.session_state.quiz
-    respostas = []
-    acertos = 0
 
-    for i, (q, op, c) in enumerate(perguntas):
+    st.info("Responda e veja seu resultado ao final.")
 
-        escolha = st.radio(
-            q,
-            op,
-            key=f"q{i}",
-            disabled=st.session_state.finalizado
-        )
+    # RESET visual correto (sem pré-marcação)
+    for i, (q, op, correta) in enumerate(perguntas):
 
-        respostas.append((escolha, c))
+        if not st.session_state.finalizado:
+
+            escolha = st.radio(
+                q,
+                op,
+                key=f"q{i}",
+                index=None  # 🔥 impede resposta pré-marcada
+            )
+
+            if escolha:
+                st.session_state.respostas[i] = escolha
+
+        else:
+
+            st.radio(
+                q,
+                op,
+                index=op.index(st.session_state.respostas[i]),
+                key=f"q{i}",
+                disabled=True
+            )
 
     if st.button("Ver resultado"):
 
         st.session_state.finalizado = True
 
-        for i, (e, c) in enumerate(respostas):
+        acertos = 0
 
-            if e == c:
+        st.divider()
+
+        for i, (q, op, correta) in enumerate(perguntas):
+
+            resposta = st.session_state.respostas.get(i)
+
+            if resposta == correta:
                 st.success(f"✔ Pergunta {i+1} correta")
                 acertos += 1
             else:
                 st.error(f"❌ Pergunta {i+1} errada")
-                st.info(f"✔ Resposta certa: {c}")
+                st.info(f"✔ Resposta certa: {correta}")
 
         st.success(f"🎯 Você acertou {acertos}/5")
-    
-    if st.button("Novo quiz"):
+
+    if st.button("🔄 Novo quiz"):
         st.session_state.quiz = random.sample(banco, 5)
         st.session_state.finalizado = False
+        st.session_state.respostas = {}
         st.rerun()
