@@ -70,91 +70,90 @@ st.title("🎹 Sistema Completo de Acordes + Teoria")
 
 pagina = st.sidebar.selectbox(
     "📌 Menu",
-    ["📚 Teoria", "🎹 Teste de Acordes", "🎯 Quiz"]
+    ["📚 Teoria", "🎹 Prática", "🎯 Quiz"]
 )
 
 # =========================================
-# 📚 TEORIA + VÍDEOS (DENTRO DO SITE)
+# 📚 TEORIA COMPLETA (APOSTILA)
 # =========================================
 
 if pagina == "📚 Teoria":
 
-    st.header("🎓 TEORIA MUSICAL COMPLETA")
+    st.header("🎓 Teoria Musical Completa")
 
     st.subheader("🎵 O que é música")
-    st.write("Música é organização de sons no tempo: altura, duração, intensidade e timbre.")
-
-    st.components.v1.html("""
-    <iframe width="100%" height="350"
-    src="https://www.youtube.com/embed/7Yc6m2kQ0XQ"
-    frameborder="0"
-    allowfullscreen></iframe>
-    """, height=350)
+    st.write("""
+Música é a organização de sons no tempo.  
+Ela possui 4 elementos principais:
+- altura (grave/agudo)
+- duração
+- intensidade
+- timbre
+""")
 
     st.subheader("🎼 Notas musicais")
     st.code("C D E F G A B")
 
-    st.components.v1.html("""
-    <iframe width="100%" height="350"
-    src="https://www.youtube.com/embed/5rX0q7mK9sA"
-    frameborder="0"
-    allowfullscreen></iframe>
-    """, height=350)
+    st.write("Essas são as 7 notas naturais da música ocidental.")
 
-    st.subheader("🎹 Tons e semitons")
-    st.write("Semitom = menor distância | Tom = 2 semitons")
-
-    st.components.v1.html("""
-    <iframe width="100%" height="350"
-    src="https://www.youtube.com/embed/3mQ8pT7xK9A"
-    frameborder="0"
-    allowfullscreen></iframe>
-    """, height=350)
+    st.subheader("🎹 Semitom e Tom")
+    st.write("""
+- Semitom = menor distância entre duas notas  
+- Tom = 2 semitons  
+""")
 
     st.subheader("🎼 Sustenidos e bemóis")
+    st.write("""
+# sobe meio tom  
+b desce meio tom  
+""")
 
-    st.code("C# = Db")
-    st.code("D# = Eb")
-    st.code("F# = Gb")
-    st.code("G# = Ab")
-    st.code("A# = Bb")
-
-    st.components.v1.html("""
-    <iframe width="100%" height="350"
-    src="https://www.youtube.com/embed/9kQ3mT8xP7A"
-    frameborder="0"
-    allowfullscreen></iframe>
-    """, height=350)
+    st.code("""
+C# = Db
+D# = Eb
+F# = Gb
+G# = Ab
+A# = Bb
+""")
 
     st.subheader("🎼 Escala maior")
+    st.write("Fórmula:")
     st.code("T - T - S - T - T - T - S")
 
-    st.components.v1.html("""
-    <iframe width="100%" height="350"
-    src="https://www.youtube.com/embed/6kT9mQ2xP7A"
-    frameborder="0"
-    allowfullscreen></iframe>
-    """, height=350)
+    st.write("Exemplo em C:")
+    st.code("C D E F G A B")
 
-    st.subheader("🎼 Acordes maiores e menores")
-    st.code("1 + 3 + 5 = maior")
-    st.code("1 + b3 + 5 = menor")
+    st.subheader("🎼 Escala menor")
+    st.code("T - S - T - T - S - T - T")
 
-    st.components.v1.html("""
-    <iframe width="100%" height="350"
-    src="https://www.youtube.com/embed/4pQ9mT7xK2A"
-    frameborder="0"
-    allowfullscreen></iframe>
-    """, height=350)
+    st.subheader("🎼 Acordes")
 
-    st.markdown("---")
-    st.success("🎯 FIM DA TEORIA — vá para prática ou quiz")
+    st.write("✔ Maior:")
+    st.code("1 + 3 + 5 → C E G")
+
+    st.write("✔ Menor:")
+    st.code("1 + b3 + 5 → C Eb G")
+
+    st.write("✔ Sétima:")
+    st.code("C7 → C E G Bb")
+
+    st.write("✔ Maj7:")
+    st.code("Cmaj7 → C E G B")
+
+    st.subheader("🎼 Campo harmônico")
+    st.code("C Dm Em F G Am Bdim")
+
+    st.subheader("🎯 Resumo")
+    st.write("""
+Tudo na música vem de:
+Escala → Intervalos → Acordes → Harmonia
+""")
 
 # =========================================
 # 🎹 PRÁTICA
 # =========================================
 
-elif pagina == "🎹 Teste de Acordes":
+elif pagina == "🎹 Prática":
 
     st.header("🎹 Pratique Acordes")
 
@@ -166,6 +165,9 @@ elif pagina == "🎹 Teste de Acordes":
         if resultado:
             st.success(f"🎵 Notas: {resultado['notas']}")
 
+            if resultado["baixo"]:
+                st.info(f"🎸 Baixo: {resultado['baixo']}")
+
             base = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"]
 
             teclado = ""
@@ -175,10 +177,10 @@ elif pagina == "🎹 Teste de Acordes":
             st.text(teclado)
 
         else:
-            st.error("❌ Acorde inválido")
+            st.error("❌ Acorde não reconhecido")
 
 # =========================================
-# 🎯 QUIZ
+# 🎯 QUIZ DINÂMICO
 # =========================================
 
 elif pagina == "🎯 Quiz":
@@ -188,12 +190,18 @@ elif pagina == "🎯 Quiz":
     banco = [
         ("C = ?", ["C D E", "C E G", "C F G"], "C E G"),
         ("Cm = ?", ["C Eb G", "C E G", "C F G"], "C Eb G"),
-        ("D# = ?", ["D# F# A#", "D E A", "D# G A#"], "D# F# A#"),
+        ("D = ?", ["D F# A", "D F A", "D E A"], "D F# A"),
+        ("E = ?", ["E G# B", "E G B", "E A B"], "E G# B"),
+        ("F = ?", ["F A C", "F G C", "F A D"], "F A C"),
+        ("G = ?", ["G B D", "G A D", "G B E"], "G B D"),
+        ("A = ?", ["A C# E", "A C E", "A D E"], "A C# E"),
+        ("B = ?", ["B D# F#", "B D F#", "B E G"], "B D# F#"),
+        ("C# = ?", ["C# E# G#", "C# E G#", "C D G#"], "C# E# G#"),
         ("Eb = ?", ["Eb G Bb", "Eb F Ab", "Eb G C"], "Eb G Bb"),
     ]
 
     if "quiz" not in st.session_state:
-        st.session_state.quiz = random.sample(banco, 3)
+        st.session_state.quiz = random.sample(banco, 5)
         st.session_state.finalizado = False
 
     perguntas = st.session_state.quiz
@@ -218,15 +226,15 @@ elif pagina == "🎯 Quiz":
         for i, (e, c) in enumerate(respostas):
 
             if e == c:
-                st.success(f"✔ Q{i+1} correta")
+                st.success(f"✔ Pergunta {i+1} correta")
                 acertos += 1
             else:
-                st.error(f"❌ Q{i+1} errada")
-                st.info(f"Resposta certa: {c}")
+                st.error(f"❌ Pergunta {i+1} errada")
+                st.info(f"✔ Resposta certa: {c}")
 
-        st.success(f"🎯 Acertos: {acertos}/3")
-
+        st.success(f"🎯 Você acertou {acertos}/5")
+    
     if st.button("Novo quiz"):
-        st.session_state.quiz = random.sample(banco, 3)
+        st.session_state.quiz = random.sample(banco, 5)
         st.session_state.finalizado = False
         st.rerun()
