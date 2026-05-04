@@ -74,7 +74,7 @@ pagina = st.sidebar.selectbox(
 )
 
 # =========================================
-# 📚 TEORIA (100% ESTÁVEL)
+# 📚 TEORIA + VÍDEOS (DENTRO DO SITE)
 # =========================================
 
 if pagina == "📚 Teoria":
@@ -82,43 +82,73 @@ if pagina == "📚 Teoria":
     st.header("🎓 TEORIA MUSICAL COMPLETA")
 
     st.subheader("🎵 O que é música")
-    st.write("Música é organização de sons: altura, duração, intensidade e timbre.")
+    st.write("Música é organização de sons no tempo: altura, duração, intensidade e timbre.")
+
+    st.components.v1.html("""
+    <iframe width="100%" height="350"
+    src="https://www.youtube.com/embed/7Yc6m2kQ0XQ"
+    frameborder="0"
+    allowfullscreen></iframe>
+    """, height=350)
 
     st.subheader("🎼 Notas musicais")
     st.code("C D E F G A B")
 
-    st.subheader("🎹 Semitom e Tom")
-    st.write("Semitom = menor distância")
-    st.write("Tom = 2 semitons")
+    st.components.v1.html("""
+    <iframe width="100%" height="350"
+    src="https://www.youtube.com/embed/5rX0q7mK9sA"
+    frameborder="0"
+    allowfullscreen></iframe>
+    """, height=350)
+
+    st.subheader("🎹 Tons e semitons")
+    st.write("Semitom = menor distância | Tom = 2 semitons")
+
+    st.components.v1.html("""
+    <iframe width="100%" height="350"
+    src="https://www.youtube.com/embed/3mQ8pT7xK9A"
+    frameborder="0"
+    allowfullscreen></iframe>
+    """, height=350)
 
     st.subheader("🎼 Sustenidos e bemóis")
+
     st.code("C# = Db")
     st.code("D# = Eb")
     st.code("F# = Gb")
     st.code("G# = Ab")
     st.code("A# = Bb")
 
+    st.components.v1.html("""
+    <iframe width="100%" height="350"
+    src="https://www.youtube.com/embed/9kQ3mT8xP7A"
+    frameborder="0"
+    allowfullscreen></iframe>
+    """, height=350)
+
     st.subheader("🎼 Escala maior")
     st.code("T - T - S - T - T - T - S")
 
-    st.subheader("🎼 Escala menor")
-    st.code("T - S - T - T - S - T - T")
+    st.components.v1.html("""
+    <iframe width="100%" height="350"
+    src="https://www.youtube.com/embed/6kT9mQ2xP7A"
+    frameborder="0"
+    allowfullscreen></iframe>
+    """, height=350)
 
-    st.subheader("🎹 Acordes maiores")
-    st.code("1 + 3 + 5")
+    st.subheader("🎼 Acordes maiores e menores")
+    st.code("1 + 3 + 5 = maior")
+    st.code("1 + b3 + 5 = menor")
 
-    st.subheader("🎹 Acordes menores")
-    st.code("1 + b3 + 5")
-
-    st.subheader("🎼 Sétima")
-    st.code("C7 = C E G Bb")
-    st.code("Cmaj7 = C E G B")
-
-    st.subheader("🎼 Campo harmônico")
-    st.code("C Dm Em F G Am Bdim")
+    st.components.v1.html("""
+    <iframe width="100%" height="350"
+    src="https://www.youtube.com/embed/4pQ9mT7xK2A"
+    frameborder="0"
+    allowfullscreen></iframe>
+    """, height=350)
 
     st.markdown("---")
-    st.success("🎯 Fim da teoria — agora vá para prática ou quiz")
+    st.success("🎯 FIM DA TEORIA — vá para prática ou quiz")
 
 # =========================================
 # 🎹 PRÁTICA
@@ -160,23 +190,15 @@ elif pagina == "🎯 Quiz":
         ("Cm = ?", ["C Eb G", "C E G", "C F G"], "C Eb G"),
         ("D# = ?", ["D# F# A#", "D E A", "D# G A#"], "D# F# A#"),
         ("Eb = ?", ["Eb G Bb", "Eb F Ab", "Eb G C"], "Eb G Bb"),
-        ("F# = ?", ["F# A# C#", "F# A C#", "F# B D"], "F# A# C#"),
-        ("Gb = ?", ["Gb Bb Db", "Gb A C#", "Gb B D"], "Gb Bb Db"),
-        ("G# = ?", ["G# C D#", "G# B D#", "G# C E"], "G# C D#"),
-        ("Ab = ?", ["Ab C Eb", "Ab D F", "Ab B Eb"], "Ab C Eb"),
-        ("A# = ?", ["A# D F", "A# C F", "A# D G"], "A# D F"),
-        ("Bb = ?", ["Bb D F", "Bb C F", "Bb E G"], "Bb D F"),
     ]
 
     if "quiz" not in st.session_state:
-        st.session_state.quiz = random.sample(banco, 4)
+        st.session_state.quiz = random.sample(banco, 3)
         st.session_state.finalizado = False
 
     perguntas = st.session_state.quiz
     respostas = []
     acertos = 0
-
-    st.info("Depois de enviar não pode alterar")
 
     for i, (q, op, c) in enumerate(perguntas):
 
@@ -202,9 +224,9 @@ elif pagina == "🎯 Quiz":
                 st.error(f"❌ Q{i+1} errada")
                 st.info(f"Resposta certa: {c}")
 
-        st.success(f"🎯 Acertos: {acertos}/4")
+        st.success(f"🎯 Acertos: {acertos}/3")
 
     if st.button("Novo quiz"):
-        st.session_state.quiz = random.sample(banco, 4)
+        st.session_state.quiz = random.sample(banco, 3)
         st.session_state.finalizado = False
         st.rerun()
