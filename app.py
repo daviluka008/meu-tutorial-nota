@@ -66,6 +66,7 @@ def gerar_acorde(acorde):
 # =========================================
 
 st.set_page_config(page_title="🎹 Acordes App", page_icon="🎹")
+
 st.title("🎹 Sistema Completo de Acordes + Teoria")
 
 pagina = st.sidebar.selectbox(
@@ -74,142 +75,23 @@ pagina = st.sidebar.selectbox(
 )
 
 # =========================================
-# 📚 TEORIA MUSICAL COMPLETA (EXPANDIDA DE VERDADE)
+# 📚 TEORIA
 # =========================================
 
 if pagina == "📚 Teoria":
 
     st.header("🎓 Teoria Musical Completa")
 
-    st.subheader("🎵 O que é música?")
-    st.write("""
-Música é a organização consciente dos sons no tempo.
+    st.write("Música = organização de sons no tempo")
 
-Ela não é apenas “som bonito”, mas um sistema estruturado que combina:
-- Altura (grave ou agudo)
-- Duração (tempo das notas)
-- Intensidade (volume)
-- Timbre (identidade sonora)
+    st.code("C D E F G A B")
 
-Tudo isso trabalha junto para criar emoção e harmonia.
-""")
+    st.write("# = sobe meio tom | b = desce meio tom")
 
-    st.subheader("🎼 O que são notas musicais?")
-    st.write("""
-As notas musicais são os sons básicos usados para formar toda a música ocidental.
+    st.code("C# = Db | D# = Eb | F# = Gb | G# = Ab | A# = Bb")
 
-Elas são 7:
-
-C - D - E - F - G - A - B
-
-Essas notas se repetem em diferentes alturas (oitavas).
-""")
-
-    st.subheader("🎹 O que é tom e semitom?")
-    st.write("""
-- Semitom = menor distância possível entre duas notas
-- Tom = dois semitons
-
-Exemplo no teclado:
-- C → C# = 1 semitom
-- C → D = 1 tom
-""")
-
-    st.subheader("🎼 Sustenidos (#) e bemóis (b)")
-    st.write("""
-Eles servem para alterar a altura das notas:
-
-- # (sustenido) → sobe meio tom
-- b (bemol) → desce meio tom
-
-Exemplos reais:
-
-C# = Db  
-D# = Eb  
-F# = Gb  
-G# = Ab  
-A# = Bb  
-
-Isso é chamado de ENARMONIA (mesma nota com nomes diferentes).
-""")
-
-    st.subheader("🎼 Enarmonia (explicação simples)")
-    st.write("""
-Enarmonia significa que duas notas diferentes no nome podem ser a mesma no som.
-
-Exemplo:
-- C# e Db soam iguais
-- D# e Eb soam iguais
-
-A diferença é apenas teórica (notação musical).
-""")
-
-    st.subheader("🎼 Escala maior (base da música)")
-    st.write("""
-A escala maior é a estrutura principal da música ocidental.
-
-Fórmula:
-T - T - S - T - T - T - S
-
-Exemplo em C:
-C D E F G A B
-""")
-
-    st.subheader("🎼 Escala menor (som emocional)")
-    st.write("""
-A escala menor tem som mais triste ou emocional.
-
-Fórmula:
-T - S - T - T - S - T - T
-
-Exemplo:
-A B C D E F G
-""")
-
-    st.subheader("🎼 Como acordes são formados")
-    st.write("""
-Acordes são combinações de notas da escala.
-
-🎹 Acorde maior:
-1 + 3 + 5 → C E G
-
-🎹 Acorde menor:
-1 + b3 + 5 → C Eb G
-""")
-
-    st.subheader("🎼 Por que acordes funcionam?")
-    st.write("""
-Porque eles seguem relações matemáticas entre frequências.
-
-- 3ª define se é maior ou menor
-- 5ª dá estabilidade
-- 7ª cria tensão emocional
-""")
-
-    st.subheader("🎼 Sétimas")
-    st.write("""
-A sétima adiciona profundidade emocional ao acorde.
-
-Exemplo:
-C7 = C E G Bb  
-Cmaj7 = C E G B
-""")
-
-    st.subheader("🎼 Campo harmônico")
-    st.write("""
-É o conjunto de acordes que pertencem a uma tonalidade.
-
-Exemplo em C:
-
-C Dm Em F G Am Bdim
-""")
-
-    st.subheader("🎯 Conclusão")
-    st.write("""
-Toda música funciona assim:
-
-ESCALA → INTERVALOS → ACORDES → HARMONIA → EMOÇÃO
-""")
+    st.code("Maior: 1 3 5 → C E G")
+    st.code("Menor: 1 b3 5 → C Eb G")
 
 # =========================================
 # 🎹 PRÁTICA
@@ -230,7 +112,7 @@ elif pagina == "🎹 Prática":
             st.error("❌ Acorde inválido")
 
 # =========================================
-# 🎯 QUIZ
+# 🎯 QUIZ (CORRIGIDO 100%)
 # =========================================
 
 elif pagina == "🎯 Quiz":
@@ -255,7 +137,7 @@ elif pagina == "🎯 Quiz":
         intervalos = maior if tipo == "maior" else menor
         return " ".join([base[(i+x)%12] for x in intervalos])
 
-    def gerar_quiz():
+    def gerar():
         pool = []
         for n in notas:
             pool.append((f"{n} = ?", montar(n,"maior")))
@@ -263,18 +145,14 @@ elif pagina == "🎯 Quiz":
         random.shuffle(pool)
         return pool
 
-    # =========================
-    # INIT QUIZ
-    # =========================
-
     if "quiz" not in st.session_state:
-        st.session_state.quiz = gerar_quiz()
+        st.session_state.quiz = gerar()
         st.session_state.finalizado = False
         st.session_state.respostas = {}
         st.session_state.opcoes = {}
 
     if st.button("🔄 Novo quiz"):
-        st.session_state.quiz = gerar_quiz()
+        st.session_state.quiz = gerar()
         st.session_state.finalizado = False
         st.session_state.respostas = {}
         st.session_state.opcoes = {}
@@ -283,51 +161,60 @@ elif pagina == "🎯 Quiz":
     perguntas = st.session_state.quiz[:6]
 
     # =========================================
-    # 🎯 OPÇÕES FIXAS (NÃO MUDAM MAIS)
+    # 🔥 OPÇÕES 100% CONSISTENTES
     # =========================================
 
-    def gerar_opcoes_estaveis(qid, correta):
+    def gerar_opcoes(qid, correta):
 
         if qid in st.session_state.opcoes:
             return st.session_state.opcoes[qid]
 
-        partes = correta.split()
+        base = set()
+        base.add(correta)
 
-        opts = [correta]
+        partes = correta.split()
 
         if len(partes) == 3:
             c, e, g = partes
 
-            opts.append(f"{c} D {g}")
-            opts.append(f"{c} Eb {g}")
-            opts.append(f"{c} E A")
-            opts.append(f"{c} E Gb")
+            # erro de terça (real)
+            base.add(f"{c} Eb {g}")
+            base.add(f"{c} D {g}")
 
+            # erro de quinta (real)
+            base.add(f"{c} E Gb")
+            base.add(f"{c} E F#")
+
+        # alternativas reais seguras
         extras = [
             "C E G",
             "C Eb G",
             "D F A",
+            "D F# A",
             "E G B",
             "F A C",
+            "F Ab C",
             "G B D",
+            "G Bb D",
             "A C E",
-            "B D F"
+            "A C# E",
+            "B D F",
+            "B D# F#"
         ]
 
-        while len(opts) < 5:
+        while len(base) < 5:
             op = random.choice(extras)
-            if op not in opts:
-                opts.append(op)
+            base.add(op)
 
-        random.shuffle(opts)
-        opts = opts[:5]
+        lista = list(base)
+        random.shuffle(lista)
 
-        st.session_state.opcoes[qid] = opts
-        return opts
+        st.session_state.opcoes[qid] = lista[:5]
+        return lista[:5]
 
-    # =========================
+    # =========================================
     # RESPOSTAS
-    # =========================
+    # =========================================
 
     if not st.session_state.finalizado:
 
@@ -335,14 +222,14 @@ elif pagina == "🎯 Quiz":
 
             st.session_state.respostas[i] = st.radio(
                 q,
-                options=gerar_opcoes_estaveis(i, correta),
+                options=gerar_opcoes(i, correta),
                 key=f"q_{i}",
                 index=None
             )
 
-    # =========================
-    # RESULTADO TRAVADO
-    # =========================
+    # =========================================
+    # RESULTADO
+    # =========================================
 
     else:
 
@@ -354,14 +241,12 @@ elif pagina == "🎯 Quiz":
             r = st.session_state.respostas.get(i)
 
             st.write(f"**{q}**")
-            st.write(f"Sua resposta: {r}")
 
             if r == correta:
                 st.success("✔ Correta")
                 acertos += 1
             else:
-                st.error("❌ Errada")
-                st.info(f"✔ Correta: {correta}")
+                st.error(f"❌ Errada → correta: {correta}")
 
         st.success(f"🎯 Você acertou {acertos}/6")
 
