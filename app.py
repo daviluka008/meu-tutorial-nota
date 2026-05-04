@@ -87,17 +87,25 @@ if pagina == "📚 Teoria":
 
     st.write("Acorde é quando tocamos várias notas ao mesmo tempo.")
 
-    st.code("MAIOR → C = C E G")
-    st.code("MENOR → Cm = C Eb G")
-    st.code("7 → C7 = C E G Bb")
-    st.code("7M → C7M = C E G B")
-    st.code("add9 → Cadd9 = C E G D")
-    st.code("sus2 → Csus2 = C D G")
-    st.code("sus4 → Csus4 = C F G")
+    st.code("C = C E G")
+    st.code("Cm = C Eb G")
+    st.code("D = D F# A")
+    st.code("Dm = D F A")
+    st.code("E = E G# B")
+    st.code("Em = E G B")
+    st.code("F = F A C")
+    st.code("F# = F# A# C#")
+    st.code("G = G B D")
+    st.code("Gm = G Bb D")
+    st.code("A = A C# E")
+    st.code("Am = A C E")
+    st.code("B = B D# F#")
+    st.code("Bm = B D F#")
 
-    st.write("G/B = acorde com baixo diferente")
-
-    st.success("👉 Vá para PRÁTICA depois")
+    st.write("Extras:")
+    st.code("C7 = C E G Bb")
+    st.code("Cm7 = C Eb G Bb")
+    st.code("G/B = G com baixo B")
 
 # =========================================
 # 🎹 PRÁTICA
@@ -133,42 +141,51 @@ elif pagina == "🎹 Teste de Acordes":
             st.error("❌ Acorde não reconhecido!")
 
 # =========================================
-# 🎯 QUIZ DINÂMICO ESTÁVEL
+# 🎯 QUIZ COMPLETO (AMPLIADO)
 # =========================================
 
 elif pagina == "🎯 Quiz":
 
-    st.header("🎯 Quiz de Acordes")
+    st.header("🎯 Quiz Completo de Acordes")
 
     banco_perguntas = [
         ("C = ?", ["C D E", "C E G", "C F G"], "C E G"),
         ("Cm = ?", ["C Eb G", "C E G", "C F G"], "C Eb G"),
+        ("D = ?", ["D F A", "D F# A", "D G A"], "D F# A"),
+        ("Dm = ?", ["D F A", "D F# A", "D A C"], "D F A"),
+        ("E = ?", ["E G B", "E G# B", "E A B"], "E G# B"),
+        ("Em = ?", ["E G B", "E G# B", "E A B"], "E G B"),
+        ("F = ?", ["F A C", "F A# C", "F G C"], "F A C"),
+        ("F# = ?", ["F# A# C#", "F# A C#", "F# B C#"], "F# A# C#"),
+        ("G = ?", ["G B D", "G Bb D", "G C D"], "G B D"),
+        ("Gm = ?", ["G Bb D", "G B D", "G A D"], "G Bb D"),
+        ("A = ?", ["A C E", "A C# E", "A D E"], "A C# E"),
+        ("Am = ?", ["A C E", "A C# E", "A D F"], "A C E"),
+        ("B = ?", ["B D F#", "B D# F#", "B E G#"], "B D# F#"),
+        ("Bm = ?", ["B D F#", "B D# F#", "B F A"], "B D F#"),
         ("C7 = ?", ["C E G B", "C E G Bb", "C D G"], "C E G Bb"),
-        ("Csus4 = ?", ["C D G", "C F G", "C E G"], "C F G"),
-        ("G/B = ?", ["G com baixo B", "G menor", "G aumentado"], "G com baixo B"),
-        ("Cadd9 = ?", ["C E G D", "C E G", "C D G"], "C E G D"),
         ("Cm7 = ?", ["C Eb G Bb", "C E G Bb", "C D G"], "C Eb G Bb"),
+        ("G/B = ?", ["G com baixo B", "G menor", "G aumentado"], "G com baixo B"),
     ]
 
-    # 🔒 gera só uma vez por sessão
     if "quiz_perguntas" not in st.session_state:
-        st.session_state.quiz_perguntas = random.sample(banco_perguntas, 3)
+        st.session_state.quiz_perguntas = random.sample(banco_perguntas, 4)
 
     perguntas = st.session_state.quiz_perguntas
 
-    respostas_usuario = []
     acertos = 0
+    respostas = []
 
-    for i, (enunciado, opcoes, resposta_certa) in enumerate(perguntas):
+    for i, (enunciado, opcoes, resposta) in enumerate(perguntas):
 
         escolha = st.radio(enunciado, opcoes, key=f"q{i}")
-        respostas_usuario.append((escolha, resposta_certa))
+        respostas.append((escolha, resposta))
 
     if st.button("Ver resultado final"):
 
         st.divider()
 
-        for i, (escolha, correta) in enumerate(respostas_usuario):
+        for i, (escolha, correta) in enumerate(respostas):
 
             if escolha == correta:
                 st.success(f"✔ Pergunta {i+1} correta")
@@ -176,7 +193,7 @@ elif pagina == "🎯 Quiz":
             else:
                 st.error(f"❌ Pergunta {i+1} errada")
 
-        st.success(f"🎯 Você acertou {acertos}/3 perguntas!")
+        st.success(f"🎯 Você acertou {acertos}/4 perguntas!")
 
     if st.button("🔄 Novo quiz"):
         del st.session_state.quiz_perguntas
