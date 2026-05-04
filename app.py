@@ -20,7 +20,7 @@ def separar_acorde(acorde):
     return acorde[0], acorde[1:].lower()
 
 # =========================================
-# 🔥 ACORDES CORRIGIDO (EbM, Ebm etc)
+# 🔥 ACORDES
 # =========================================
 def gerar_acorde(acorde):
     acorde = acorde.strip()
@@ -79,7 +79,6 @@ pagina = st.sidebar.selectbox(
     ["📚 Teoria", "🎹 Prática", "🎯 Quiz"]
 )
 
-
 # =========================================
 # 📚 TEORIA
 # =========================================
@@ -88,39 +87,17 @@ if pagina == "📚 Teoria":
 
     st.header("🎓 Teoria Musical Completa")
 
-    st.subheader("🎵 O que é música?")
-    st.write("""
-Música é organização de sons no tempo: melodia, harmonia, ritmo e timbre.
-""")
-
     st.subheader("🎼 Notas musicais")
     st.code("C D E F G A B")
 
-    st.subheader("🎹 Tom e semitom")
-    st.write("Semitom = 1 passo | Tom = 2 passos")
-
-    st.subheader("🎼 Sustenidos e bemóis")
-    st.code("""
-C# = Db
-D# = Eb
-F# = Gb
-G# = Ab
-A# = Bb
-""")
-
     st.subheader("🎼 Acordes básicos")
-    st.code("""
-Maior: C E G
-Menor: C Eb G
-""")
+    st.code("Maior: C E G")
+    st.code("Menor: C Eb G")
 
     st.subheader("🎼 Sétimas")
-    st.code("""
-C7 = C E G Bb
-Cmaj7 = C E G B
-""")
+    st.code("C7 = C E G Bb")
+    st.code("Cmaj7 = C E G B")
 
-    st.subheader("🎯 Resumo")
     st.write("Escala → Intervalos → Acordes → Música")
 
 
@@ -144,7 +121,7 @@ elif pagina == "🎹 Prática":
 
 
 # =========================================
-# 🎯 QUIZ CORRIGIDO 100%
+# 🎯 QUIZ FIXO E CORRIGIDO
 # =========================================
 
 elif pagina == "🎯 Quiz":
@@ -172,6 +149,7 @@ elif pagina == "🎯 Quiz":
         intervalos = maior if tipo == "maior" else menor
         return " ".join([base[(i+x)%12] for x in intervalos])
 
+    # NÃO muda sozinho
     def gerar():
         pool = []
         for n in notas:
@@ -180,6 +158,7 @@ elif pagina == "🎯 Quiz":
         random.shuffle(pool)
         return pool
 
+    # SESSION STATE FIXO
     if "quiz" not in st.session_state:
         st.session_state.quiz = gerar()
         st.session_state.finalizado = False
@@ -196,37 +175,41 @@ elif pagina == "🎯 Quiz":
     perguntas = st.session_state.quiz[:6]
 
     # =========================================
-    # OPÇÕES FIXAS (4 SEM MUDAR POSIÇÃO)
+    # 4 OPÇÕES FIXAS SEM MUDAR POSIÇÃO
     # =========================================
     def gerar_opcoes(qid, correta):
 
         if qid in st.session_state.opcoes:
             return st.session_state.opcoes[qid]
 
-        opcoes = set()
-        opcoes.add(correta)
+        opcoes = [correta]
 
         partes = correta.split()
 
         if len(partes) == 3:
             c, e, g = partes
 
-            opcoes.add(f"{c} Eb {g}")
-            opcoes.add(f"{c} D# {g}")
-            opcoes.add(f"{c} E G")
+            opcoes += [
+                f"{c} Eb {g}",
+                f"{c} D# {g}",
+                f"{c} E G"
+            ]
 
         while len(opcoes) < 4:
             n = random.choice(notas)
-            opcoes.add(montar(n,"maior"))
+            opcoes.append(montar(n, "maior"))
 
-        lista = list(opcoes)
-        random.shuffle(lista)
+        opcoes = list(dict.fromkeys(opcoes))  # remove duplicadas
 
-        st.session_state.opcoes[qid] = lista
-        return lista
+        random.shuffle(opcoes)
+
+        opcoes = opcoes[:4]
+
+        st.session_state.opcoes[qid] = opcoes
+        return opcoes
 
     # =========================================
-    # BLOQUEIO DE RESPOSTA
+    # RESPOSTAS TRAVADAS
     # =========================================
     if not st.session_state.finalizado:
 
@@ -240,7 +223,7 @@ elif pagina == "🎯 Quiz":
             )
 
     # =========================================
-    # RESULTADO TRAVADO
+    # RESULTADO FINAL
     # =========================================
     else:
 
