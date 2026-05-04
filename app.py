@@ -2,248 +2,151 @@ import streamlit as st
 import random
 
 # =========================================
-# 🎹 LÓGICA DOS ACORDES
+# 🎹 ACORDES CORRETOS
 # =========================================
 
-notas_sharp = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
-notas_flat  = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"]
+mapa = {
+    "C": ("C", "E", "G"),
+    "C#": ("C#", "E#", "G#"),
+    "Db": ("Db", "F", "Ab"),
+    "D": ("D", "F#", "A"),
+    "D#": ("D#", "G", "A#"),
+    "Eb": ("Eb", "G", "Bb"),
+    "E": ("E", "G#", "B"),
+    "F": ("F", "A", "C"),
+    "F#": ("F#", "A#", "C#"),
+    "Gb": ("Gb", "Bb", "Db"),
+    "G": ("G", "B", "D"),
+    "G#": ("G#", "B#", "D#"),
+    "Ab": ("Ab", "C", "Eb"),
+    "A": ("A", "C#", "E"),
+    "A#": ("A#", "D", "F"),
+    "Bb": ("Bb", "D", "F"),
+    "B": ("B", "D#", "F#")
+}
 
-def usar_bemol(acorde):
-    return "b" in acorde
-
-def pegar_lista(acorde):
-    return notas_flat if usar_bemol(acorde) else notas_sharp
-
-def separar_acorde(acorde):
-    if len(acorde) > 1 and acorde[1] in ["#", "b"]:
-        return acorde[:2], acorde[2:].lower()
-    return acorde[0], acorde[1:].lower()
+notas = list(mapa.keys())
 
 # =========================================
-# 🔥 ACORDES
+# 🎯 GERAR QUIZ BASE
 # =========================================
-def gerar_acorde(acorde):
-    acorde = acorde.strip()
 
-    if "/" in acorde:
-        acorde_principal, baixo = acorde.split("/")
-        baixo = baixo.strip()
-    else:
-        acorde_principal = acorde
-        baixo = None
+def gerar_quiz():
+    quiz = []
+    for nota, acorde in mapa.items():
+        quiz.append((f"{nota} = ?", " ".join(acorde)))
+    random.shuffle(quiz)
+    return quiz
 
-    raiz, tipo = separar_acorde(acorde_principal)
 
-    lista = notas_flat if "b" in raiz else notas_sharp
+# =========================================
+# 🎯 OPÇÕES (4 ALTERNATIVAS CORRETAS)
+# =========================================
 
-    if raiz not in lista:
-        return None
+def gerar_opcoes(correta):
+    opcoes = set()
+    opcoes.add(correta)
 
-    i = lista.index(raiz)
+    partes = correta.split()
 
-    tipos = {
-        "": [0,4,7],
-        "m": [0,3,7],
-        "7": [0,4,7,10],
-        "m7": [0,3,7,10],
-        "7m": [0,3,7,10],
-        "7M": [0,4,7,11],
-        "M7": [0,4,7,11],
-        "9": [0,4,7,10,14],
-        "m9": [0,3,7,10,14],
-        "add9": [0,4,7,14],
-        "sus2": [0,2,7],
-        "sus4": [0,5,7],
-        "dim": [0,3,6],
-        "aug": [0,4,8],
-    }
+    if len(partes) == 3:
+        a, b, c = partes
+        opcoes.add(f"{a} {b} {a}")
+        opcoes.add(f"{a} {c} {b}")
+        opcoes.add(f"{a} {b} {c[::-1]}")
 
-    if tipo not in tipos:
-        return None
+    while len(opcoes) < 4:
+        opcoes.add(" ".join(mapa[random.choice(notas)]))
 
-    notas = [lista[(i + x) % 12] for x in tipos[tipo]]
-
-    return {"notas": notas, "baixo": baixo}
+    lista = list(opcoes)
+    random.shuffle(lista)
+    return lista[:4]
 
 
 # =========================================
 # 🌐 CONFIG
 # =========================================
 
-st.set_page_config(page_title="🎹 Acordes App", page_icon="🎹")
+st.set_page_config(page_title="🎹 Quiz de Acordes", page_icon="🎹")
 
-st.title("🎹 Sistema Completo de Acordes + Teoria")
-
-pagina = st.sidebar.selectbox(
-    "📌 Menu",
-    ["📚 Teoria", "🎹 Prática", "🎯 Quiz"]
-)
-
-# =========================================
-# 📚 TEORIA
-# =========================================
-
-if pagina == "📚 Teoria":
-
-    st.header("🎓 Teoria Musical Completa")
-
-    st.subheader("🎼 Notas musicais")
-    st.code("C D E F G A B")
-
-    st.subheader("🎼 Acordes básicos")
-    st.code("Maior: C E G")
-    st.code("Menor: C Eb G")
-
-    st.subheader("🎼 Sétimas")
-    st.code("C7 = C E G Bb")
-    st.code("Cmaj7 = C E G B")
-
-    st.write("Escala → Intervalos → Acordes → Música")
+st.title("🎹 Sistema Completo de Acordes + Quiz")
 
 
 # =========================================
-# 🎹 PRÁTICA
+# 🎯 MODO
 # =========================================
 
-elif pagina == "🎹 Prática":
+modo = st.selectbox("🎯 Modo do Quiz", ["Estudo", "Prova"])
 
-    st.header("🎹 Pratique Acordes")
 
-    acorde = st.text_input("Digite um acorde")
+# =========================================
+# 🎯 INICIALIZAÇÃO
+# =========================================
 
-    if st.button("Analisar"):
-        resultado = gerar_acorde(acorde)
+if "quiz" not in st.session_state:
+    st.session_state.quiz = gerar_quiz()
+    st.session_state.respostas = {}
+    st.session_state.finalizado = False
 
-        if resultado:
-            st.success(f"🎵 Notas: {resultado['notas']}")
+
+# =========================================
+# 🔄 NOVO QUIZ
+# =========================================
+
+if st.button("🔄 Novo quiz"):
+    st.session_state.quiz = gerar_quiz()
+    st.session_state.respostas = {}
+    st.session_state.finalizado = False
+    st.rerun()
+
+
+perguntas = st.session_state.quiz[:8]
+
+
+# =========================================
+# 🎯 EXIBIÇÃO DAS QUESTÕES
+# =========================================
+
+if not st.session_state.finalizado:
+
+    for i, (q, correta) in enumerate(perguntas):
+
+        st.session_state.respostas[i] = st.radio(
+            q,
+            options=gerar_opcoes(correta),
+            key=f"q_{i}",
+            index=None
+        )
+
+
+# =========================================
+# 📊 RESULTADO FINAL
+# =========================================
+
+else:
+
+    acertos = 0
+    st.divider()
+
+    for i, (q, correta) in enumerate(perguntas):
+
+        r = st.session_state.respostas.get(i)
+
+        st.write(f"**{q}**")
+
+        if r == correta:
+            st.success("✔ Correta")
+            acertos += 1
         else:
-            st.error("❌ Acorde inválido")
+            st.error(f"❌ Errada → correta: {correta}")
+
+    st.success(f"🎯 Você acertou {acertos}/8")
 
 
 # =========================================
-# 🎯 QUIZ FIXO E CORRIGIDO
+# 🎯 BOTÃO RESULTADO
 # =========================================
 
-elif pagina == "🎯 Quiz":
-
-    st.header("🎯 Quiz de Acordes")
-
-    notas = [
-        "C","C#","Db","D","D#","Eb","E","F","F#","Gb",
-        "G","G#","Ab","A","A#","Bb","B"
-    ]
-
-    base = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"]
-
-    mapa = {
-        "C":0,"C#":1,"Db":1,"D":2,"D#":3,"Eb":3,
-        "E":4,"F":5,"F#":6,"Gb":6,"G":7,"G#":8,"Ab":8,
-        "A":9,"A#":10,"Bb":10,"B":11
-    }
-
-    maior = [0,4,7]
-    menor = [0,3,7]
-
-    def montar(nota, tipo):
-        i = mapa[nota]
-        intervalos = maior if tipo == "maior" else menor
-        return " ".join([base[(i+x)%12] for x in intervalos])
-
-    # NÃO muda sozinho
-    def gerar():
-        pool = []
-        for n in notas:
-            pool.append((f"{n} = ?", montar(n,"maior")))
-            pool.append((f"{n}m = ?", montar(n,"menor")))
-        random.shuffle(pool)
-        return pool
-
-    # SESSION STATE FIXO
-    if "quiz" not in st.session_state:
-        st.session_state.quiz = gerar()
-        st.session_state.finalizado = False
-        st.session_state.respostas = {}
-        st.session_state.opcoes = {}
-
-    if st.button("🔄 Novo quiz"):
-        st.session_state.quiz = gerar()
-        st.session_state.finalizado = False
-        st.session_state.respostas = {}
-        st.session_state.opcoes = {}
-        st.rerun()
-
-    perguntas = st.session_state.quiz[:6]
-
-    # =========================================
-    # 4 OPÇÕES FIXAS SEM MUDAR POSIÇÃO
-    # =========================================
-    def gerar_opcoes(qid, correta):
-
-        if qid in st.session_state.opcoes:
-            return st.session_state.opcoes[qid]
-
-        opcoes = [correta]
-
-        partes = correta.split()
-
-        if len(partes) == 3:
-            c, e, g = partes
-
-            opcoes += [
-                f"{c} Eb {g}",
-                f"{c} D# {g}",
-                f"{c} E G"
-            ]
-
-        while len(opcoes) < 4:
-            n = random.choice(notas)
-            opcoes.append(montar(n, "maior"))
-
-        opcoes = list(dict.fromkeys(opcoes))  # remove duplicadas
-
-        random.shuffle(opcoes)
-
-        opcoes = opcoes[:4]
-
-        st.session_state.opcoes[qid] = opcoes
-        return opcoes
-
-    # =========================================
-    # RESPOSTAS TRAVADAS
-    # =========================================
-    if not st.session_state.finalizado:
-
-        for i, (q, correta) in enumerate(perguntas):
-
-            st.session_state.respostas[i] = st.radio(
-                q,
-                options=gerar_opcoes(i, correta),
-                key=f"q_{i}",
-                index=None
-            )
-
-    # =========================================
-    # RESULTADO FINAL
-    # =========================================
-    else:
-
-        acertos = 0
-        st.divider()
-
-        for i, (q, correta) in enumerate(perguntas):
-
-            r = st.session_state.respostas.get(i)
-
-            st.write(f"**{q}**")
-
-            if r == correta:
-                st.success("✔ Correta")
-                acertos += 1
-            else:
-                st.error(f"❌ Errada → correta: {correta}")
-
-        st.success(f"🎯 Você acertou {acertos}/6")
-
-    if st.button("Ver resultado"):
-        st.session_state.finalizado = True
-        st.rerun()
+if st.button("Ver resultado"):
+    st.session_state.finalizado = True
+    st.rerun()
