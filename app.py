@@ -19,6 +19,9 @@ def separar_acorde(acorde):
         return acorde[:2], acorde[2:].lower()
     return acorde[0], acorde[1:].lower()
 
+# =========================================
+# 🔥 CORREÇÃO PRINCIPAL AQUI (Ebm certo)
+# =========================================
 def gerar_acorde(acorde):
     acorde = acorde.strip()
 
@@ -30,7 +33,12 @@ def gerar_acorde(acorde):
         baixo = None
 
     raiz, tipo = separar_acorde(acorde_principal)
-    lista = pegar_lista(acorde_principal)
+
+    # ✔ FORÇA ESCALA CORRETA (bemol ou sustenido)
+    if "b" in raiz:
+        lista = notas_flat
+    else:
+        lista = notas_sharp
 
     if raiz not in lista:
         return None
@@ -57,7 +65,7 @@ def gerar_acorde(acorde):
     if tipo not in tipos:
         return None
 
-    notas = [lista[(i+x)%12] for x in tipos[tipo]]
+    notas = [lista[(i + x) % 12] for x in tipos[tipo]]
 
     return {"notas": notas, "baixo": baixo}
 
@@ -88,43 +96,19 @@ if pagina == "📚 Teoria":
     st.write("""
 Música é a organização dos sons no tempo.
 
-Ela envolve 4 elementos principais:
-
-✔ Melodia (sequência de notas)  
-✔ Harmonia (notas ao mesmo tempo)  
-✔ Ritmo (organização do tempo)  
-✔ Timbre (identidade do som)  
+✔ Melodia  
+✔ Harmonia  
+✔ Ritmo  
+✔ Timbre  
 """)
 
     st.subheader("🎼 Notas musicais")
-    st.write("""
-As notas são os blocos básicos da música:
-
-C D E F G A B
-
-Elas se repetem em diferentes alturas (oitavas).
-""")
-
     st.code("C D E F G A B")
 
     st.subheader("🎹 Tom e semitom")
-    st.write("""
-- Semitom = menor distância entre notas
-- Tom = 2 semitons
-
-Exemplo:
-C → C# = 1 semitom
-C → D = 1 tom
-""")
+    st.write("Semitom = 1 casa | Tom = 2 casas")
 
     st.subheader("🎼 Sustenidos e bemóis")
-    st.write("""
-# sobe meio tom
-b desce meio tom
-
-Exemplos reais:
-""")
-
     st.code("""
 C# = Db
 D# = Eb
@@ -134,68 +118,26 @@ A# = Bb
 """)
 
     st.subheader("🎼 Enarmonia")
-    st.write("""
-Enarmonia significa mesma nota com nomes diferentes.
-
-Exemplo:
-C# = Db (mesmo som)
-
-A diferença é apenas teórica.
-""")
+    st.write("Mesma nota, nome diferente (C# = Db)")
 
     st.subheader("🎼 Escala maior")
-    st.write("""
-Fórmula:
-T - T - S - T - T - T - S
-""")
-
+    st.code("T - T - S - T - T - T - S")
     st.code("C D E F G A B")
 
-    st.write("""
-É a base da música ocidental.
-""")
-
     st.subheader("🎼 Escala menor")
-    st.write("""
-Fórmula:
-T - S - T - T - S - T - T
-""")
-
+    st.code("T - S - T - T - S - T - T")
     st.code("A B C D E F G")
 
-    st.subheader("🎹 Formação de acordes")
-    st.write("""
-Acordes são combinações de notas da escala.
+    st.subheader("🎹 Acordes")
+    st.code("Maior: 1 3 5 → C E G")
+    st.code("Menor: 1 b3 5 → C Eb G")
 
-Maior:
-1 + 3 + 5 → C E G
-
-Menor:
-1 + b3 + 5 → C Eb G
-""")
-
-    st.subheader("🎼 Intervalos")
-    st.write("""
-Intervalos definem os acordes:
-
-- 3ª = maior ou menor
-- 5ª = estabilidade
-- 7ª = tensão
-""")
-
-    st.subheader("🎼 Acordes com sétima")
-    st.code("""
-C7 = C E G Bb
-Cmaj7 = C E G B
-""")
-
-    st.subheader("🎼 Campo harmônico")
-    st.code("C Dm Em F G Am Bdim")
+    st.subheader("🎼 Sétima")
+    st.code("C7 = C E G Bb")
+    st.code("Cmaj7 = C E G B")
 
     st.subheader("🎯 Conclusão")
-    st.write("""
-ESCALA → INTERVALOS → ACORDES → HARMONIA → MÚSICA
-""")
+    st.write("Escala → Intervalos → Acordes → Música")
 
 
 # =========================================
@@ -218,7 +160,7 @@ elif pagina == "🎹 Prática":
 
 
 # =========================================
-# 🎯 QUIZ (CORRIGIDO + DÚVIDA REAL)
+# 🎯 QUIZ
 # =========================================
 
 elif pagina == "🎯 Quiz":
@@ -269,24 +211,17 @@ elif pagina == "🎯 Quiz":
 
     perguntas = st.session_state.quiz[:6]
 
-    # =========================================
-    # 🎯 OPÇÕES INTELIGENTES (COM DÚVIDA REAL)
-    # =========================================
-
     def gerar_opcoes(qid, correta):
 
         if qid in st.session_state.opcoes:
             return st.session_state.opcoes[qid]
 
-        base = set()
-        base.add(correta)
+        base = set([correta])
 
         partes = correta.split()
 
         if len(partes) == 3:
             c, e, g = partes
-
-            # erros MUITO parecidos (terça/quinta alterada)
             base.add(f"{c} D {g}")
             base.add(f"{c} Eb {g}")
             base.add(f"{c} E Gb")
@@ -300,8 +235,7 @@ elif pagina == "🎯 Quiz":
         ]
 
         while len(base) < 5:
-            op = random.choice(extras)
-            base.add(op)
+            base.add(random.choice(extras))
 
         lista = list(base)
         random.shuffle(lista)
@@ -309,24 +243,15 @@ elif pagina == "🎯 Quiz":
         st.session_state.opcoes[qid] = lista[:5]
         return lista[:5]
 
-    # =========================================
-    # RESPOSTAS (TRAVADAS)
-    # =========================================
-
     if not st.session_state.finalizado:
 
         for i, (q, correta) in enumerate(perguntas):
-
             st.session_state.respostas[i] = st.radio(
                 q,
                 options=gerar_opcoes(i, correta),
                 key=f"q_{i}",
                 index=None
             )
-
-    # =========================================
-    # RESULTADO FINAL
-    # =========================================
 
     else:
 
