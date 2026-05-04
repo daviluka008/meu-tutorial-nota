@@ -74,7 +74,7 @@ pagina = st.sidebar.selectbox(
 )
 
 # =========================================
-# 📚 TEORIA COMPLETA (EXPLICADA DE VERDADE)
+# 📚 TEORIA COMPLETA (SEM RESUMO)
 # =========================================
 
 if pagina == "📚 Teoria":
@@ -82,38 +82,27 @@ if pagina == "📚 Teoria":
     st.header("🎓 Teoria Musical Completa")
 
     st.subheader("🎵 O que é música?")
-    st.write("""
-Música é a organização de sons no tempo.
+    st.write("Música é a organização de sons no tempo.")
 
-Ela possui 4 elementos principais:
-✔ altura (grave ou agudo)
-✔ duração (tempo)
-✔ intensidade (forte ou fraco)
-✔ timbre (identidade do som)
+    st.write("""
+Ela possui:
+- Altura (grave/agudo)
+- Duração (tempo)
+- Intensidade (forte/fraco)
+- Timbre (característica do som)
 """)
 
     st.subheader("🎼 Notas musicais")
-    st.write("O sistema musical ocidental usa 7 notas:")
     st.code("C D E F G A B")
 
-    st.write("Essas notas se repetem em diferentes alturas no teclado.")
-
     st.subheader("🎹 Semitom e Tom")
-    st.write("Semitom = menor distância entre duas teclas")
+    st.write("Semitom = menor distância entre notas")
     st.write("Tom = 2 semitons")
 
-    st.write("Exemplo:")
-    st.code("C → C# = 1 semitom")
-    st.code("C → D = 1 tom")
-
     st.subheader("🎼 Sustenidos e bemóis")
+    st.write("# sobe meio tom")
+    st.write("b desce meio tom")
 
-    st.write("""
-✔ # sobe meio tom  
-✔ b desce meio tom
-""")
-
-    st.write("Exemplos reais:")
     st.code("""
 C# = Db
 D# = Eb
@@ -122,55 +111,28 @@ G# = Ab
 A# = Bb
 """)
 
-    st.subheader("🎼 Escala maior (base de tudo)")
-    st.write("Fórmula:")
+    st.subheader("🎼 Escala maior")
     st.code("T - T - S - T - T - T - S")
-
-    st.write("Exemplo em C:")
     st.code("C D E F G A B")
 
-    st.subheader("🎼 Escala menor natural")
+    st.subheader("🎼 Escala menor")
     st.code("T - S - T - T - S - T - T")
-
-    st.write("Exemplo:")
     st.code("A B C D E F G")
 
-    st.subheader("🎼 Intervalos (fundação dos acordes)")
+    st.subheader("🎼 Acordes básicos")
 
-    st.write("""
-✔ 1 = nota base (tônica)  
-✔ 3 = define maior ou menor  
-✔ 5 = estabilidade  
-✔ 7 = tensão harmônica
-""")
+    st.code("Maior: 1 + 3 + 5 → C E G")
+    st.code("Menor: 1 + b3 + 5 → C Eb G")
 
-    st.subheader("🎼 Formação de acordes")
+    st.subheader("🎼 Sétimas")
+    st.code("C7 = C E G Bb")
+    st.code("Cmaj7 = C E G B")
 
-    st.write("🎹 Acorde maior:")
-    st.code("1 + 3 + 5 → C E G")
-
-    st.write("🎹 Acorde menor:")
-    st.code("1 + b3 + 5 → C Eb G")
-
-    st.write("🎹 Acorde com sétima:")
-    st.code("C7 → C E G Bb")
-
-    st.subheader("🎼 Campo harmônico maior")
-
+    st.subheader("🎼 Campo harmônico")
     st.code("C Dm Em F G Am Bdim")
 
-    st.subheader("🎼 Funções harmônicas")
-
-    st.write("""
-✔ Tônica = descanso  
-✔ Subdominante = movimento  
-✔ Dominante = tensão
-""")
-
-    st.code("C → F → G → C")
-
     st.subheader("🎯 Conclusão")
-    st.write("Tudo na música vem de escala → intervalos → acordes → harmonia")
+    st.write("Tudo vem de escala → intervalos → acordes → harmonia")
 
 # =========================================
 # 🎹 PRÁTICA
@@ -191,28 +153,59 @@ elif pagina == "🎹 Prática":
             st.error("❌ Acorde inválido")
 
 # =========================================
-# 🎯 QUIZ COMPLETO DINÂMICO
+# 🎯 QUIZ DINÂMICO (CORRIGIDO TOTAL)
 # =========================================
 
 elif pagina == "🎯 Quiz":
 
     st.header("🎯 Quiz de Acordes")
 
-    banco = [
-        ("C = ?", ["C D E", "C E G", "C F G"], "C E G"),
-        ("Cm = ?", ["C Eb G", "C E G", "C F G"], "C Eb G"),
-        ("D = ?", ["D F# A", "D F A", "D E A"], "D F# A"),
-        ("D# = ?", ["D# F# A#", "D D# A#", "D# G A#"], "D# F# A#"),
-        ("Eb = ?", ["Eb G Bb", "Eb F Ab", "Eb G C"], "Eb G Bb"),
-        ("F# = ?", ["F# A# C#", "F# A C#", "F# B D"], "F# A# C#"),
-        ("Gb = ?", ["Gb Bb Db", "Gb A C#", "Gb B D"], "Gb Bb Db"),
-        ("G# = ?", ["G# C D#", "G# B D#", "G# C E"], "G# C D#"),
-        ("Ab = ?", ["Ab C Eb", "Ab D F", "Ab B Eb"], "Ab C Eb"),
-        ("Bb = ?", ["Bb D F", "Bb C F", "Bb E G"], "Bb D F"),
+    notas = [
+        "C","C#","Db","D","D#","Eb","E","F","F#","Gb",
+        "G","G#","Ab","A","A#","Bb","B"
     ]
 
-    if "quiz" not in st.session_state:
-        st.session_state.quiz = random.sample(banco, 5)
+    def gerar_perguntas():
+
+        perguntas = []
+        usadas = set()
+
+        while len(perguntas) < 6:
+
+            nota = random.choice(notas)
+
+            if nota in usadas:
+                continue
+
+            usadas.add(nota)
+
+            tipo = random.choice(["maior", "menor"])
+
+            if tipo == "maior":
+                resposta = gerar_acorde(nota)["notas"]
+                resposta = " ".join(resposta)
+                pergunta = f"{nota} maior = ?"
+            else:
+                base = {
+                    "C":"C Eb G","C#":"C# E G#","Db":"Db Fb Ab",
+                    "D":"D F A","D#":"D# F# A#","Eb":"Eb Gb Bb",
+                    "E":"E G B","F":"F Ab C","F#":"F# A C#",
+                    "Gb":"Gb A Cb","G":"G Bb D","G#":"G# B D#",
+                    "Ab":"Ab Cb Eb","A":"A C E","A#":"A# C# E#",
+                    "Bb":"Bb Db F","B":"B D F#"
+                }
+
+                resposta = base.get(nota, "")
+                pergunta = f"{nota} menor = ?"
+
+            if resposta:
+                perguntas.append((pergunta, resposta))
+
+        return perguntas
+
+    # estado do quiz
+    if "quiz" not in st.session_state or st.button("🔄 Novo quiz"):
+        st.session_state.quiz = gerar_perguntas()
         st.session_state.finalizado = False
         st.session_state.respostas = {}
 
@@ -221,11 +214,11 @@ elif pagina == "🎯 Quiz":
     # NÃO MARCA NADA AO ENTRAR
     if not st.session_state.finalizado:
 
-        for i, (q, op, c) in enumerate(perguntas):
+        for i, (q, correta) in enumerate(perguntas):
 
             escolha = st.radio(
                 q,
-                op,
+                [correta, "C D E", "C E G", "D F A", "E G B"],
                 key=f"q{i}_{id(perguntas)}",
                 index=None
             )
@@ -238,28 +231,22 @@ elif pagina == "🎯 Quiz":
         acertos = 0
         st.divider()
 
-        for i, (q, op, c) in enumerate(perguntas):
+        for i, (q, correta) in enumerate(perguntas):
 
-            r = st.session_state.respostas[i]
+            r = st.session_state.respostas.get(i)
 
             st.write(f"**{q}**")
             st.write(f"Sua resposta: {r}")
 
-            if r == c:
+            if r == correta:
                 st.success("✔ Correta")
                 acertos += 1
             else:
                 st.error("❌ Errada")
-                st.info(f"✔ Correta: {c}")
+                st.info(f"✔ Correta: {correta}")
 
-        st.success(f"🎯 Acertos: {acertos}/5")
+        st.success(f"🎯 Acertos: {acertos}/6")
 
     if st.button("Ver resultado"):
         st.session_state.finalizado = True
-        st.rerun()
-
-    if st.button("🔄 Novo quiz"):
-        st.session_state.quiz = random.sample(banco, 5)
-        st.session_state.finalizado = False
-        st.session_state.respostas = {}
         st.rerun()
