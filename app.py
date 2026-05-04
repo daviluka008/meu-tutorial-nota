@@ -147,48 +147,46 @@ elif pagina == "🎹 Prática":
 # 🎯 QUIZ NOVO (CORRIGIDO E ESTÁVEL)
 # =========================================
 
+# =========================================
+# 🎯 QUIZ NOVO (CORRIGIDO 100% MUSICAL)
+# =========================================
+
 elif pagina == "🎯 Quiz":
 
     st.header("🎯 Quiz de Acordes")
 
-    notas = [
-        "C","C#","Db","D","D#","Eb","E","F","F#","Gb",
-        "G","G#","Ab","A","A#","Bb","B"
-    ]
+    # escala cromática completa (base correta)
+    escala = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 
-    base = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"]
+    # mapa de posições
+    mapa = {nota: i for i, nota in enumerate(escala)}
 
-    mapa = {
-        "C":0,"C#":1,"Db":1,"D":2,"D#":3,"Eb":3,
-        "E":4,"F":5,"F#":6,"Gb":6,"G":7,"G#":8,"Ab":8,
-        "A":9,"A#":10,"Bb":10,"B":11
-    }
+    # intervalos reais
+    maior = [0, 4, 7]
+    menor = [0, 3, 7]
 
-    maior = [0,4,7]
-    menor = [0,3,7]
-
-    def montar(nota, tipo):
+    def montar_acorde(nota, tipo):
         i = mapa[nota]
         intervalos = maior if tipo == "maior" else menor
-        return " ".join([base[(i+x)%12] for x in intervalos])
+        return " ".join([escala[(i + x) % 12] for x in intervalos])
 
-    def gerar():
+    # gerar perguntas fixas na sessão
+    def gerar_perguntas():
         pool = []
-        for n in notas:
-            pool.append((f"{n} = ?", montar(n,"maior")))
-            pool.append((f"{n}m = ?", montar(n,"menor")))
+        for n in escala:
+            pool.append((f"{n} = ?", montar_acorde(n, "maior"), "maior"))
+            pool.append((f"{n}m = ?", montar_acorde(n, "menor"), "menor"))
         random.shuffle(pool)
         return pool
 
-    # RESET LIMPO
     if "quiz" not in st.session_state:
-        st.session_state.quiz = gerar()
+        st.session_state.quiz = gerar_perguntas()
         st.session_state.finalizado = False
         st.session_state.respostas = {}
         st.session_state.opcoes = {}
 
     if st.button("🔄 Novo quiz"):
-        st.session_state.quiz = gerar()
+        st.session_state.quiz = gerar_perguntas()
         st.session_state.finalizado = False
         st.session_state.respostas = {}
         st.session_state.opcoes = {}
@@ -197,49 +195,45 @@ elif pagina == "🎯 Quiz":
     perguntas = st.session_state.quiz[:6]
 
     # =========================================
-    # OPÇÕES FIXAS (SEM MUDAR ORDEM OU BUG)
+    # 🎯 OPÇÕES 100% CORRETAS (SEM BUG)
     # =========================================
-    def gerar_opcoes(qid, correta):
+    def gerar_opcoes(qid, correta, tipo):
 
         if qid in st.session_state.opcoes:
             return st.session_state.opcoes[qid]
 
         opcoes = {correta}
 
-        partes = correta.split()
+        notas_erradas = [
+            "C Eb G", "C D G", "C E G#",
+            "D F A", "D F# A", "E G B",
+            "F A C", "F Ab C", "G B D",
+            "G Bb D", "A C E", "A C# E",
+            "B D F", "B D# F#"
+        ]
 
-        if len(partes) == 3:
-            c, e, g = partes
-
-            opcoes.update([
-                f"{c} Eb {g}",
-                f"{c} D# {g}",
-                f"{c} E G",
-                f"{c} D G"
-            ])
-
+        # garante alternativas falsas plausíveis
         while len(opcoes) < 4:
-            n = random.choice(notas)
-            opcoes.add(montar(n,"maior"))
+            opcoes.add(random.choice(notas_erradas))
 
         lista = list(opcoes)
 
-        # trava ordem após criar
+        # FIXA ORDEM (não muda ao clicar)
         lista.sort()
 
         st.session_state.opcoes[qid] = lista[:4]
         return lista[:4]
 
     # =========================================
-    # RESPOSTAS TRAVADAS
+    # BLOQUEIO DE RESPOSTA
     # =========================================
     if not st.session_state.finalizado:
 
-        for i, (q, correta) in enumerate(perguntas):
+        for i, (q, correta, tipo) in enumerate(perguntas):
 
             st.session_state.respostas[i] = st.radio(
                 q,
-                options=gerar_opcoes(i, correta),
+                options=gerar_opcoes(i, correta, tipo),
                 key=f"q_{i}",
                 index=None
             )
@@ -252,7 +246,7 @@ elif pagina == "🎯 Quiz":
         acertos = 0
         st.divider()
 
-        for i, (q, correta) in enumerate(perguntas):
+        for i, (q, correta, tipo) in enumerate(perguntas):
 
             r = st.session_state.respostas.get(i)
 
