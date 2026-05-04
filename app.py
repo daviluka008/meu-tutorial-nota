@@ -20,7 +20,7 @@ def separar_acorde(acorde):
     return acorde[0], acorde[1:].lower()
 
 # =========================================
-# 🔥 CORREÇÃO PRINCIPAL AQUI (Ebm certo)
+# 🔥 ACORDES CORRIGIDO (EbM, Ebm etc)
 # =========================================
 def gerar_acorde(acorde):
     acorde = acorde.strip()
@@ -34,11 +34,7 @@ def gerar_acorde(acorde):
 
     raiz, tipo = separar_acorde(acorde_principal)
 
-    # ✔ FORÇA ESCALA CORRETA (bemol ou sustenido)
-    if "b" in raiz:
-        lista = notas_flat
-    else:
-        lista = notas_sharp
+    lista = notas_flat if "b" in raiz else notas_sharp
 
     if raiz not in lista:
         return None
@@ -85,7 +81,7 @@ pagina = st.sidebar.selectbox(
 
 
 # =========================================
-# 📚 TEORIA COMPLETA (100% DETALHADA)
+# 📚 TEORIA
 # =========================================
 
 if pagina == "📚 Teoria":
@@ -94,19 +90,14 @@ if pagina == "📚 Teoria":
 
     st.subheader("🎵 O que é música?")
     st.write("""
-Música é a organização dos sons no tempo.
-
-✔ Melodia  
-✔ Harmonia  
-✔ Ritmo  
-✔ Timbre  
+Música é organização de sons no tempo: melodia, harmonia, ritmo e timbre.
 """)
 
     st.subheader("🎼 Notas musicais")
     st.code("C D E F G A B")
 
     st.subheader("🎹 Tom e semitom")
-    st.write("Semitom = 1 casa | Tom = 2 casas")
+    st.write("Semitom = 1 passo | Tom = 2 passos")
 
     st.subheader("🎼 Sustenidos e bemóis")
     st.code("""
@@ -117,26 +108,19 @@ G# = Ab
 A# = Bb
 """)
 
-    st.subheader("🎼 Enarmonia")
-    st.write("Mesma nota, nome diferente (C# = Db)")
+    st.subheader("🎼 Acordes básicos")
+    st.code("""
+Maior: C E G
+Menor: C Eb G
+""")
 
-    st.subheader("🎼 Escala maior")
-    st.code("T - T - S - T - T - T - S")
-    st.code("C D E F G A B")
+    st.subheader("🎼 Sétimas")
+    st.code("""
+C7 = C E G Bb
+Cmaj7 = C E G B
+""")
 
-    st.subheader("🎼 Escala menor")
-    st.code("T - S - T - T - S - T - T")
-    st.code("A B C D E F G")
-
-    st.subheader("🎹 Acordes")
-    st.code("Maior: 1 3 5 → C E G")
-    st.code("Menor: 1 b3 5 → C Eb G")
-
-    st.subheader("🎼 Sétima")
-    st.code("C7 = C E G Bb")
-    st.code("Cmaj7 = C E G B")
-
-    st.subheader("🎯 Conclusão")
+    st.subheader("🎯 Resumo")
     st.write("Escala → Intervalos → Acordes → Música")
 
 
@@ -160,7 +144,7 @@ elif pagina == "🎹 Prática":
 
 
 # =========================================
-# 🎯 QUIZ
+# 🎯 QUIZ CORRIGIDO 100%
 # =========================================
 
 elif pagina == "🎯 Quiz":
@@ -188,9 +172,6 @@ elif pagina == "🎯 Quiz":
         intervalos = maior if tipo == "maior" else menor
         return " ".join([base[(i+x)%12] for x in intervalos])
 
-    # =========================================
-    # 🎯 GERAR BANCO COMPLETO (SEM ERRO HARMÔNICO)
-    # =========================================
     def gerar():
         pool = []
         for n in notas:
@@ -199,73 +180,67 @@ elif pagina == "🎯 Quiz":
         random.shuffle(pool)
         return pool
 
-    # =========================================
-    # SESSION STATE LIMPO (NÃO PREMARCA NADA)
-    # =========================================
     if "quiz" not in st.session_state:
         st.session_state.quiz = gerar()
         st.session_state.finalizado = False
         st.session_state.respostas = {}
+        st.session_state.opcoes = {}
 
     if st.button("🔄 Novo quiz"):
         st.session_state.quiz = gerar()
         st.session_state.finalizado = False
         st.session_state.respostas = {}
+        st.session_state.opcoes = {}
         st.rerun()
 
     perguntas = st.session_state.quiz[:6]
 
     # =========================================
-    # 🎯 OPÇÕES FIXAS (4 ALTERNATIVAS SEM REPETIR)
+    # OPÇÕES FIXAS (4 SEM MUDAR POSIÇÃO)
     # =========================================
-    def gerar_opcoes(correta, tipo):
+    def gerar_opcoes(qid, correta):
+
+        if qid in st.session_state.opcoes:
+            return st.session_state.opcoes[qid]
 
         opcoes = set()
         opcoes.add(correta)
 
         partes = correta.split()
 
-        # TRÍADES
         if len(partes) == 3:
             c, e, g = partes
 
-            opcoes.update([
-                f"{c} Eb {g}",
-                f"{c} D# {g}",
-                f"{c} E G",
-                f"{c} D G"
-            ])
+            opcoes.add(f"{c} Eb {g}")
+            opcoes.add(f"{c} D# {g}")
+            opcoes.add(f"{c} E G")
 
-        # garante sempre 4 opções únicas
         while len(opcoes) < 4:
             n = random.choice(notas)
-            if tipo == "maior":
-                opcoes.add(montar(n,"maior"))
-            else:
-                opcoes.add(montar(n,"menor"))
+            opcoes.add(montar(n,"maior"))
 
         lista = list(opcoes)
         random.shuffle(lista)
-        return lista[:4]
+
+        st.session_state.opcoes[qid] = lista
+        return lista
 
     # =========================================
-    # 🎯 BLOQUEIO DE RESPOSTA (CORRETO)
+    # BLOQUEIO DE RESPOSTA
     # =========================================
     if not st.session_state.finalizado:
 
         for i, (q, correta) in enumerate(perguntas):
 
-            tipo = "maior" if "=" in q else "menor"
-
             st.session_state.respostas[i] = st.radio(
                 q,
-                options=gerar_opcoes(correta, tipo),
+                options=gerar_opcoes(i, correta),
                 key=f"q_{i}",
                 index=None
             )
 
     # =========================================
-    # 📊 RESULTADO FINAL (TRAVADO)
+    # RESULTADO TRAVADO
     # =========================================
     else:
 
