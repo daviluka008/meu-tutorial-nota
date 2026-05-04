@@ -78,66 +78,32 @@ pagina = st.sidebar.selectbox(
 )
 
 # =========================================
-# 📚 TEORIA COMPLETA (100% INTEGRADA)
+# 📚 TEORIA COMPLETA + VÍDEOS
 # =========================================
 
 if pagina == "📚 Teoria":
 
-    st.header("🎓 Teoria Completa dos Acordes")
+    st.header("🎓 Teoria Musical Completa")
 
-    st.subheader("🎵 O que é um acorde?")
-    st.write("Um acorde é a combinação de 3 ou mais notas tocadas ao mesmo tempo.")
-    st.write("Ele nasce a partir de uma escala musical.")
+    st.video("https://www.youtube.com/watch?v=VIDEO_INTRO_MUSICA")
 
-    st.write("Exemplo de escala maior:")
+    st.subheader("🎵 O que é música")
+    st.write("Música é organização de sons no tempo: altura, duração, intensidade e timbre.")
+
+    st.video("https://www.youtube.com/watch?v=VIDEO_NOTAS")
+
+    st.subheader("🎼 Notas musicais")
     st.code("C D E F G A B")
 
-    st.divider()
+    st.subheader("🎹 Tons e semitons")
+    st.write("Semitom = menor distância")
+    st.write("Tom = 2 semitons")
 
-    st.subheader("🎼 Como montar um acorde maior")
+    st.video("https://www.youtube.com/watch?v=VIDEO_TOM_SEMITOM")
 
-    st.write("Fórmula:")
-    st.code("1 + 3 + 5")
-
-    st.write("Exemplo em C:")
-    st.write("Escala:")
-    st.code("C D E F G A B")
-
-    st.write("Aplicação:")
-    st.code("C + E + G")
-
-    st.success("Resultado: C E G")
-
-    st.divider()
-
-    st.subheader("🎼 Como montar um acorde menor")
-
-    st.write("Fórmula:")
-    st.code("1 + b3 + 5")
-
-    st.write("Exemplo em Cm:")
-
-    st.code("C + Eb + G")
-
-    st.success("Resultado: C Eb G")
-
-    st.divider()
-
-    st.subheader("🎹 Sustenidos (#) e bemóis (b)")
-
-    st.write("Alteram a nota em meio tom:")
-
-    st.write("🔼 # sobe meio tom")
-    st.write("🔽 b desce meio tom")
-
-    st.code("C → C#")
-    st.code("E → Eb")
-
-    st.divider()
-
-    st.subheader("🎼 Enarmonia")
-
-    st.write("Mesma nota, nomes diferentes:")
+    st.subheader("🎼 Sustenidos e bemóis")
+    st.write("# sobe 1 semitom")
+    st.write("b desce 1 semitom")
 
     st.code("C# = Db")
     st.code("D# = Eb")
@@ -145,51 +111,50 @@ if pagina == "📚 Teoria":
     st.code("G# = Ab")
     st.code("A# = Bb")
 
-    st.divider()
-
-    st.subheader("🎼 Acordes com sétima")
-
-    st.write("Fórmulas:")
-
-    st.code("C7 = 1 + 3 + 5 + b7")
-    st.code("C7M = 1 + 3 + 5 + 7")
-
-    st.write("Exemplos:")
-
-    st.code("C7 = C E G Bb")
-    st.code("C7M = C E G B")
-
-    st.divider()
-
-    st.subheader("🎼 Como pensar qualquer acorde")
-
-    st.write("Passo 1: pegar a escala")
+    st.subheader("🎼 Escala maior")
+    st.code("T - T - S - T - T - T - S")
     st.code("C D E F G A B")
 
-    st.write("Passo 2: aplicar fórmula")
+    st.video("https://www.youtube.com/watch?v=VIDEO_ESCALA")
 
-    st.code("Maior = 1 3 5")
-    st.code("Menor = 1 b3 5")
+    st.subheader("🎼 Escala menor")
+    st.code("T - S - T - T - S - T - T")
 
-    st.write("Passo 3: montar notas")
+    st.subheader("🎹 Intervalos")
+    st.write("3ª define maior/menor")
+    st.write("5ª define base do acorde")
+    st.write("7ª cria tensão")
 
-    st.success("Agora você consegue montar qualquer acorde")
+    st.video("https://www.youtube.com/watch?v=VIDEO_INTERVALOS")
 
-    st.divider()
+    st.subheader("🎼 Acorde maior")
+    st.code("1 + 3 + 5")
+    st.code("C E G")
 
-    st.subheader("🎯 Resumo final")
+    st.subheader("🎼 Acorde menor")
+    st.code("1 + b3 + 5")
+    st.code("C Eb G")
 
-    st.write("""
-    ✔ Acorde = combinação de notas  
-    ✔ Maior = som aberto  
-    ✔ Menor = som triste  
-    ✔ # sobe meio tom  
-    ✔ b desce meio tom  
-    ✔ 7 adiciona emoção  
-    ✔ tudo vem da escala  
-    """)
+    st.subheader("🎼 Acordes com sétima")
+    st.code("C7 = C E G Bb")
+    st.code("Cmaj7 = C E G B")
 
-    st.success("Agora você domina a base da harmonia 🎹")
+    st.video("https://www.youtube.com/watch?v=VIDEO_ACORDES")
+
+    st.subheader("🎼 Campo harmônico")
+    st.code("C Dm Em F G Am Bdim")
+
+    st.video("https://www.youtube.com/watch?v=VIDEO_CAMPO_HARMONICO")
+
+    st.subheader("🎼 Funções harmônicas")
+    st.write("Tônica = repouso")
+    st.write("Subdominante = movimento")
+    st.write("Dominante = tensão")
+
+    st.code("C - F - G - C")
+
+    st.subheader("🎯 Resumo")
+    st.write("Tudo vem da escala → intervalos → acordes → harmonia")
 
 # =========================================
 # 🎹 PRÁTICA
@@ -198,6 +163,8 @@ if pagina == "📚 Teoria":
 elif pagina == "🎹 Teste de Acordes":
 
     st.header("🎹 Pratique Acordes")
+
+    st.video("https://www.youtube.com/watch?v=VIDEO_PRATICA")
 
     acorde = st.text_input("Digite um acorde")
 
@@ -225,38 +192,31 @@ elif pagina == "🎹 Teste de Acordes":
             st.error("❌ Acorde não reconhecido!")
 
 # =========================================
-# 🎯 QUIZ PROFISSIONAL
+# 🎯 QUIZ
 # =========================================
 
 elif pagina == "🎯 Quiz":
 
     st.header("🎯 Quiz de Acordes")
 
+    st.video("https://www.youtube.com/watch?v=VIDEO_QUIZ")
+
     banco_perguntas = [
         ("C = ?", ["C D E", "C E G", "C F G"], "C E G"),
         ("Cm = ?", ["C Eb G", "C E G", "C F G"], "C Eb G"),
-        ("C# = ?", ["C# E# G#", "C# F G#", "C D G"], "C# E# G#"),
-        ("Db = ?", ["Db F Ab", "Db E G", "Db F A"], "Db F Ab"),
         ("D# = ?", ["D# F# A#", "D E A", "D# G A#"], "D# F# A#"),
         ("Eb = ?", ["Eb G Bb", "Eb F Ab", "Eb G C"], "Eb G Bb"),
-        ("F# = ?", ["F# A# C#", "F# A C#", "F# B D"], "F# A# C#"),
-        ("Gb = ?", ["Gb Bb Db", "Gb A C#", "Gb B D"], "Gb Bb Db"),
-        ("G# = ?", ["G# C D#", "G# B D#", "G# C E"], "G# C D#"),
-        ("Ab = ?", ["Ab C Eb", "Ab D F", "Ab B Eb"], "Ab C Eb"),
-        ("A# = ?", ["A# D F", "A# C F", "A# D G"], "A# D F"),
-        ("Bb = ?", ["Bb D F", "Bb C F", "Bb E G"], "Bb D F"),
     ]
 
     if "quiz" not in st.session_state:
-        st.session_state.quiz = random.sample(banco_perguntas, 4)
+        st.session_state.quiz = random.sample(banco_perguntas, 3)
         st.session_state.finalizado = False
 
     perguntas = st.session_state.quiz
-
     respostas = []
     acertos = 0
 
-    st.info("⚠️ Depois de enviar não pode alterar respostas.")
+    st.info("Depois de enviar não pode alterar respostas.")
 
     for i, (enunciado, opcoes, correta) in enumerate(perguntas):
 
@@ -284,9 +244,9 @@ elif pagina == "🎯 Quiz":
                 st.error(f"❌ Pergunta {i+1} errada")
                 st.info(f"👉 Correta: {correta}")
 
-        st.success(f"🎯 Você acertou {acertos}/4 perguntas!")
+        st.success(f"🎯 Você acertou {acertos}/3 perguntas!")
 
     if st.button("🔄 Novo quiz"):
-        st.session_state.quiz = random.sample(banco_perguntas, 4)
+        st.session_state.quiz = random.sample(banco_perguntas, 3)
         st.session_state.finalizado = False
         st.rerun()
