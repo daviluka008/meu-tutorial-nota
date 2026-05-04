@@ -1,79 +1,134 @@
-import streamlit as st
-import random
-
 # =========================================
-# 🎹 LÓGICA DOS ACORDES
+# 📚 TEORIA (MELHORADA E MAIS COMPLETA)
 # =========================================
 
-notas_sharp = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
-notas_flat  = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"]
+if pagina == "📚 Teoria":
 
-def usar_bemol(acorde):
-    return "b" in acorde
+    st.header("🎓 Teoria Musical Completa")
 
-def pegar_lista(acorde):
-    return notas_flat if usar_bemol(acorde) else notas_sharp
+    st.subheader("🎵 O que é música?")
+    st.write("""
+Música é a organização dos sons no tempo.
 
-def separar_acorde(acorde):
-    if len(acorde) > 1 and acorde[1] in ["#", "b"]:
-        return acorde[:2], acorde[2:].lower()
-    return acorde[0], acorde[1:].lower()
+Ela é formada por 4 elementos principais:
 
-# =========================================
-# 🔥 ACORDES CORRIGIDO (EbM, Ebm etc)
-# =========================================
-def gerar_acorde(acorde):
-    acorde = acorde.strip()
+✔ Melodia (sequência de notas)  
+✔ Harmonia (notas tocadas ao mesmo tempo)  
+✔ Ritmo (organização do tempo e batidas)  
+✔ Timbre (característica do som de cada instrumento)  
+""")
 
-    if "/" in acorde:
-        acorde_principal, baixo = acorde.split("/")
-        baixo = baixo.strip()
-    else:
-        acorde_principal = acorde
-        baixo = None
+    st.subheader("🎼 Notas musicais")
+    st.write("""
+As notas são a base da música:
 
-    raiz, tipo = separar_acorde(acorde_principal)
+C D E F G A B
 
-    lista = notas_flat if "b" in raiz else notas_sharp
+Elas se repetem em diferentes alturas chamadas oitavas.
+""")
 
-    if raiz not in lista:
-        return None
+    st.code("C D E F G A B")
 
-    i = lista.index(raiz)
+    st.subheader("🎹 Tom e semitom")
+    st.write("""
+- Semitom = menor distância entre duas notas
+- Tom = dois semitons
 
-    tipos = {
-        "": [0,4,7],
-        "m": [0,3,7],
-        "7": [0,4,7,10],
-        "m7": [0,3,7,10],
-        "7m": [0,3,7,10],
-        "7M": [0,4,7,11],
-        "M7": [0,4,7,11],
-        "9": [0,4,7,10,14],
-        "m9": [0,3,7,10,14],
-        "add9": [0,4,7,14],
-        "sus2": [0,2,7],
-        "sus4": [0,5,7],
-        "dim": [0,3,6],
-        "aug": [0,4,8],
-    }
+Exemplos:
+C → C# = 1 semitom  
+C → D = 1 tom
+""")
 
-    if tipo not in tipos:
-        return None
+    st.subheader("🎼 Sustenidos e bemóis")
+    st.write("""
+# = sobe meio tom  
+b = desce meio tom
+""")
 
-    notas = [lista[(i + x) % 12] for x in tipos[tipo]]
+    st.code("""
+C# = Db
+D# = Eb
+F# = Gb
+G# = Ab
+A# = Bb
+""")
 
-    return {"notas": notas, "baixo": baixo}
+    st.subheader("🎼 Enarmonia")
+    st.write("""
+Enarmonia significa a mesma nota com nomes diferentes.
 
+Exemplo:
+C# = Db (mesmo som, nome diferente)
+""")
 
-# =========================================
-# 🌐 CONFIG
-# =========================================
+    st.subheader("🎼 Escala maior")
+    st.write("""
+Fórmula:
+T - T - S - T - T - T - S
+""")
 
-st.set_page_config(page_title="🎹 Acordes App", page_icon="🎹")
+    st.code("C D E F G A B")
 
-st.title("🎹 Sistema Completo de Acordes + Teoria")
+    st.write("""
+A escala maior é a base da maioria das músicas ocidentais.
+""")
 
+    st.subheader("🎼 Escala menor")
+    st.write("""
+Fórmula:
+T - S - T - T - S - T - T
+""")
+
+    st.code("A B C D E F G")
+
+    st.write("""
+A escala menor tem um som mais triste ou emocional.
+""")
+
+    st.subheader("🎹 Formação de acordes")
+    st.write("""
+Acordes são formados por notas da escala.
+
+✔ Acorde maior: 1 + 3 + 5  
+✔ Acorde menor: 1 + b3 + 5
+""")
+
+    st.code("""
+C maior = C E G
+C menor = C Eb G
+""")
+
+    st.subheader("🎼 Intervalos")
+    st.write("""
+Intervalos são as distâncias entre as notas:
+
+- 3ª maior → som feliz  
+- 3ª menor → som triste  
+- 5ª → estabilidade do acorde  
+- 7ª → tensão e emoção
+""")
+
+    st.subheader("🎼 Acordes com sétima")
+    st.code("""
+C7 = C E G Bb
+Cmaj7 = C E G B
+""")
+
+    st.subheader("🎼 Campo harmônico")
+    st.write("""
+É o conjunto de acordes de uma escala.
+
+Exemplo em Dó maior:
+
+C Dm Em F G Am Bdim
+""")
+
+    st.subheader("🎯 Resumo final")
+    st.write("""
+ESCALA → INTERVALOS → ACORDES → HARMONIA → MÚSICA
+
+Tudo na música começa pelas notas.
+""")
 pagina = st.sidebar.selectbox(
     "📌 Menu",
     ["📚 Teoria", "🎹 Prática", "🎯 Quiz"]
