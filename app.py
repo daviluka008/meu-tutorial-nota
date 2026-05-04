@@ -1,4 +1,5 @@
 import streamlit as st
+import random
 
 # =========================================
 # 🎹 LÓGICA DOS ACORDES
@@ -67,11 +68,13 @@ def gerar_acorde(acorde):
 # 🌐 INTERFACE
 # =========================================
 
-st.title("🎹 Sistema Completo de Acordes + Teoria")
+st.set_page_config(page_title="🎹 Acordes App", page_icon="🎹")
+
+st.title("🎹 Sistema Completo de Acordes")
 
 pagina = st.sidebar.selectbox(
     "📌 Menu",
-    ["📚 Teoria", "🎹 Teste de Acordes", "🎯 Quiz"]
+    ["📚 Teoria", "🎹 Prática", "🎯 Quiz"]
 )
 
 # =========================================
@@ -80,45 +83,33 @@ pagina = st.sidebar.selectbox(
 
 if pagina == "📚 Teoria":
 
-    st.header("🎓 Tutorial Completo")
+    st.header("🎓 Teoria dos Acordes")
 
-    st.subheader("🎵 O que é um acorde?")
     st.write("Acorde é quando tocamos várias notas ao mesmo tempo.")
 
-    st.write("MAIOR: 1 + 3 + 5")
-    st.code("C → C E G")
+    st.code("MAIOR → C = C E G")
+    st.code("MENOR → Cm = C Eb G")
+    st.code("7 → C7 = C E G Bb")
+    st.code("7M → C7M = C E G B")
+    st.code("add9 → Cadd9 = C E G D")
+    st.code("sus2 → Csus2 = C D G")
+    st.code("sus4 → Csus4 = C F G")
 
-    st.write("MENOR: 1 + b3 + 5")
-    st.code("Cm → C Eb G")
+    st.write("G/B = acorde com baixo diferente")
 
-    st.write("COM 7:")
-    st.code("C7 → C E G Bb")
-    st.code("C7M → C E G B")
-
-    st.write("ADD9:")
-    st.code("Cadd9 → C E G D")
-
-    st.write("SUS:")
-    st.code("Csus2 → C D G")
-    st.code("Csus4 → C F G")
-
-    st.write("BAIXO DIFERENTE:")
-    st.code("G/B → acorde G com baixo B")
-
-    st.write("SUSTENIDO (#) sobe meio tom")
-    st.write("BEMOL (b) desce meio tom")
+    st.success("👉 Vá para PRÁTICA depois")
 
 # =========================================
-# 🎹 TESTE DE ACORDES
+# 🎹 PRÁTICA
 # =========================================
 
-elif pagina == "🎹 Teste de Acordes":
+elif pagina == "🎹 Prática":
 
-    st.header("🎯 Teste seus acordes")
+    st.header("🎹 Pratique Acordes")
 
     acorde = st.text_input("Digite um acorde")
 
-    if st.button("Gerar"):
+    if st.button("Analisar"):
         resultado = gerar_acorde(acorde)
 
         if resultado:
@@ -139,56 +130,39 @@ elif pagina == "🎹 Teste de Acordes":
             st.text(teclado)
 
         else:
-            st.error("❌ Acorde não reconhecido!")
+            st.error("❌ Acorde não reconhecido")
 
 # =========================================
-# 🎯 QUIZ (CORRIGIDO SEM ERRO)
+# 🎯 QUIZ DINÂMICO (NOVO)
 # =========================================
 
 elif pagina == "🎯 Quiz":
 
     st.header("🎯 Quiz de Acordes")
-    st.write("Responda e clique para ver seu resultado.")
 
-    q1 = st.radio("1. C = ?", ["C D E", "C E G", "C F G"], key="q1")
-    q2 = st.radio("2. Cm = ?", ["C Eb G", "C E G", "C F G"], key="q2")
-    q3 = st.radio("3. C7 = ?", ["C E G B", "C E G Bb", "C D G"], key="q3")
-    q4 = st.radio("4. Csus4 = ?", ["C D G", "C F G", "C E G"], key="q4")
-    q5 = st.radio("5. G/B = ?", ["G com baixo B", "G menor", "G aumentado"], key="q5")
+    banco_perguntas = [
+        ("C = ?", ["C D E", "C E G", "C F G"], "C E G"),
+        ("Cm = ?", ["C Eb G", "C E G", "C F G"], "C Eb G"),
+        ("C7 = ?", ["C E G B", "C E G Bb", "C D G"], "C E G Bb"),
+        ("Csus4 = ?", ["C D G", "C F G", "C E G"], "C F G"),
+        ("G/B = ?", ["G com baixo B", "G menor", "G aumentado"], "G com baixo B"),
+        ("Cadd9 = ?", ["C E G D", "C E G", "C D G"], "C E G D"),
+        ("Cm7 = ?", ["C Eb G Bb", "C E G Bb", "C D G"], "C Eb G Bb"),
+    ]
+
+    perguntas = random.sample(banco_perguntas, 3)
+
+    acertos = 0
+
+    for i, (enunciado, opcoes, resposta) in enumerate(perguntas):
+
+        escolha = st.radio(enunciado, opcoes, key=f"q{i}")
+
+        if escolha == resposta:
+            acertos += 1
 
     if st.button("Ver resultado final"):
 
-        acertos = 0
-
-        if q1 == "C E G":
-            st.success("✔ Q1 correta")
-            acertos += 1
-        else:
-            st.error("❌ Q1 errada (C E G)")
-
-        if q2 == "C Eb G":
-            st.success("✔ Q2 correta")
-            acertos += 1
-        else:
-            st.error("❌ Q2 errada (C Eb G)")
-
-        if q3 == "C E G Bb":
-            st.success("✔ Q3 correta")
-            acertos += 1
-        else:
-            st.error("❌ Q3 errada (C E G Bb)")
-
-        if q4 == "C F G":
-            st.success("✔ Q4 correta")
-            acertos += 1
-        else:
-            st.error("❌ Q4 errada (C F G)")
-
-        if q5 == "G com baixo B":
-            st.success("✔ Q5 correta")
-            acertos += 1
-        else:
-            st.error("❌ Q5 errada (G com baixo B)")
-
         st.divider()
-        st.success(f"🎯 Você acertou {acertos}/5 perguntas!")
+        st.success(f"🎯 Você acertou {acertos}/3 perguntas!")
+        st.info("🔄 Atualize a página para novas perguntas")
