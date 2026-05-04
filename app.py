@@ -74,7 +74,7 @@ pagina = st.sidebar.selectbox(
 )
 
 # =========================================
-# 📚 TEORIA COMPLETA (SEM RESUMO)
+# 📚 TEORIA COMPLETA (EXPLICADA DE VERDADE)
 # =========================================
 
 if pagina == "📚 Teoria":
@@ -82,26 +82,47 @@ if pagina == "📚 Teoria":
     st.header("🎓 Teoria Musical Completa")
 
     st.subheader("🎵 O que é música?")
-    st.write("Música é a organização de sons no tempo.")
-
     st.write("""
-Ela possui:
-- Altura (grave/agudo)
-- Duração (tempo)
-- Intensidade (forte/fraco)
-- Timbre (característica do som)
+Música é a organização de sons no tempo.
+
+Cada som que ouvimos possui 4 elementos:
+
+✔ Altura → grave ou agudo  
+✔ Duração → tempo do som  
+✔ Intensidade → volume  
+✔ Timbre → identidade do som  
+
+É a combinação disso que cria música.
 """)
 
     st.subheader("🎼 Notas musicais")
-    st.code("C D E F G A B")
+    st.write("""
+O sistema musical ocidental usa 7 notas:
+
+C D E F G A B
+
+Essas notas se repetem em ciclos no teclado.
+""")
 
     st.subheader("🎹 Semitom e Tom")
-    st.write("Semitom = menor distância entre notas")
-    st.write("Tom = 2 semitons")
+
+    st.write("""
+Semitom = menor distância entre duas teclas  
+Tom = 2 semitons
+""")
+
+    st.code("""
+Exemplo:
+C → C# = 1 semitom
+C → D = 1 tom
+""")
 
     st.subheader("🎼 Sustenidos e bemóis")
-    st.write("# sobe meio tom")
-    st.write("b desce meio tom")
+
+    st.write("""
+✔ # (sustenido) sobe meio tom  
+✔ b (bemol) desce meio tom
+""")
 
     st.code("""
 C# = Db
@@ -111,28 +132,98 @@ G# = Ab
 A# = Bb
 """)
 
-    st.subheader("🎼 Escala maior")
-    st.code("T - T - S - T - T - T - S")
-    st.code("C D E F G A B")
+    st.subheader("🎼 Por que isso existe? (ENARMONIA)")
 
-    st.subheader("🎼 Escala menor")
-    st.code("T - S - T - T - S - T - T")
-    st.code("A B C D E F G")
+    st.write("""
+Uma mesma nota pode ter nomes diferentes dependendo do contexto musical.
 
-    st.subheader("🎼 Acordes básicos")
+Exemplo:
+- C# e Db são a mesma tecla
+- F# e Gb são a mesma tecla
 
-    st.code("Maior: 1 + 3 + 5 → C E G")
-    st.code("Menor: 1 + b3 + 5 → C Eb G")
+Isso é chamado de ENARMONIA.
+""")
 
-    st.subheader("🎼 Sétimas")
-    st.code("C7 = C E G Bb")
-    st.code("Cmaj7 = C E G B")
+    st.subheader("🎼 Escala maior (base de tudo)")
+
+    st.write("""
+A escala maior segue um padrão fixo:
+
+T - T - S - T - T - T - S
+
+(T = tom | S = semitom)
+""")
+
+    st.code("""
+Exemplo em C:
+C D E F G A B
+""")
+
+    st.subheader("🎼 Escala menor natural")
+
+    st.code("""
+T - S - T - T - S - T - T
+
+Exemplo em A:
+A B C D E F G
+""")
+
+    st.subheader("🎼 Como nasce um acorde")
+
+    st.write("""
+Um acorde nasce da escala.
+
+Pegamos notas específicas:
+
+✔ 1 = nota principal (tônica)  
+✔ 3 = define maior ou menor  
+✔ 5 = estabilidade do som  
+✔ 7 = tensão (emocionalidade)
+""")
+
+    st.subheader("🎼 Acorde maior")
+
+    st.code("""
+1 + 3 + 5
+
+Exemplo:
+C = C E G
+""")
+
+    st.subheader("🎼 Acorde menor")
+
+    st.code("""
+1 + b3 + 5
+
+Exemplo:
+Cm = C Eb G
+""")
+
+    st.subheader("🎼 Acordes com sétima")
+
+    st.code("""
+C7 = C E G Bb
+Cmaj7 = C E G B
+""")
 
     st.subheader("🎼 Campo harmônico")
-    st.code("C Dm Em F G Am Bdim")
+
+    st.write("""
+É o conjunto de acordes que nascem de uma escala.
+""")
+
+    st.code("""
+C maior:
+C Dm Em F G Am Bdim
+""")
 
     st.subheader("🎯 Conclusão")
-    st.write("Tudo vem de escala → intervalos → acordes → harmonia")
+
+    st.write("""
+Tudo na música segue uma lógica:
+
+Escala → Intervalos → Acordes → Harmonia
+""")
 
 # =========================================
 # 🎹 PRÁTICA
@@ -142,7 +233,7 @@ elif pagina == "🎹 Prática":
 
     st.header("🎹 Pratique Acordes")
 
-    acorde = st.text_input("Digite um acorde")
+    acorde = st.text_input("Digite um acorde (ex: C, Cm, D, Dm, F#, Bb)")
 
     if st.button("Analisar"):
         resultado = gerar_acorde(acorde)
@@ -153,17 +244,14 @@ elif pagina == "🎹 Prática":
             st.error("❌ Acorde inválido")
 
 # =========================================
-# 🎯 QUIZ DINÂMICO (CORRIGIDO TOTAL)
+# 🎯 QUIZ REAL (SIGLAS CORRETAS)
 # =========================================
 
 elif pagina == "🎯 Quiz":
 
     st.header("🎯 Quiz de Acordes")
 
-    notas = [
-        "C","C#","Db","D","D#","Eb","E","F","F#","Gb",
-        "G","G#","Ab","A","A#","Bb","B"
-    ]
+    base = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"]
 
     def gerar_perguntas():
 
@@ -172,11 +260,9 @@ elif pagina == "🎯 Quiz":
 
         while len(perguntas) < 6:
 
-            nota = random.choice(notas)
-
+            nota = random.choice(base)
             if nota in usadas:
                 continue
-
             usadas.add(nota)
 
             tipo = random.choice(["maior", "menor"])
@@ -184,26 +270,24 @@ elif pagina == "🎯 Quiz":
             if tipo == "maior":
                 resposta = gerar_acorde(nota)["notas"]
                 resposta = " ".join(resposta)
-                pergunta = f"{nota} maior = ?"
+                pergunta = f"{nota} = ?"
+
             else:
-                base = {
-                    "C":"C Eb G","C#":"C# E G#","Db":"Db Fb Ab",
-                    "D":"D F A","D#":"D# F# A#","Eb":"Eb Gb Bb",
+                menor_map = {
+                    "C":"C Eb G","C#":"C# E G#","D":"D F A","D#":"D# F# A#",
                     "E":"E G B","F":"F Ab C","F#":"F# A C#",
-                    "Gb":"Gb A Cb","G":"G Bb D","G#":"G# B D#",
-                    "Ab":"Ab Cb Eb","A":"A C E","A#":"A# C# E#",
-                    "Bb":"Bb Db F","B":"B D F#"
+                    "G":"G Bb D","G#":"G# B D#","A":"A C E",
+                    "A#":"A# C# E#","B":"B D F#"
                 }
 
-                resposta = base.get(nota, "")
-                pergunta = f"{nota} menor = ?"
+                resposta = menor_map.get(nota)
+                pergunta = f"{nota}m = ?"
 
             if resposta:
                 perguntas.append((pergunta, resposta))
 
         return perguntas
 
-    # estado do quiz
     if "quiz" not in st.session_state or st.button("🔄 Novo quiz"):
         st.session_state.quiz = gerar_perguntas()
         st.session_state.finalizado = False
@@ -211,21 +295,19 @@ elif pagina == "🎯 Quiz":
 
     perguntas = st.session_state.quiz
 
-    # NÃO MARCA NADA AO ENTRAR
     if not st.session_state.finalizado:
 
         for i, (q, correta) in enumerate(perguntas):
 
             escolha = st.radio(
                 q,
-                [correta, "C D E", "C E G", "D F A", "E G B"],
+                [correta, "C E G", "D F A", "E G B", "F A C"],
                 key=f"q{i}_{id(perguntas)}",
                 index=None
             )
 
             st.session_state.respostas[i] = escolha
 
-    # RESULTADO TRAVADO
     else:
 
         acertos = 0
