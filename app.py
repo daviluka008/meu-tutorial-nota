@@ -66,7 +66,6 @@ def gerar_acorde(acorde):
 # =========================================
 
 st.set_page_config(page_title="🎹 Acordes App", page_icon="🎹")
-
 st.title("🎹 Sistema Completo de Acordes + Teoria")
 
 pagina = st.sidebar.selectbox(
@@ -75,31 +74,46 @@ pagina = st.sidebar.selectbox(
 )
 
 # =========================================
-# 📚 TEORIA COMPLETA REAL
+# 📚 TEORIA COMPLETA (EXPLICADA DE VERDADE)
 # =========================================
 
 if pagina == "📚 Teoria":
 
     st.header("🎓 Teoria Musical Completa")
 
-    st.subheader("🎵 1. Som e música")
-    st.write("Música é organização de ondas sonoras no tempo.")
-    st.write("Propriedades: frequência, duração, intensidade e timbre.")
+    st.subheader("🎵 O que é música?")
+    st.write("""
+Música é a organização de sons no tempo.
 
-    st.subheader("🎼 2. Sistema temperado")
-    st.write("A música ocidental divide o som em 12 semitons iguais.")
+Ela possui 4 elementos principais:
+✔ altura (grave ou agudo)
+✔ duração (tempo)
+✔ intensidade (forte ou fraco)
+✔ timbre (identidade do som)
+""")
 
-    st.code("C C# D D# E F F# G G# A A# B")
+    st.subheader("🎼 Notas musicais")
+    st.write("O sistema musical ocidental usa 7 notas:")
+    st.code("C D E F G A B")
 
-    st.subheader("🎹 3. Tons e semitons")
-    st.write("Semitom = menor intervalo")
+    st.write("Essas notas se repetem em diferentes alturas no teclado.")
+
+    st.subheader("🎹 Semitom e Tom")
+    st.write("Semitom = menor distância entre duas teclas")
     st.write("Tom = 2 semitons")
 
-    st.subheader("🎼 4. Acidentes musicais")
-    st.write("# sobe 1 semitom")
-    st.write("b desce 1 semitom")
+    st.write("Exemplo:")
+    st.code("C → C# = 1 semitom")
+    st.code("C → D = 1 tom")
 
-    st.write("Enarmonia (mesma nota):")
+    st.subheader("🎼 Sustenidos e bemóis")
+
+    st.write("""
+✔ # sobe meio tom  
+✔ b desce meio tom
+""")
+
+    st.write("Exemplos reais:")
     st.code("""
 C# = Db
 D# = Eb
@@ -108,56 +122,55 @@ G# = Ab
 A# = Bb
 """)
 
-    st.subheader("🎼 5. Intervalos (base de tudo)")
-    st.write("1 = tônica")
-    st.write("2 = segunda")
-    st.write("3 = terça (define maior/menor)")
-    st.write("4 = quarta")
-    st.write("5 = quinta (base do acorde)")
-    st.write("7 = sétima (tensão)")
-
-    st.subheader("🎼 6. Escalas")
-
-    st.write("Maior:")
+    st.subheader("🎼 Escala maior (base de tudo)")
+    st.write("Fórmula:")
     st.code("T - T - S - T - T - T - S")
 
-    st.write("Menor natural:")
+    st.write("Exemplo em C:")
+    st.code("C D E F G A B")
+
+    st.subheader("🎼 Escala menor natural")
     st.code("T - S - T - T - S - T - T")
 
-    st.subheader("🎼 7. Formação de acordes")
+    st.write("Exemplo:")
+    st.code("A B C D E F G")
 
-    st.write("Tríade maior:")
+    st.subheader("🎼 Intervalos (fundação dos acordes)")
+
+    st.write("""
+✔ 1 = nota base (tônica)  
+✔ 3 = define maior ou menor  
+✔ 5 = estabilidade  
+✔ 7 = tensão harmônica
+""")
+
+    st.subheader("🎼 Formação de acordes")
+
+    st.write("🎹 Acorde maior:")
     st.code("1 + 3 + 5 → C E G")
 
-    st.write("Tríade menor:")
+    st.write("🎹 Acorde menor:")
     st.code("1 + b3 + 5 → C Eb G")
 
-    st.write("Acordes com sétima:")
+    st.write("🎹 Acorde com sétima:")
     st.code("C7 → C E G Bb")
-    st.code("Cmaj7 → C E G B")
 
-    st.subheader("🎼 8. Campo harmônico maior")
+    st.subheader("🎼 Campo harmônico maior")
 
     st.code("C Dm Em F G Am Bdim")
 
-    st.subheader("🎼 9. Funções harmônicas")
+    st.subheader("🎼 Funções harmônicas")
 
-    st.write("Tônica = repouso")
-    st.write("Subdominante = movimento")
-    st.write("Dominante = tensão")
+    st.write("""
+✔ Tônica = descanso  
+✔ Subdominante = movimento  
+✔ Dominante = tensão
+""")
 
-    st.code("C - F - G - C")
+    st.code("C → F → G → C")
 
-    st.subheader("🎼 10. Ciclo das quintas")
-
-    st.code("C G D A E B F# C# Gb Db Ab Eb Bb F")
-
-    st.subheader("🎼 11. Modos gregos (base)")
-    st.write("Maior = Jônio")
-    st.write("Dórico, Frígio, Lídio, Mixolídio, Eólio, Lócrio")
-
-    st.subheader("🎯 Resumo final")
-    st.write("Tudo na música vem de: ESCALA → INTERVALO → ACORDE → FUNÇÃO → HARMONIA")
+    st.subheader("🎯 Conclusão")
+    st.write("Tudo na música vem de escala → intervalos → acordes → harmonia")
 
 # =========================================
 # 🎹 PRÁTICA
@@ -178,7 +191,7 @@ elif pagina == "🎹 Prática":
             st.error("❌ Acorde inválido")
 
 # =========================================
-# 🎯 QUIZ 100% CORRIGIDO
+# 🎯 QUIZ COMPLETO DINÂMICO
 # =========================================
 
 elif pagina == "🎯 Quiz":
@@ -189,8 +202,13 @@ elif pagina == "🎯 Quiz":
         ("C = ?", ["C D E", "C E G", "C F G"], "C E G"),
         ("Cm = ?", ["C Eb G", "C E G", "C F G"], "C Eb G"),
         ("D = ?", ["D F# A", "D F A", "D E A"], "D F# A"),
-        ("E = ?", ["E G# B", "E G B", "E A B"], "E G# B"),
-        ("F = ?", ["F A C", "F G C", "F A D"], "F A C"),
+        ("D# = ?", ["D# F# A#", "D D# A#", "D# G A#"], "D# F# A#"),
+        ("Eb = ?", ["Eb G Bb", "Eb F Ab", "Eb G C"], "Eb G Bb"),
+        ("F# = ?", ["F# A# C#", "F# A C#", "F# B D"], "F# A# C#"),
+        ("Gb = ?", ["Gb Bb Db", "Gb A C#", "Gb B D"], "Gb Bb Db"),
+        ("G# = ?", ["G# C D#", "G# B D#", "G# C E"], "G# C D#"),
+        ("Ab = ?", ["Ab C Eb", "Ab D F", "Ab B Eb"], "Ab C Eb"),
+        ("Bb = ?", ["Bb D F", "Bb C F", "Bb E G"], "Bb D F"),
     ]
 
     if "quiz" not in st.session_state:
@@ -200,7 +218,7 @@ elif pagina == "🎯 Quiz":
 
     perguntas = st.session_state.quiz
 
-    # NÃO MARCA NADA ANTES
+    # NÃO MARCA NADA AO ENTRAR
     if not st.session_state.finalizado:
 
         for i, (q, op, c) in enumerate(perguntas):
@@ -214,6 +232,7 @@ elif pagina == "🎯 Quiz":
 
             st.session_state.respostas[i] = escolha
 
+    # RESULTADO TRAVADO
     else:
 
         acertos = 0
@@ -227,11 +246,11 @@ elif pagina == "🎯 Quiz":
             st.write(f"Sua resposta: {r}")
 
             if r == c:
-                st.success("✔ Correto")
+                st.success("✔ Correta")
                 acertos += 1
             else:
-                st.error("❌ Errado")
-                st.info(f"✔ Correto: {c}")
+                st.error("❌ Errada")
+                st.info(f"✔ Correta: {c}")
 
         st.success(f"🎯 Acertos: {acertos}/5")
 
