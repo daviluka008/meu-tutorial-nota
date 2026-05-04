@@ -74,7 +74,7 @@ pagina = st.sidebar.selectbox(
 )
 
 # =========================================
-# 📚 TEORIA
+# 📚 TEORIA (RESTAURADA COMPLETA)
 # =========================================
 
 if pagina == "📚 Teoria":
@@ -82,16 +82,18 @@ if pagina == "📚 Teoria":
     st.header("🎓 Teoria Musical Completa")
 
     st.subheader("🎵 O que é música")
-    st.write("Música é organização de sons no tempo: altura, duração, intensidade e timbre.")
+    st.write("Música é a organização de sons no tempo: altura, duração, intensidade e timbre.")
 
     st.subheader("🎼 Notas musicais")
     st.code("C D E F G A B")
 
     st.subheader("🎹 Semitom e Tom")
-    st.write("Semitom = menor distância | Tom = 2 semitons")
+    st.write("Semitom = menor distância entre notas")
+    st.write("Tom = 2 semitons")
 
     st.subheader("🎼 Sustenidos e bemóis")
-    st.write("# sobe meio tom | b desce meio tom")
+    st.write("# sobe meio tom")
+    st.write("b desce meio tom")
 
     st.code("""
 C# = Db
@@ -103,15 +105,21 @@ A# = Bb
 
     st.subheader("🎼 Escala maior")
     st.code("T - T - S - T - T - T - S")
+    st.code("C D E F G A B")
+
+    st.subheader("🎼 Escala menor")
+    st.code("T - S - T - T - S - T - T")
 
     st.subheader("🎼 Acordes básicos")
-
     st.code("Maior: 1 + 3 + 5 → C E G")
     st.code("Menor: 1 + b3 + 5 → C Eb G")
     st.code("7: C7 → C E G Bb")
 
     st.subheader("🎼 Campo harmônico")
     st.code("C Dm Em F G Am Bdim")
+
+    st.subheader("🎯 Resumo")
+    st.write("Escala → Intervalos → Acordes → Harmonia")
 
 # =========================================
 # 🎹 PRÁTICA
@@ -129,19 +137,11 @@ elif pagina == "🎹 Prática":
         if resultado:
             st.success(f"🎵 Notas: {resultado['notas']}")
 
-            base = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"]
-
-            teclado = ""
-            for nota in base:
-                teclado += f"[{nota}] " if nota in resultado["notas"] else f" {nota}  "
-
-            st.text(teclado)
-
         else:
-            st.error("❌ Acorde não reconhecido")
+            st.error("❌ Acorde inválido")
 
 # =========================================
-# 🎯 QUIZ (CORRIGIDO COMPLETO)
+# 🎯 QUIZ (AGORA REALMENTE TRAVADO)
 # =========================================
 
 elif pagina == "🎯 Quiz":
@@ -163,55 +163,50 @@ elif pagina == "🎯 Quiz":
 
     perguntas = st.session_state.quiz
 
-    st.info("Responda e veja seu resultado ao final.")
+    # =========================
+    # RESPOSTA ANTES DO RESULTADO
+    # =========================
+    if not st.session_state.finalizado:
 
-    # RESET visual correto (sem pré-marcação)
-    for i, (q, op, correta) in enumerate(perguntas):
+        for i, (q, op, c) in enumerate(perguntas):
 
-        if not st.session_state.finalizado:
+            escolha = st.radio(q, op, key=f"q{i}")
 
-            escolha = st.radio(
-                q,
-                op,
-                key=f"q{i}",
-                index=None  # 🔥 impede resposta pré-marcada
-            )
+            st.session_state.respostas[i] = escolha
 
-            if escolha:
-                st.session_state.respostas[i] = escolha
-
-        else:
-
-            st.radio(
-                q,
-                op,
-                index=op.index(st.session_state.respostas[i]),
-                key=f"q{i}",
-                disabled=True
-            )
-
-    if st.button("Ver resultado"):
-
-        st.session_state.finalizado = True
+    # =========================
+    # RESULTADO (TRAVADO REAL)
+    # =========================
+    else:
 
         acertos = 0
-
         st.divider()
 
-        for i, (q, op, correta) in enumerate(perguntas):
+        for i, (q, op, c) in enumerate(perguntas):
 
-            resposta = st.session_state.respostas.get(i)
+            resposta = st.session_state.respostas[i]
 
-            if resposta == correta:
-                st.success(f"✔ Pergunta {i+1} correta")
+            st.write(f"**{q}**")
+            st.write(f"Sua resposta: {resposta}")
+
+            if resposta == c:
+                st.success("✔ Correta")
                 acertos += 1
             else:
-                st.error(f"❌ Pergunta {i+1} errada")
-                st.info(f"✔ Resposta certa: {correta}")
+                st.error("❌ Errada")
+                st.info(f"✔ Correta: {c}")
 
-        st.success(f"🎯 Você acertou {acertos}/5")
+        st.success(f"🎯 Acertos: {acertos}/5")
 
-    if st.button("🔄 Novo quiz"):
+    # =========================
+    # BOTÕES
+    # =========================
+
+    if st.button("Ver resultado"):
+        st.session_state.finalizado = True
+        st.rerun()
+
+    if st.button("Novo quiz"):
         st.session_state.quiz = random.sample(banco, 5)
         st.session_state.finalizado = False
         st.session_state.respostas = {}
