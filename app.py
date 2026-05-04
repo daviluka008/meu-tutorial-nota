@@ -70,11 +70,11 @@ def gerar_acorde(acorde):
 
 st.set_page_config(page_title="🎹 Acordes App", page_icon="🎹")
 
-st.title("🎹 Sistema Completo de Acordes")
+st.title("🎹 Sistema Completo de Acordes + Teoria")
 
 pagina = st.sidebar.selectbox(
     "📌 Menu",
-    ["📚 Teoria", "🎹 Prática", "🎯 Quiz"]
+    ["📚 Teoria", "🎹 Teste de Acordes", "🎯 Quiz"]
 )
 
 # =========================================
@@ -103,7 +103,7 @@ if pagina == "📚 Teoria":
 # 🎹 PRÁTICA
 # =========================================
 
-elif pagina == "🎹 Prática":
+elif pagina == "🎹 Teste de Acordes":
 
     st.header("🎹 Pratique Acordes")
 
@@ -130,10 +130,10 @@ elif pagina == "🎹 Prática":
             st.text(teclado)
 
         else:
-            st.error("❌ Acorde não reconhecido")
+            st.error("❌ Acorde não reconhecido!")
 
 # =========================================
-# 🎯 QUIZ DINÂMICO (NOVO)
+# 🎯 QUIZ DINÂMICO ESTÁVEL
 # =========================================
 
 elif pagina == "🎯 Quiz":
@@ -150,19 +150,34 @@ elif pagina == "🎯 Quiz":
         ("Cm7 = ?", ["C Eb G Bb", "C E G Bb", "C D G"], "C Eb G Bb"),
     ]
 
-    perguntas = random.sample(banco_perguntas, 3)
+    # 🔒 gera só uma vez por sessão
+    if "quiz_perguntas" not in st.session_state:
+        st.session_state.quiz_perguntas = random.sample(banco_perguntas, 3)
 
+    perguntas = st.session_state.quiz_perguntas
+
+    respostas_usuario = []
     acertos = 0
 
-    for i, (enunciado, opcoes, resposta) in enumerate(perguntas):
+    for i, (enunciado, opcoes, resposta_certa) in enumerate(perguntas):
 
         escolha = st.radio(enunciado, opcoes, key=f"q{i}")
-
-        if escolha == resposta:
-            acertos += 1
+        respostas_usuario.append((escolha, resposta_certa))
 
     if st.button("Ver resultado final"):
 
         st.divider()
+
+        for i, (escolha, correta) in enumerate(respostas_usuario):
+
+            if escolha == correta:
+                st.success(f"✔ Pergunta {i+1} correta")
+                acertos += 1
+            else:
+                st.error(f"❌ Pergunta {i+1} errada")
+
         st.success(f"🎯 Você acertou {acertos}/3 perguntas!")
-        st.info("🔄 Atualize a página para novas perguntas")
+
+    if st.button("🔄 Novo quiz"):
+        del st.session_state.quiz_perguntas
+        st.rerun()
