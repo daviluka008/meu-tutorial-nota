@@ -89,23 +89,11 @@ if pagina == "📚 Teoria":
 
     st.code("C = C E G")
     st.code("Cm = C Eb G")
-    st.code("D = D F# A")
-    st.code("Dm = D F A")
-    st.code("E = E G# B")
-    st.code("Em = E G B")
-    st.code("F = F A C")
-    st.code("F# = F# A# C#")
-    st.code("G = G B D")
-    st.code("Gm = G Bb D")
-    st.code("A = A C# E")
-    st.code("Am = A C E")
-    st.code("B = B D# F#")
-    st.code("Bm = B D F#")
-
-    st.write("Extras:")
-    st.code("C7 = C E G Bb")
-    st.code("Cm7 = C Eb G Bb")
-    st.code("G/B = G com baixo B")
+    st.code("C# / Db = C# E# G#")
+    st.code("D# / Eb = D# F# A#")
+    st.code("F# / Gb = F# A# C#")
+    st.code("G# / Ab = G# C D#")
+    st.code("A# / Bb = A# D F")
 
 # =========================================
 # 🎹 PRÁTICA
@@ -141,47 +129,55 @@ elif pagina == "🎹 Teste de Acordes":
             st.error("❌ Acorde não reconhecido!")
 
 # =========================================
-# 🎯 QUIZ COMPLETO (AMPLIADO)
+# 🎯 QUIZ PROFISSIONAL (TRAVADO + FEEDBACK)
 # =========================================
 
 elif pagina == "🎯 Quiz":
 
-    st.header("🎯 Quiz Completo de Acordes")
+    st.header("🎯 Quiz de Acordes")
 
     banco_perguntas = [
         ("C = ?", ["C D E", "C E G", "C F G"], "C E G"),
         ("Cm = ?", ["C Eb G", "C E G", "C F G"], "C Eb G"),
-        ("D = ?", ["D F A", "D F# A", "D G A"], "D F# A"),
-        ("Dm = ?", ["D F A", "D F# A", "D A C"], "D F A"),
-        ("E = ?", ["E G B", "E G# B", "E A B"], "E G# B"),
-        ("Em = ?", ["E G B", "E G# B", "E A B"], "E G B"),
-        ("F = ?", ["F A C", "F A# C", "F G C"], "F A C"),
-        ("F# = ?", ["F# A# C#", "F# A C#", "F# B C#"], "F# A# C#"),
-        ("G = ?", ["G B D", "G Bb D", "G C D"], "G B D"),
-        ("Gm = ?", ["G Bb D", "G B D", "G A D"], "G Bb D"),
-        ("A = ?", ["A C E", "A C# E", "A D E"], "A C# E"),
-        ("Am = ?", ["A C E", "A C# E", "A D F"], "A C E"),
-        ("B = ?", ["B D F#", "B D# F#", "B E G#"], "B D# F#"),
-        ("Bm = ?", ["B D F#", "B D# F#", "B F A"], "B D F#"),
-        ("C7 = ?", ["C E G B", "C E G Bb", "C D G"], "C E G Bb"),
-        ("Cm7 = ?", ["C Eb G Bb", "C E G Bb", "C D G"], "C Eb G Bb"),
-        ("G/B = ?", ["G com baixo B", "G menor", "G aumentado"], "G com baixo B"),
+        ("D# = ?", ["D# F# A#", "D E A", "D# G A#"], "D# F# A#"),
+        ("Eb = ?", ["Eb G Bb", "Eb F Ab", "Eb G C"], "Eb G Bb"),
+        ("F# = ?", ["F# A# C#", "F# A C#", "F# B D"], "F# A# C#"),
+        ("Gb = ?", ["Gb Bb Db", "Gb A C#", "Gb B D"], "Gb Bb Db"),
+        ("G# = ?", ["G# C D#", "G# B D#", "G# C E"], "G# C D#"),
+        ("Ab = ?", ["Ab C Eb", "Ab D F", "Ab B Eb"], "Ab C Eb"),
+        ("A# = ?", ["A# D F", "A# C F", "A# D G"], "A# D F"),
+        ("Bb = ?", ["Bb D F", "Bb C F", "Bb E G"], "Bb D F"),
     ]
 
-    if "quiz_perguntas" not in st.session_state:
-        st.session_state.quiz_perguntas = random.sample(banco_perguntas, 4)
+    # 🔒 gera só uma vez
+    if "quiz" not in st.session_state:
+        st.session_state.quiz = random.sample(banco_perguntas, 4)
+        st.session_state.finalizado = False
 
-    perguntas = st.session_state.quiz_perguntas
+    perguntas = st.session_state.quiz
 
-    acertos = 0
     respostas = []
+    acertos = 0
 
-    for i, (enunciado, opcoes, resposta) in enumerate(perguntas):
+    st.info("⚠️ Depois de enviar, não é possível alterar as respostas.")
 
-        escolha = st.radio(enunciado, opcoes, key=f"q{i}")
-        respostas.append((escolha, resposta))
+    for i, (enunciado, opcoes, resposta_certa) in enumerate(perguntas):
+
+        # trava depois de enviado
+        disabled = st.session_state.finalizado
+
+        escolha = st.radio(
+            enunciado,
+            opcoes,
+            key=f"q{i}",
+            disabled=disabled
+        )
+
+        respostas.append((escolha, resposta_certa))
 
     if st.button("Ver resultado final"):
+
+        st.session_state.finalizado = True
 
         st.divider()
 
@@ -192,9 +188,11 @@ elif pagina == "🎯 Quiz":
                 acertos += 1
             else:
                 st.error(f"❌ Pergunta {i+1} errada")
+                st.info(f"👉 Resposta correta: {correta}")
 
         st.success(f"🎯 Você acertou {acertos}/4 perguntas!")
 
     if st.button("🔄 Novo quiz"):
-        del st.session_state.quiz_perguntas
+        st.session_state.quiz = random.sample(banco_perguntas, 4)
+        st.session_state.finalizado = False
         st.rerun()
