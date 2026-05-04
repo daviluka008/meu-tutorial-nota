@@ -42,11 +42,16 @@ def gerar_acorde(acorde):
         "m": [0,3,7],
         "7": [0,4,7,10],
         "m7": [0,3,7,10],
+        "7m": [0,3,7,10],
         "7M": [0,4,7,11],
-        "dim": [0,3,6],
-        "aug": [0,4,8],
+        "M7": [0,4,7,11],
+        "9": [0,4,7,10,14],
+        "m9": [0,3,7,10,14],
+        "add9": [0,4,7,14],
         "sus2": [0,2,7],
         "sus4": [0,5,7],
+        "dim": [0,3,6],
+        "aug": [0,4,8],
     }
 
     if tipo not in tipos:
@@ -72,26 +77,53 @@ pagina = st.sidebar.selectbox(
 
 
 # =========================================
-# 📚 TEORIA (MANTIDA)
+# 📚 TEORIA COMPLETA (100% DETALHADA)
 # =========================================
 
 if pagina == "📚 Teoria":
 
     st.header("🎓 Teoria Musical Completa")
 
+    st.subheader("🎵 O que é música?")
     st.write("""
-Música é organização de sons no tempo.
+Música é a organização dos sons no tempo.
 
-Elementos:
-✔ Melodia
-✔ Harmonia
-✔ Ritmo
-✔ Timbre
+Ela envolve 4 elementos principais:
+
+✔ Melodia (sequência de notas)  
+✔ Harmonia (notas ao mesmo tempo)  
+✔ Ritmo (organização do tempo)  
+✔ Timbre (identidade do som)  
+""")
+
+    st.subheader("🎼 Notas musicais")
+    st.write("""
+As notas são os blocos básicos da música:
+
+C D E F G A B
+
+Elas se repetem em diferentes alturas (oitavas).
 """)
 
     st.code("C D E F G A B")
 
-    st.write("Sustenido sobe meio tom (#) e bemol desce (b).")
+    st.subheader("🎹 Tom e semitom")
+    st.write("""
+- Semitom = menor distância entre notas
+- Tom = 2 semitons
+
+Exemplo:
+C → C# = 1 semitom
+C → D = 1 tom
+""")
+
+    st.subheader("🎼 Sustenidos e bemóis")
+    st.write("""
+# sobe meio tom
+b desce meio tom
+
+Exemplos reais:
+""")
 
     st.code("""
 C# = Db
@@ -101,12 +133,68 @@ G# = Ab
 A# = Bb
 """)
 
-    st.write("Acorde maior: 1 + 3 + 5")
-    st.write("Acorde menor: 1 + b3 + 5")
+    st.subheader("🎼 Enarmonia")
+    st.write("""
+Enarmonia significa mesma nota com nomes diferentes.
 
+Exemplo:
+C# = Db (mesmo som)
+
+A diferença é apenas teórica.
+""")
+
+    st.subheader("🎼 Escala maior")
+    st.write("""
+Fórmula:
+T - T - S - T - T - T - S
+""")
+
+    st.code("C D E F G A B")
+
+    st.write("""
+É a base da música ocidental.
+""")
+
+    st.subheader("🎼 Escala menor")
+    st.write("""
+Fórmula:
+T - S - T - T - S - T - T
+""")
+
+    st.code("A B C D E F G")
+
+    st.subheader("🎹 Formação de acordes")
+    st.write("""
+Acordes são combinações de notas da escala.
+
+Maior:
+1 + 3 + 5 → C E G
+
+Menor:
+1 + b3 + 5 → C Eb G
+""")
+
+    st.subheader("🎼 Intervalos")
+    st.write("""
+Intervalos definem os acordes:
+
+- 3ª = maior ou menor
+- 5ª = estabilidade
+- 7ª = tensão
+""")
+
+    st.subheader("🎼 Acordes com sétima")
     st.code("""
-C = C E G
-Cm = C Eb G
+C7 = C E G Bb
+Cmaj7 = C E G B
+""")
+
+    st.subheader("🎼 Campo harmônico")
+    st.code("C Dm Em F G Am Bdim")
+
+    st.subheader("🎯 Conclusão")
+    st.write("""
+ESCALA → INTERVALOS → ACORDES → HARMONIA → MÚSICA
 """)
 
 
@@ -130,12 +218,12 @@ elif pagina == "🎹 Prática":
 
 
 # =========================================
-# 🎯 QUIZ COMPLETO (FIXADO + TODAS NOTAS)
+# 🎯 QUIZ (CORRIGIDO + DÚVIDA REAL)
 # =========================================
 
 elif pagina == "🎯 Quiz":
 
-    st.header("🎯 Quiz de Acordes Completo")
+    st.header("🎯 Quiz de Acordes")
 
     notas = [
         "C","C#","Db","D","D#","Eb","E","F","F#","Gb",
@@ -158,19 +246,32 @@ elif pagina == "🎯 Quiz":
         intervalos = maior if tipo == "maior" else menor
         return " ".join([base[(i+x)%12] for x in intervalos])
 
-    def gerar_quiz():
-        perguntas = []
+    def gerar():
+        pool = []
         for n in notas:
-            perguntas.append((f"{n} = ?", montar(n,"maior")))
-            perguntas.append((f"{n}m = ?", montar(n,"menor")))
-        random.shuffle(perguntas)
-        return perguntas
+            pool.append((f"{n} = ?", montar(n,"maior")))
+            pool.append((f"{n}m = ?", montar(n,"menor")))
+        random.shuffle(pool)
+        return pool
 
     if "quiz" not in st.session_state:
-        st.session_state.quiz = gerar_quiz()
+        st.session_state.quiz = gerar()
         st.session_state.finalizado = False
         st.session_state.respostas = {}
         st.session_state.opcoes = {}
+
+    if st.button("🔄 Novo quiz"):
+        st.session_state.quiz = gerar()
+        st.session_state.finalizado = False
+        st.session_state.respostas = {}
+        st.session_state.opcoes = {}
+        st.rerun()
+
+    perguntas = st.session_state.quiz[:6]
+
+    # =========================================
+    # 🎯 OPÇÕES INTELIGENTES (COM DÚVIDA REAL)
+    # =========================================
 
     def gerar_opcoes(qid, correta):
 
@@ -185,8 +286,9 @@ elif pagina == "🎯 Quiz":
         if len(partes) == 3:
             c, e, g = partes
 
-            base.add(f"{c} Eb {g}")
+            # erros MUITO parecidos (terça/quinta alterada)
             base.add(f"{c} D {g}")
+            base.add(f"{c} Eb {g}")
             base.add(f"{c} E Gb")
             base.add(f"{c} E F#")
 
@@ -198,7 +300,8 @@ elif pagina == "🎯 Quiz":
         ]
 
         while len(base) < 5:
-            base.add(random.choice(extras))
+            op = random.choice(extras)
+            base.add(op)
 
         lista = list(base)
         random.shuffle(lista)
@@ -206,21 +309,24 @@ elif pagina == "🎯 Quiz":
         st.session_state.opcoes[qid] = lista[:5]
         return lista[:5]
 
-    perguntas = st.session_state.quiz[:6]
-
-    st.info("Depois de enviar não pode alterar respostas.")
+    # =========================================
+    # RESPOSTAS (TRAVADAS)
+    # =========================================
 
     if not st.session_state.finalizado:
 
         for i, (q, correta) in enumerate(perguntas):
 
-            if i not in st.session_state.respostas:
-                st.session_state.respostas[i] = st.radio(
-                    q,
-                    gerar_opcoes(i, correta),
-                    key=f"q_{i}",
-                    index=None
-                )
+            st.session_state.respostas[i] = st.radio(
+                q,
+                options=gerar_opcoes(i, correta),
+                key=f"q_{i}",
+                index=None
+            )
+
+    # =========================================
+    # RESULTADO FINAL
+    # =========================================
 
     else:
 
@@ -240,13 +346,6 @@ elif pagina == "🎯 Quiz":
                 st.error(f"❌ Errada → correta: {correta}")
 
         st.success(f"🎯 Você acertou {acertos}/6")
-
-    if st.button("🔄 Novo quiz"):
-        st.session_state.quiz = gerar_quiz()
-        st.session_state.finalizado = False
-        st.session_state.respostas = {}
-        st.session_state.opcoes = {}
-        st.rerun()
 
     if st.button("Ver resultado"):
         st.session_state.finalizado = True
