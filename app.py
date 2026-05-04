@@ -239,13 +239,13 @@ elif pagina == "🎯 Quiz":
 
     notas = ["C","C#","Db","D","D#","Eb","E","F","F#","Gb","G","G#","Ab","A","A#","Bb","B"]
 
+    base = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"]
+
     mapa = {
         "C":0,"C#":1,"Db":1,"D":2,"D#":3,"Eb":3,
         "E":4,"F":5,"F#":6,"Gb":6,"G":7,"G#":8,"Ab":8,
         "A":9,"A#":10,"Bb":10,"B":11
     }
-
-    base = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"]
 
     maior = [0,4,7]
     menor = [0,3,7]
@@ -255,7 +255,7 @@ elif pagina == "🎯 Quiz":
         intervalos = maior if tipo == "maior" else menor
         return " ".join([base[(i+x)%12] for x in intervalos])
 
-    def gerar():
+    def gerar_quiz():
         pool = []
         for n in notas:
             pool.append((f"{n} = ?", montar(n,"maior")))
@@ -263,72 +263,71 @@ elif pagina == "🎯 Quiz":
         random.shuffle(pool)
         return pool
 
+    # =========================
+    # INIT QUIZ
+    # =========================
+
     if "quiz" not in st.session_state:
-        st.session_state.quiz = gerar()
+        st.session_state.quiz = gerar_quiz()
         st.session_state.finalizado = False
         st.session_state.respostas = {}
+        st.session_state.opcoes = {}
 
     if st.button("🔄 Novo quiz"):
-        st.session_state.quiz = gerar()
+        st.session_state.quiz = gerar_quiz()
         st.session_state.finalizado = False
         st.session_state.respostas = {}
+        st.session_state.opcoes = {}
         st.rerun()
 
     perguntas = st.session_state.quiz[:6]
 
     # =========================================
-    # 🎯 DISTRATORES INTELIGENTES (NÍVEL REAL)
+    # 🎯 OPÇÕES FIXAS (NÃO MUDAM MAIS)
     # =========================================
 
-    def gerar_opcoes(correta):
-        """
-        cria alternativas com erro de 1 nota (3ª ou 5ª),
-        ou enarmonia — isso gera dúvida real
-        """
+    def gerar_opcoes_estaveis(qid, correta):
 
-        base_opcoes = []
+        if qid in st.session_state.opcoes:
+            return st.session_state.opcoes[qid]
 
         partes = correta.split()
 
-        # correta
-        base_opcoes.append(correta)
+        opts = [correta]
 
-        # variações REALISTAS
         if len(partes) == 3:
-
             c, e, g = partes
 
-            # erro na terça
-            base_opcoes.append(f"{c} D {g}")
-            base_opcoes.append(f"{c} Eb {g}")
+            opts.append(f"{c} D {g}")
+            opts.append(f"{c} Eb {g}")
+            opts.append(f"{c} E A")
+            opts.append(f"{c} E Gb")
 
-            # erro na quinta
-            base_opcoes.append(f"{c} E A")
-            base_opcoes.append(f"{c} E Gb")
-
-        # garante 5 opções únicas
-        opts = list(set(base_opcoes))
+        extras = [
+            "C E G",
+            "C Eb G",
+            "D F A",
+            "E G B",
+            "F A C",
+            "G B D",
+            "A C E",
+            "B D F"
+        ]
 
         while len(opts) < 5:
-            fake = random.choice([
-                "C E G",
-                "C Eb G",
-                "D F A",
-                "E G B",
-                "F A C",
-                "G B D",
-                "A C E",
-                "B D F"
-            ])
-            if fake not in opts:
-                opts.append(fake)
+            op = random.choice(extras)
+            if op not in opts:
+                opts.append(op)
 
         random.shuffle(opts)
-        return opts[:5]
+        opts = opts[:5]
 
-    # =========================================
-    # RESPONDER
-    # =========================================
+        st.session_state.opcoes[qid] = opts
+        return opts
+
+    # =========================
+    # RESPOSTAS
+    # =========================
 
     if not st.session_state.finalizado:
 
@@ -336,14 +335,14 @@ elif pagina == "🎯 Quiz":
 
             st.session_state.respostas[i] = st.radio(
                 q,
-                options=gerar_opcoes(correta),
+                options=gerar_opcoes_estaveis(i, correta),
                 key=f"q_{i}",
                 index=None
             )
 
-    # =========================================
+    # =========================
     # RESULTADO TRAVADO
-    # =========================================
+    # =========================
 
     else:
 
