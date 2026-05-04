@@ -1,41 +1,11 @@
 import streamlit as st
 
 # =========================================
-# 🎹 TÍTULO
-# =========================================
-st.title("🎹 Aula Completa de Música")
-
-# =========================================
-# 🎓 ESCALAS E TEORIA
-# =========================================
-st.header("📚 Escalas Musicais")
-
-st.subheader("🎼 Escala maior")
-st.write("A escala maior é alegre e base da música.")
-st.code("C - D - E - F - G - A - B - C")
-
-st.subheader("🎼 Escala menor")
-st.write("A escala menor tem som mais triste/suave.")
-st.code("C - D - Eb - F - G - Ab - Bb - C")
-
-st.header("🎵 Sustenido e Bemol")
-
-st.subheader("🎼 Sustenido (#)")
-st.write("Sobe meio tom")
-st.code("C → C#")
-
-st.subheader("🎼 Bemol (b)")
-st.write("Desce meio tom")
-st.code("D → Db")
-
-st.write("---")
-
-# =========================================
-# 🎸 SISTEMA DE ACORDES
+# 🎹 LÓGICA DOS ACORDES (SEU CÓDIGO)
 # =========================================
 
-notas_sharp = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"]
-notas_flat  = ["C","Db","D","Eb","E","F","Gb","G","Ab","A","Bb","B"]
+notas_sharp = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
+notas_flat  = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"]
 
 def usar_bemol(acorde):
     return "b" in acorde
@@ -71,6 +41,11 @@ def gerar_acorde(acorde):
         "m": [0,3,7],
         "7": [0,4,7,10],
         "m7": [0,3,7,10],
+        "7m": [0,3,7,10],
+        "7M": [0,4,7,11],
+        "M7": [0,4,7,11],
+        "9": [0,4,7,10,14],
+        "m9": [0,3,7,10,14],
         "add9": [0,4,7,14],
         "sus2": [0,2,7],
         "sus4": [0,5,7],
@@ -89,23 +64,66 @@ def gerar_acorde(acorde):
     }
 
 # =========================================
-# 🎯 INTERAÇÃO
+# 🌐 INTERFACE DO SITE
 # =========================================
 
-st.header("🎹 Teste seus acordes")
+st.title("🎹 Sistema Completo de Acordes + Teoria")
 
-acorde = st.text_input("Digite um acorde (ex: C, Cm, C7, G/B)")
+# =========================================
+# 🎓 TUTORIAL COMPLETO (AGORA VISÍVEL)
+# =========================================
 
-if st.button("Gerar acorde"):
+st.header("🎓 TUTORIAL COMPLETO")
+
+st.subheader("🎵 O que é um acorde?")
+st.write("Acorde é quando tocamos várias notas ao mesmo tempo.")
+
+st.write("MAIOR: 1 + 3 + 5")
+st.code("C → C E G")
+
+st.write("MENOR: 1 + b3 + 5")
+st.code("Cm → C Eb G")
+
+st.write("COM 7:")
+st.code("C7 → C E G Bb")
+st.code("C7M → C E G B")
+
+st.write("ADD9:")
+st.code("Cadd9 → C E G D")
+
+st.write("SUS:")
+st.code("Csus2 → C D G")
+st.code("Csus4 → C F G")
+
+st.write("BAIXO DIFERENTE:")
+st.code("G/B → acorde G com baixo B")
+
+st.write("SUSTENIDO (#) sobe meio tom")
+st.write("BEMOL (b) desce meio tom")
+
+st.write("👉 Teste: C, Cm, C7, Cadd9, G/B, F#, Bb")
+
+st.write("---")
+
+# =========================================
+# 🎹 TESTE INTERATIVO
+# =========================================
+
+st.header("🎯 Teste seus acordes")
+
+acorde = st.text_input("Digite um acorde")
+
+if st.button("Gerar"):
     resultado = gerar_acorde(acorde)
 
     if resultado:
-        st.success(f"Notas do acorde: {resultado['notas']}")
+        st.success(f"Notas: {resultado['notas']}")
 
         if resultado["baixo"]:
             st.info(f"Baixo: {resultado['baixo']}")
 
         st.write("🎹 Teclado:")
+
         base = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"]
 
         teclado = ""
@@ -118,4 +136,4 @@ if st.button("Gerar acorde"):
         st.text(teclado)
 
     else:
-        st.error("Acorde não reconhecido")
+        st.error("Acorde não reconhecido!")
