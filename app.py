@@ -237,37 +237,102 @@ elif pagina == "🎯 Quiz":
 
     st.header("🎯 Quiz de Acordes")
 
-    notas = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"]
+    # =========================
+    # UNIVERSO COMPLETO (COM BEMOL REAL)
+    # =========================
 
-    intervalos = {
-        "maior": [0,4,7],
-        "menor": [0,3,7]
-    }
+    notas = [
+        "C","C#","Db","D","D#","Eb","E","F","F#","Gb",
+        "G","G#","Ab","A","A#","Bb","B"
+    ]
+
+    # intervalos reais
+    maior = [0,4,7]
+    menor = [0,3,7]
 
     def montar(nota, tipo):
-        i = notas.index(nota)
-        return " ".join([notas[(i+x)%12] for x in intervalos[tipo]])
+        base = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"]
 
-    def gerar_quiz():
+        # mapa simples pra achar posição mesmo com bemol
+        mapa = {
+            "C":0,"C#":1,"Db":1,"D":2,"D#":3,"Eb":3,
+            "E":4,"F":5,"F#":6,"Gb":6,"G":7,"G#":8,"Ab":8,
+            "A":9,"A#":10,"Bb":10,"B":11
+        }
+
+        i = mapa[nota]
+
+        intervalos = maior if tipo == "maior" else menor
+
+        return " ".join([
+            base[(i+x)%12] for x in intervalos
+        ])
+
+    # =========================
+    # GERADOR INTELIGENTE (SEM REPETIÇÃO SIMPLES)
+    # =========================
+
+    def gerar():
         pool = []
+
         for n in notas:
+
+            # MAIOR
             pool.append((f"{n} = ?", montar(n,"maior")))
+
+            # MENOR
             pool.append((f"{n}m = ?", montar(n,"menor")))
+
         random.shuffle(pool)
         return pool
 
+    # =========================
+    # INIT
+    # =========================
+
     if "quiz" not in st.session_state:
-        st.session_state.quiz = gerar_quiz()
+        st.session_state.quiz = gerar()
         st.session_state.finalizado = False
         st.session_state.respostas = {}
 
     if st.button("🔄 Novo quiz"):
-        st.session_state.quiz = gerar_quiz()
+        st.session_state.quiz = gerar()
         st.session_state.finalizado = False
         st.session_state.respostas = {}
         st.rerun()
 
     perguntas = st.session_state.quiz[:6]
+
+    # =========================
+    # OPÇÕES (DISTRATORES INTELIGENTES)
+    # =========================
+
+    def distratores(correta):
+        # cria erros reais musicais (não aleatórios bobos)
+        base = [
+            "C E G",
+            "C Eb G",
+            "D F A",
+            "E G B",
+            "F A C",
+            "G B D",
+            "A C E",
+            "B D F"
+        ]
+
+        opts = [correta]
+
+        while len(opts) < 5:
+            op = random.choice(base)
+            if op not in opts:
+                opts.append(op)
+
+        random.shuffle(opts)
+        return opts
+
+    # =========================
+    # RESPONDER
+    # =========================
 
     if not st.session_state.finalizado:
 
@@ -275,10 +340,14 @@ elif pagina == "🎯 Quiz":
 
             st.session_state.respostas[i] = st.radio(
                 q,
-                options=[correta, "C E G", "D F A", "E G B", "F A C"],
+                options=distratores(correta),
                 key=f"q_{i}",
                 index=None
             )
+
+    # =========================
+    # RESULTADO TRAVADO
+    # =========================
 
     else:
 
