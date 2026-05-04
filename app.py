@@ -237,58 +237,31 @@ elif pagina == "🎯 Quiz":
 
     st.header("🎯 Quiz de Acordes")
 
-    # =========================
-    # UNIVERSO COMPLETO (COM BEMOL REAL)
-    # =========================
+    notas = ["C","C#","Db","D","D#","Eb","E","F","F#","Gb","G","G#","Ab","A","A#","Bb","B"]
 
-    notas = [
-        "C","C#","Db","D","D#","Eb","E","F","F#","Gb",
-        "G","G#","Ab","A","A#","Bb","B"
-    ]
+    mapa = {
+        "C":0,"C#":1,"Db":1,"D":2,"D#":3,"Eb":3,
+        "E":4,"F":5,"F#":6,"Gb":6,"G":7,"G#":8,"Ab":8,
+        "A":9,"A#":10,"Bb":10,"B":11
+    }
 
-    # intervalos reais
+    base = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"]
+
     maior = [0,4,7]
     menor = [0,3,7]
 
     def montar(nota, tipo):
-        base = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"]
-
-        # mapa simples pra achar posição mesmo com bemol
-        mapa = {
-            "C":0,"C#":1,"Db":1,"D":2,"D#":3,"Eb":3,
-            "E":4,"F":5,"F#":6,"Gb":6,"G":7,"G#":8,"Ab":8,
-            "A":9,"A#":10,"Bb":10,"B":11
-        }
-
         i = mapa[nota]
-
         intervalos = maior if tipo == "maior" else menor
-
-        return " ".join([
-            base[(i+x)%12] for x in intervalos
-        ])
-
-    # =========================
-    # GERADOR INTELIGENTE (SEM REPETIÇÃO SIMPLES)
-    # =========================
+        return " ".join([base[(i+x)%12] for x in intervalos])
 
     def gerar():
         pool = []
-
         for n in notas:
-
-            # MAIOR
             pool.append((f"{n} = ?", montar(n,"maior")))
-
-            # MENOR
             pool.append((f"{n}m = ?", montar(n,"menor")))
-
         random.shuffle(pool)
         return pool
-
-    # =========================
-    # INIT
-    # =========================
 
     if "quiz" not in st.session_state:
         st.session_state.quiz = gerar()
@@ -303,36 +276,59 @@ elif pagina == "🎯 Quiz":
 
     perguntas = st.session_state.quiz[:6]
 
-    # =========================
-    # OPÇÕES (DISTRATORES INTELIGENTES)
-    # =========================
+    # =========================================
+    # 🎯 DISTRATORES INTELIGENTES (NÍVEL REAL)
+    # =========================================
 
-    def distratores(correta):
-        # cria erros reais musicais (não aleatórios bobos)
-        base = [
-            "C E G",
-            "C Eb G",
-            "D F A",
-            "E G B",
-            "F A C",
-            "G B D",
-            "A C E",
-            "B D F"
-        ]
+    def gerar_opcoes(correta):
+        """
+        cria alternativas com erro de 1 nota (3ª ou 5ª),
+        ou enarmonia — isso gera dúvida real
+        """
 
-        opts = [correta]
+        base_opcoes = []
+
+        partes = correta.split()
+
+        # correta
+        base_opcoes.append(correta)
+
+        # variações REALISTAS
+        if len(partes) == 3:
+
+            c, e, g = partes
+
+            # erro na terça
+            base_opcoes.append(f"{c} D {g}")
+            base_opcoes.append(f"{c} Eb {g}")
+
+            # erro na quinta
+            base_opcoes.append(f"{c} E A")
+            base_opcoes.append(f"{c} E Gb")
+
+        # garante 5 opções únicas
+        opts = list(set(base_opcoes))
 
         while len(opts) < 5:
-            op = random.choice(base)
-            if op not in opts:
-                opts.append(op)
+            fake = random.choice([
+                "C E G",
+                "C Eb G",
+                "D F A",
+                "E G B",
+                "F A C",
+                "G B D",
+                "A C E",
+                "B D F"
+            ])
+            if fake not in opts:
+                opts.append(fake)
 
         random.shuffle(opts)
-        return opts
+        return opts[:5]
 
-    # =========================
+    # =========================================
     # RESPONDER
-    # =========================
+    # =========================================
 
     if not st.session_state.finalizado:
 
@@ -340,14 +336,14 @@ elif pagina == "🎯 Quiz":
 
             st.session_state.respostas[i] = st.radio(
                 q,
-                options=distratores(correta),
+                options=gerar_opcoes(correta),
                 key=f"q_{i}",
                 index=None
             )
 
-    # =========================
+    # =========================================
     # RESULTADO TRAVADO
-    # =========================
+    # =========================================
 
     else:
 
