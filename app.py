@@ -74,68 +74,142 @@ pagina = st.sidebar.selectbox(
 )
 
 # =========================================
-# 📚 TEORIA COMPLETA (SEM CORTES)
+# 📚 TEORIA MUSICAL COMPLETA (EXPANDIDA DE VERDADE)
 # =========================================
 
 if pagina == "📚 Teoria":
 
     st.header("🎓 Teoria Musical Completa")
 
-    st.subheader("🎵 O que é música")
+    st.subheader("🎵 O que é música?")
     st.write("""
-Música é a organização dos sons no tempo.
+Música é a organização consciente dos sons no tempo.
 
-Ela possui 4 elementos principais:
-- Altura (grave/agudo)
-- Duração
-- Intensidade
-- Timbre
+Ela não é apenas “som bonito”, mas um sistema estruturado que combina:
+- Altura (grave ou agudo)
+- Duração (tempo das notas)
+- Intensidade (volume)
+- Timbre (identidade sonora)
+
+Tudo isso trabalha junto para criar emoção e harmonia.
 """)
 
-    st.subheader("🎼 Notas musicais")
-    st.code("C D E F G A B")
+    st.subheader("🎼 O que são notas musicais?")
+    st.write("""
+As notas musicais são os sons básicos usados para formar toda a música ocidental.
 
-    st.subheader("🎹 Semitom e Tom")
-    st.write("Semitom = menor distância entre notas")
-    st.write("Tom = 2 semitons")
+Elas são 7:
 
-    st.subheader("🎼 Sustenidos e bemóis")
-    st.write("# = sobe meio tom")
-    st.write("b = desce meio tom")
+C - D - E - F - G - A - B
 
-    st.code("""
-C# = Db
-D# = Eb
-F# = Gb
-G# = Ab
-A# = Bb
+Essas notas se repetem em diferentes alturas (oitavas).
 """)
 
-    st.subheader("🎼 Enarmonia")
-    st.write("Mesma nota, nomes diferentes:")
-    st.code("C# = Db | D# = Eb | F# = Gb | G# = Ab | A# = Bb")
+    st.subheader("🎹 O que é tom e semitom?")
+    st.write("""
+- Semitom = menor distância possível entre duas notas
+- Tom = dois semitons
 
-    st.subheader("🎼 Escala maior")
-    st.code("T - T - S - T - T - T - S")
-    st.code("C D E F G A B")
+Exemplo no teclado:
+- C → C# = 1 semitom
+- C → D = 1 tom
+""")
 
-    st.subheader("🎼 Escala menor")
-    st.code("T - S - T - T - S - T - T")
-    st.code("A B C D E F G")
+    st.subheader("🎼 Sustenidos (#) e bemóis (b)")
+    st.write("""
+Eles servem para alterar a altura das notas:
 
-    st.subheader("🎼 Formação de acordes")
-    st.code("Maior = 1 + 3 + 5 → C E G")
-    st.code("Menor = 1 + b3 + 5 → C Eb G")
+- # (sustenido) → sobe meio tom
+- b (bemol) → desce meio tom
+
+Exemplos reais:
+
+C# = Db  
+D# = Eb  
+F# = Gb  
+G# = Ab  
+A# = Bb  
+
+Isso é chamado de ENARMONIA (mesma nota com nomes diferentes).
+""")
+
+    st.subheader("🎼 Enarmonia (explicação simples)")
+    st.write("""
+Enarmonia significa que duas notas diferentes no nome podem ser a mesma no som.
+
+Exemplo:
+- C# e Db soam iguais
+- D# e Eb soam iguais
+
+A diferença é apenas teórica (notação musical).
+""")
+
+    st.subheader("🎼 Escala maior (base da música)")
+    st.write("""
+A escala maior é a estrutura principal da música ocidental.
+
+Fórmula:
+T - T - S - T - T - T - S
+
+Exemplo em C:
+C D E F G A B
+""")
+
+    st.subheader("🎼 Escala menor (som emocional)")
+    st.write("""
+A escala menor tem som mais triste ou emocional.
+
+Fórmula:
+T - S - T - T - S - T - T
+
+Exemplo:
+A B C D E F G
+""")
+
+    st.subheader("🎼 Como acordes são formados")
+    st.write("""
+Acordes são combinações de notas da escala.
+
+🎹 Acorde maior:
+1 + 3 + 5 → C E G
+
+🎹 Acorde menor:
+1 + b3 + 5 → C Eb G
+""")
+
+    st.subheader("🎼 Por que acordes funcionam?")
+    st.write("""
+Porque eles seguem relações matemáticas entre frequências.
+
+- 3ª define se é maior ou menor
+- 5ª dá estabilidade
+- 7ª cria tensão emocional
+""")
 
     st.subheader("🎼 Sétimas")
-    st.code("C7 = C E G Bb")
-    st.code("Cmaj7 = C E G B")
+    st.write("""
+A sétima adiciona profundidade emocional ao acorde.
+
+Exemplo:
+C7 = C E G Bb  
+Cmaj7 = C E G B
+""")
 
     st.subheader("🎼 Campo harmônico")
-    st.code("C Dm Em F G Am Bdim")
+    st.write("""
+É o conjunto de acordes que pertencem a uma tonalidade.
 
-    st.subheader("🎯 Resumo")
-    st.write("Escala → Intervalos → Acordes → Harmonia")
+Exemplo em C:
+
+C Dm Em F G Am Bdim
+""")
+
+    st.subheader("🎯 Conclusão")
+    st.write("""
+Toda música funciona assim:
+
+ESCALA → INTERVALOS → ACORDES → HARMONIA → EMOÇÃO
+""")
 
 # =========================================
 # 🎹 PRÁTICA
@@ -156,7 +230,7 @@ elif pagina == "🎹 Prática":
             st.error("❌ Acorde inválido")
 
 # =========================================
-# 🎯 QUIZ (100% CORRIGIDO)
+# 🎯 QUIZ
 # =========================================
 
 elif pagina == "🎯 Quiz":
@@ -176,21 +250,17 @@ elif pagina == "🎯 Quiz":
 
     def gerar_quiz():
         pool = []
-
         for n in notas:
             pool.append((f"{n} = ?", montar(n,"maior")))
             pool.append((f"{n}m = ?", montar(n,"menor")))
-
         random.shuffle(pool)
         return pool
 
-    # inicializa
     if "quiz" not in st.session_state:
         st.session_state.quiz = gerar_quiz()
         st.session_state.finalizado = False
         st.session_state.respostas = {}
 
-    # novo quiz
     if st.button("🔄 Novo quiz"):
         st.session_state.quiz = gerar_quiz()
         st.session_state.finalizado = False
@@ -199,24 +269,16 @@ elif pagina == "🎯 Quiz":
 
     perguntas = st.session_state.quiz[:6]
 
-    # =========================
-    # RESPONDER (SEM PRÉ-MARCAR)
-    # =========================
-
     if not st.session_state.finalizado:
 
         for i, (q, correta) in enumerate(perguntas):
 
             st.session_state.respostas[i] = st.radio(
                 q,
-                options=[correta, "C E G", "D F A", "E G B", "F A C", "G B D"],
+                options=[correta, "C E G", "D F A", "E G B", "F A C"],
                 key=f"q_{i}",
                 index=None
             )
-
-    # =========================
-    # RESULTADO TRAVADO
-    # =========================
 
     else:
 
@@ -242,4 +304,3 @@ elif pagina == "🎯 Quiz":
     if st.button("Ver resultado"):
         st.session_state.finalizado = True
         st.rerun()
-       
