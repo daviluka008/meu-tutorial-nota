@@ -188,6 +188,9 @@ elif pagina == "🎯 Quiz":
         intervalos = maior if tipo == "maior" else menor
         return " ".join([base[(i+x)%12] for x in intervalos])
 
+    # =========================================
+    # 🎯 GERAR BANCO COMPLETO (SEM ERRO HARMÔNICO)
+    # =========================================
     def gerar():
         pool = []
         for n in notas:
@@ -196,63 +199,74 @@ elif pagina == "🎯 Quiz":
         random.shuffle(pool)
         return pool
 
+    # =========================================
+    # SESSION STATE LIMPO (NÃO PREMARCA NADA)
+    # =========================================
     if "quiz" not in st.session_state:
         st.session_state.quiz = gerar()
         st.session_state.finalizado = False
         st.session_state.respostas = {}
-        st.session_state.opcoes = {}
 
     if st.button("🔄 Novo quiz"):
         st.session_state.quiz = gerar()
         st.session_state.finalizado = False
         st.session_state.respostas = {}
-        st.session_state.opcoes = {}
         st.rerun()
 
     perguntas = st.session_state.quiz[:6]
 
-    def gerar_opcoes(qid, correta):
+    # =========================================
+    # 🎯 OPÇÕES FIXAS (4 ALTERNATIVAS SEM REPETIR)
+    # =========================================
+    def gerar_opcoes(correta, tipo):
 
-        if qid in st.session_state.opcoes:
-            return st.session_state.opcoes[qid]
-
-        base = set([correta])
+        opcoes = set()
+        opcoes.add(correta)
 
         partes = correta.split()
 
+        # TRÍADES
         if len(partes) == 3:
             c, e, g = partes
-            base.add(f"{c} D {g}")
-            base.add(f"{c} Eb {g}")
-            base.add(f"{c} E Gb")
-            base.add(f"{c} E F#")
 
-        extras = [
-            "C E G","C Eb G","D F A","D F# A",
-            "E G B","F A C","F Ab C",
-            "G B D","G Bb D","A C E",
-            "A C# E","B D F","B D# F#"
-        ]
+            opcoes.update([
+                f"{c} Eb {g}",
+                f"{c} D# {g}",
+                f"{c} E G",
+                f"{c} D G"
+            ])
 
-        while len(base) < 5:
-            base.add(random.choice(extras))
+        # garante sempre 4 opções únicas
+        while len(opcoes) < 4:
+            n = random.choice(notas)
+            if tipo == "maior":
+                opcoes.add(montar(n,"maior"))
+            else:
+                opcoes.add(montar(n,"menor"))
 
-        lista = list(base)
+        lista = list(opcoes)
         random.shuffle(lista)
+        return lista[:4]
 
-        st.session_state.opcoes[qid] = lista[:5]
-        return lista[:5]
-
+    # =========================================
+    # 🎯 BLOQUEIO DE RESPOSTA (CORRETO)
+    # =========================================
     if not st.session_state.finalizado:
 
         for i, (q, correta) in enumerate(perguntas):
+
+            tipo = "maior" if "=" in q else "menor"
+
             st.session_state.respostas[i] = st.radio(
                 q,
-                options=gerar_opcoes(i, correta),
+                options=gerar_opcoes(correta, tipo),
                 key=f"q_{i}",
                 index=None
             )
 
+    # =========================================
+    # 📊 RESULTADO FINAL (TRAVADO)
+    # =========================================
     else:
 
         acertos = 0
