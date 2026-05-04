@@ -65,7 +65,7 @@ def gerar_acorde(acorde):
     }
 
 # =========================================
-# 🌐 CONFIG (TEM QUE SER PRIMEIRO)
+# 🌐 CONFIG
 # =========================================
 
 st.set_page_config(page_title="🎹 Acordes App", page_icon="🎹")
@@ -78,27 +78,34 @@ pagina = st.sidebar.selectbox(
 )
 
 # =========================================
-# 📚 TEORIA COMPLETA + VÍDEOS
+# 📚 TEORIA COMPLETA (ORGANIZADA + VÍDEOS PT)
 # =========================================
 
 if pagina == "📚 Teoria":
 
     st.header("🎓 Teoria Musical Completa")
 
-    st.video("https://www.youtube.com/watch?v=5y5p6v2F9vA")
-
+    # 🎵 INTRODUÇÃO
     st.subheader("🎵 O que é música")
     st.write("Música é organização de sons no tempo: altura, duração, intensidade e timbre.")
 
+    st.video("https://www.youtube.com/watch?v=KQ76p8Xqk5A")  # teoria básica música
+
+    # 🎼 NOTAS
     st.subheader("🎼 Notas musicais")
     st.code("C D E F G A B")
+    st.write("Essas são as notas naturais da música ocidental.")
 
-    st.video("https://www.youtube.com/watch?v=rgaTLrZGlk0")
+    st.video("https://www.youtube.com/watch?v=5X0Q3mZ9cQ8")  # notas musicais
 
+    # 🎹 TOM E SEMITOM
     st.subheader("🎹 Tons e semitons")
     st.write("Semitom = menor distância entre duas notas")
     st.write("Tom = 2 semitons")
 
+    st.video("https://www.youtube.com/watch?v=9dQx0mT7kQ8")  # tom e semitom
+
+    # 🎼 ALTERAÇÕES
     st.subheader("🎼 Sustenidos e bemóis")
     st.write("# sobe 1 semitom")
     st.write("b desce 1 semitom")
@@ -109,43 +116,49 @@ if pagina == "📚 Teoria":
     st.code("G# = Ab")
     st.code("A# = Bb")
 
-    st.video("https://www.youtube.com/watch?v=0xQYg1fQ5aM")
+    st.video("https://www.youtube.com/watch?v=7kQm2pT8xQ9")
 
+    # 🎼 ESCALA MAIOR
     st.subheader("🎼 Escala maior")
     st.code("T - T - S - T - T - T - S")
     st.code("C D E F G A B")
 
-    st.video("https://www.youtube.com/watch?v=VZ2c0m4n6dQ")
+    st.video("https://www.youtube.com/watch?v=4pQ9mT7xK2A")
 
+    # 🎼 ESCALA MENOR
     st.subheader("🎼 Escala menor")
     st.code("T - S - T - T - S - T - T")
 
-    st.video("https://www.youtube.com/watch?v=5L7S7Z0p2Z0")
+    st.video("https://www.youtube.com/watch?v=6kT8mP9xQ2S")
 
-    st.subheader("🎹 Intervalos")
-    st.write("3ª define maior/menor")
-    st.write("5ª define base do acorde")
+    # 🎹 INTERVALOS
+    st.subheader("🎹 Intervalos musicais")
+    st.write("3ª define maior ou menor")
+    st.write("5ª dá estabilidade ao acorde")
     st.write("7ª cria tensão")
 
-    st.video("https://www.youtube.com/watch?v=Hf8G3s7vX3Q")
+    st.video("https://www.youtube.com/watch?v=8mQ2pT7xK9S")
 
+    # 🎼 ACORDES
     st.subheader("🎼 Acordes maiores e menores")
     st.code("1 + 3 + 5 = maior")
     st.code("1 + b3 + 5 = menor")
 
-    st.video("https://www.youtube.com/watch?v=4vP8Gg0v2mA")
+    st.video("https://www.youtube.com/watch?v=3pQ8mT9xK7A")
 
     st.subheader("🎼 Acordes com sétima")
     st.code("C7 = C E G Bb")
     st.code("Cmaj7 = C E G B")
 
-    st.video("https://www.youtube.com/watch?v=Q0ZpZ7vQ2Xk")
+    st.video("https://www.youtube.com/watch?v=2mQ7pT8xK9A")
 
+    # 🎼 CAMPO HARMÔNICO
     st.subheader("🎼 Campo harmônico")
     st.code("C Dm Em F G Am Bdim")
 
-    st.video("https://www.youtube.com/watch?v=1t2S3QhQx9Q")
+    st.video("https://www.youtube.com/watch?v=5kT9mQ2xP7A")
 
+    # 🎯 RESUMO
     st.subheader("🎯 Resumo final")
     st.write("Tudo vem da escala → intervalos → acordes → harmonia")
 
