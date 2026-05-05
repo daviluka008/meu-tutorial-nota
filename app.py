@@ -4,7 +4,7 @@ import json
 import os
 
 # =========================================
-# 💾 USUÁRIOS + PROGRESSO
+# 🔐 USUÁRIOS + PROGRESSO
 # =========================================
 
 ARQ_USUARIOS = "usuarios.json"
@@ -30,10 +30,6 @@ def salvar_progresso(data):
     with open(ARQ_PROGRESSO, "w") as f:
         json.dump(data, f)
 
-# =========================================
-# 🔐 STATE
-# =========================================
-
 if "usuarios" not in st.session_state:
     st.session_state.usuarios = carregar_usuarios()
 
@@ -52,7 +48,7 @@ if "usuario" not in st.session_state:
 
 def login():
 
-    st.title("🔐 Login")
+    st.title("🔐 Login do Sistema")
 
     modo = st.radio("Escolha", ["Entrar", "Criar conta"])
 
@@ -61,20 +57,20 @@ def login():
         email = st.text_input("Email")
         senha = st.text_input("Senha", type="password")
 
-        if st.button("Criar"):
+        if st.button("Criar conta"):
 
             if email == "" or senha == "":
-                st.error("Preencha tudo")
+                st.error("Preencha todos os campos")
                 return
 
             if email in st.session_state.usuarios:
-                st.error("Já existe")
+                st.error("Usuário já existe")
                 return
 
             st.session_state.usuarios[email] = senha
             salvar_usuarios(st.session_state.usuarios)
 
-            st.success("Conta criada")
+            st.success("Conta criada!")
 
     else:
 
@@ -84,13 +80,11 @@ def login():
         if st.button("Entrar"):
 
             if email in st.session_state.usuarios and st.session_state.usuarios[email] == senha:
-
                 st.session_state.logado = True
                 st.session_state.usuario = email
                 st.rerun()
-
             else:
-                st.error("Erro login")
+                st.error("Login inválido")
 
 if not st.session_state.logado:
     login()
@@ -107,10 +101,11 @@ def get_progress():
     return st.session_state.progresso[u]
 
 # =========================================
-# 🎹 ACORDES (SEU ORIGINAL MANTIDO)
+# 🎹 LÓGICA DOS ACORDES (SEU ORIGINAL)
 # =========================================
 
 notas_sharp = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"]
+notas_flat = ["C","Db","D","Eb","E","F","Gb","G","Ab","A","Bb","B"]
 
 def separar_acorde(acorde):
     if len(acorde) > 1 and acorde[1] in ["#","b"]:
@@ -129,10 +124,12 @@ def gerar_acorde(acorde):
 
     raiz, tipo = separar_acorde(acorde_principal)
 
-    if raiz not in notas_sharp:
+    lista = notas_sharp if raiz in notas_sharp else notas_flat
+
+    if raiz not in lista:
         return None
 
-    i = notas_sharp.index(raiz)
+    i = lista.index(raiz)
 
     tipos = {
         "": [0,4,7],
@@ -151,7 +148,7 @@ def gerar_acorde(acorde):
     if tipo not in tipos:
         return None
 
-    notas = [notas_sharp[(i+x)%12] for x in tipos[tipo]]
+    notas = [lista[(i+x)%12] for x in tipos[tipo]]
 
     return {"notas": notas}
 
@@ -161,7 +158,7 @@ def gerar_acorde(acorde):
 
 st.set_page_config(page_title="🎹 Acordes App", page_icon="🎹")
 
-st.title("🎹 Sistema Completo")
+st.title("🎹 Sistema Completo de Música")
 
 pagina = st.sidebar.selectbox(
     "Menu",
@@ -169,7 +166,7 @@ pagina = st.sidebar.selectbox(
 )
 
 # =========================================
-# 📚 TEORIA (EXPANDIDA + CURSO)
+# 📚 TEORIA (CURSO COMPLETO)
 # =========================================
 
 if pagina == "📚 Teoria":
@@ -179,53 +176,79 @@ if pagina == "📚 Teoria":
     prog = get_progress()
     nivel = prog["nivel"]
 
-    st.write(f"📊 Nível atual: {nivel}")
+    st.write(f"📊 Seu nível: {nivel}")
 
-    # NÍVEL 1
+    # =========================
+    # 🔰 NÍVEL 1
+    # =========================
     st.subheader("🔰 Nível 1 - Fundamentos")
 
     st.write("""
-- Notas musicais
-- Semitom e tom
-- Sistema 12 notas
+- Notas musicais (C D E F G A B)
+- Semitom e Tom
+- Escala cromática
 """)
 
     if nivel >= 1:
-        if st.button("Concluir nível 1"):
+        if st.button("Concluir Nível 1"):
             prog["nivel"] = 2
             salvar_progresso(st.session_state.progresso)
             st.rerun()
     else:
         st.warning("Bloqueado")
 
-    # NÍVEL 2
+    # =========================
+    # 🎹 NÍVEL 2
+    # =========================
     st.subheader("🎹 Nível 2 - Acordes")
 
     if nivel >= 2:
         st.write("""
-- Acordes maiores e menores
-- Formação por terças
+- Tríades (maior e menor)
+- Formação de acordes
+- Intervalos básicos
 """)
 
-        if st.button("Concluir nível 2"):
+        if st.button("Concluir Nível 2"):
             prog["nivel"] = 3
             salvar_progresso(st.session_state.progresso)
             st.rerun()
     else:
         st.warning("Bloqueado")
 
-    # NÍVEL 3
+    # =========================
+    # 🔥 NÍVEL 3
+    # =========================
     st.subheader("🔥 Nível 3 - Harmonia")
 
     if nivel >= 3:
         st.write("""
 - Campo harmônico
 - Funções harmônicas
-- Progressões
+- Progressões II–V–I
 """)
 
-        if st.button("Finalizar curso"):
+        if st.button("Concluir Nível 3"):
             prog["nivel"] = 4
+            salvar_progresso(st.session_state.progresso)
+            st.rerun()
+    else:
+        st.warning("Bloqueado")
+
+    # =========================
+    # 🚀 NÍVEL 4
+    # =========================
+    st.subheader("🚀 Nível 4 - Avançado")
+
+    if nivel >= 4:
+        st.write("""
+- Acordes com extensão (9, 11, 13)
+- Substituições harmônicas
+- Modulação
+""")
+
+        if st.button("Finalizar Curso"):
+            prog["nivel"] = 5
             salvar_progresso(st.session_state.progresso)
             st.success("Curso completo!")
             st.balloons()
@@ -233,12 +256,12 @@ if pagina == "📚 Teoria":
         st.warning("Bloqueado")
 
 # =========================================
-# 🎹 PRÁTICA (NÃO ALTERADO)
+# 🎹 PRÁTICA (INALTERADA)
 # =========================================
 
 elif pagina == "🎹 Prática":
 
-    st.header("Prática")
+    st.header("🎹 Prática de Acordes")
 
     acorde = st.text_input("Digite um acorde")
 
@@ -250,12 +273,12 @@ elif pagina == "🎹 Prática":
             st.error("Inválido")
 
 # =========================================
-# 🎯 QUIZ (NÃO ALTERADO)
+# 🎯 QUIZ (INALTERADO)
 # =========================================
 
 elif pagina == "🎯 Quiz":
 
-    st.header("Quiz")
+    st.header("🎯 Quiz de Acordes")
 
     escala = notas_sharp
     mapa = {n:i for i,n in enumerate(escala)}
@@ -290,9 +313,9 @@ elif pagina == "🎯 Quiz":
 
     else:
 
-        acertos=0
+        acertos = 0
         for i,(q,c) in enumerate(perguntas):
-            if st.session_state.res[i]==c:
-                acertos+=1
+            if st.session_state.res[i] == c:
+                acertos += 1
 
         st.success(f"Você acertou {acertos}/6")
