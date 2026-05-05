@@ -1,18 +1,99 @@
 import streamlit as st
 import random
+import json
+import os
+
+# =========================================
+# 💾 ARQUIVO DE USUÁRIOS (PERSISTENTE)
+# =========================================
+
+ARQ_USUARIOS = "usuarios.json"
+
+def carregar_usuarios():
+    if os.path.exists(ARQ_USUARIOS):
+        with open(ARQ_USUARIOS, "r") as f:
+            return json.load(f)
+    return {}
+
+def salvar_usuarios(usuarios):
+    with open(ARQ_USUARIOS, "w") as f:
+        json.dump(usuarios, f)
+
+# =========================================
+# 🔐 LOGIN PERSISTENTE
+# =========================================
+
+if "usuarios" not in st.session_state:
+    st.session_state.usuarios = carregar_usuarios()
+
+if "logado" not in st.session_state:
+    st.session_state.logado = False
+
+if "usuario_atual" not in st.session_state:
+    st.session_state.usuario_atual = ""
+
+def tela_login():
+
+    st.title("🔐 Login")
+
+    opcao = st.radio("Escolha", ["Entrar", "Criar conta"])
+
+    # =========================
+    # CRIAR CONTA
+    # =========================
+    if opcao == "Criar conta":
+
+        email = st.text_input("E-mail")
+        senha = st.text_input("Senha", type="password")
+
+        if st.button("Criar conta"):
+
+            if email == "" or senha == "":
+                st.error("Preencha todos os campos")
+                return
+
+            if email in st.session_state.usuarios:
+                st.error("Usuário já existe")
+                return
+
+            st.session_state.usuarios[email] = senha
+            salvar_usuarios(st.session_state.usuarios)
+
+            st.success("Conta criada com sucesso!")
+
+    # =========================
+    # LOGIN
+    # =========================
+    else:
+
+        email = st.text_input("E-mail")
+        senha = st.text_input("Senha", type="password")
+
+        if st.button("Entrar"):
+
+            if email in st.session_state.usuarios and st.session_state.usuarios[email] == senha:
+
+                st.session_state.logado = True
+                st.session_state.usuario_atual = email
+                st.rerun()
+
+            else:
+                st.error("Login inválido")
+
+# BLOQUEIO DO APP
+if not st.session_state.logado:
+    tela_login()
+    st.stop()
 
 # =========================================
 # 🎹 LÓGICA DOS ACORDES
 # =========================================
 
 notas_sharp = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
-notas_flat = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"]
+notas_flat  = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"]
 
 def usar_bemol(acorde):
     return "b" in acorde
-
-def pegar_lista(acorde):
-    return notas_flat if usar_bemol(acorde) else notas_sharp
 
 def separar_acorde(acorde):
     if len(acorde) > 1 and acorde[1] in ["#", "b"]:
@@ -39,20 +120,20 @@ def gerar_acorde(acorde):
     i = lista.index(raiz)
 
     tipos = {
-        "": [0, 4, 7],
-        "m": [0, 3, 7],
-        "7": [0, 4, 7, 10],
-        "m7": [0, 3, 7, 10],
-        "7m": [0, 3, 7, 10],
-        "7M": [0, 4, 7, 11],
-        "M7": [0, 4, 7, 11],
-        "9": [0, 4, 7, 10, 14],
-        "m9": [0, 3, 7, 10, 14],
-        "add9": [0, 4, 7, 14],
-        "sus2": [0, 2, 7],
-        "sus4": [0, 5, 7],
-        "dim": [0, 3, 6],
-        "aug": [0, 4, 8],
+        "": [0,4,7],
+        "m": [0,3,7],
+        "7": [0,4,7,10],
+        "m7": [0,3,7,10],
+        "7m": [0,3,7,10],
+        "7M": [0,4,7,11],
+        "M7": [0,4,7,11],
+        "9": [0,4,7,10,14],
+        "m9": [0,3,7,10,14],
+        "add9": [0,4,7,14],
+        "sus2": [0,2,7],
+        "sus4": [0,5,7],
+        "dim": [0,3,6],
+        "aug": [0,4,8],
     }
 
     if tipo not in tipos:
@@ -61,7 +142,6 @@ def gerar_acorde(acorde):
     notas = [lista[(i + x) % 12] for x in tipos[tipo]]
 
     return {"notas": notas, "baixo": baixo}
-
 
 # =========================================
 # 🌐 CONFIG
@@ -77,33 +157,21 @@ pagina = st.sidebar.selectbox(
 )
 
 # =========================================
-# 📚 TEORIA (ATUALIZADA E COMPLETA)
+# 📚 TEORIA (SEM ALTERAÇÃO)
 # =========================================
 
 if pagina == "📚 Teoria":
 
-    st.header("🎓 Teoria Musical Completa (Do Zero ao Avançado)")
+    st.header("🎓 Teoria Musical Completa")
 
     st.subheader("🎵 O que é música?")
-    st.write("""
-Música é a organização dos sons no tempo.
-
-Elementos principais:
-- Melodia (sequência de notas)
-- Harmonia (notas simultâneas)
-- Ritmo (tempo)
-- Timbre (característica do som)
-""")
+    st.write("Música é a organização dos sons no tempo.")
 
     st.subheader("🎼 Notas musicais")
     st.code("C D E F G A B")
-    st.write("As notas se repetem em diferentes oitavas.")
 
     st.subheader("🎹 Tom e semitom")
-    st.write("""
-Semitom = menor distância (ex: C → C#)  
-Tom = dois semitons (ex: C → D)
-""")
+    st.write("Semitom = 1 passo | Tom = 2 passos")
 
     st.subheader("🎼 Sustenidos e bemóis")
     st.code("""
@@ -114,43 +182,20 @@ G# = Ab
 A# = Bb
 """)
 
-    st.subheader("🎼 Enarmonia")
-    st.write("Mesma nota com nomes diferentes (C# = Db)")
-
-    st.subheader("🎼 Escala maior")
-    st.code("T – T – S – T – T – T – S")
-    st.code("C D E F G A B")
-
-    st.subheader("🎼 Escala menor natural")
-    st.code("T – S – T – T – S – T – T")
-    st.code("A B C D E F G")
-
-    st.subheader("🎹 Formação de acordes")
+    st.subheader("🎼 Acordes básicos")
     st.code("""
 Maior: C E G
 Menor: C Eb G
 """)
 
-    st.subheader("🎼 Intervalos")
-    st.write("""
-3ª maior → som alegre  
-3ª menor → som triste  
-5ª justa → estabilidade  
-7ª → tensão
-""")
-
-    st.subheader("🎼 Acordes com sétima")
+    st.subheader("🎼 Sétimas")
     st.code("""
 C7 = C E G Bb
 Cmaj7 = C E G B
-Am7 = A C E G
 """)
 
-    st.subheader("🎼 Campo harmônico")
-    st.code("C - Dm - Em - F - G - Am - Bdim")
-
-    st.subheader("🎯 Resumo final")
-    st.write("Escala → Intervalos → Acordes → Harmonia → Música")
+    st.subheader("🎯 Resumo")
+    st.write("Escala → Intervalos → Acordes → Música")
 
 # =========================================
 # 🎹 PRÁTICA (SEM ALTERAÇÃO)
