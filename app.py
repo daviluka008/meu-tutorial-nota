@@ -66,9 +66,11 @@ def tela_login():
         if st.button("Entrar"):
 
             if email in st.session_state.usuarios and st.session_state.usuarios[email] == senha:
+
                 st.session_state.logado = True
                 st.session_state.usuario_atual = email
                 st.rerun()
+
             else:
                 st.error("Login inválido")
 
@@ -80,11 +82,11 @@ if not st.session_state.logado:
 # 🎹 LÓGICA DOS ACORDES
 # =========================================
 
-notas_sharp = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"]
-notas_flat = ["C","Db","D","Eb","E","F","Gb","G","Ab","A","Bb","B"]
+notas_sharp = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
+notas_flat  = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"]
 
 def separar_acorde(acorde):
-    if len(acorde) > 1 and acorde[1] in ["#","b"]:
+    if len(acorde) > 1 and acorde[1] in ["#", "b"]:
         return acorde[:2], acorde[2:].lower()
     return acorde[0], acorde[1:].lower()
 
@@ -93,6 +95,7 @@ def gerar_acorde(acorde):
 
     if "/" in acorde:
         acorde_principal, baixo = acorde.split("/")
+        baixo = baixo.strip()
     else:
         acorde_principal = acorde
         baixo = None
@@ -107,28 +110,28 @@ def gerar_acorde(acorde):
     i = lista.index(raiz)
 
     tipos = {
-        "": [0,4,7],
-        "m": [0,3,7],
-        "7": [0,4,7,10],
-        "m7": [0,3,7,10],
-        "7m": [0,3,7,10],
-        "7M": [0,4,7,11],
-        "M7": [0,4,7,11],
-        "9": [0,4,7,10,14],
-        "m9": [0,3,7,10,14],
-        "add9": [0,4,7,14],
-        "sus2": [0,2,7],
-        "sus4": [0,5,7],
-        "dim": [0,3,6],
-        "aug": [0,4,8],
+        "": [0, 4, 7],
+        "m": [0, 3, 7],
+        "7": [0, 4, 7, 10],
+        "m7": [0, 3, 7, 10],
+        "7m": [0, 3, 7, 10],
+        "7M": [0, 4, 7, 11],
+        "M7": [0, 4, 7, 11],
+        "9": [0, 4, 7, 10, 14],
+        "m9": [0, 3, 7, 10, 14],
+        "add9": [0, 4, 7, 14],
+        "sus2": [0, 2, 7],
+        "sus4": [0, 5, 7],
+        "dim": [0, 3, 6],
+        "aug": [0, 4, 8],
     }
 
     if tipo not in tipos:
         return None
 
-    notas = [lista[(i+x)%12] for x in tipos[tipo]]
+    notas = [lista[(i + x) % 12] for x in tipos[tipo]]
 
-    return {"notas": notas}
+    return {"notas": notas, "baixo": baixo}
 
 # =========================================
 # 🌐 CONFIG
@@ -138,10 +141,8 @@ st.set_page_config(page_title="🎹 Acordes App", page_icon="🎹")
 
 st.title("🎹 Sistema Completo de Acordes + Teoria")
 
-st.write(f"👤 Logado: {st.session_state.usuario_atual}")
-
 pagina = st.sidebar.selectbox(
-    "Menu",
+    "📌 Menu",
     ["📚 Teoria", "🎹 Prática", "🎯 Quiz"]
 )
 
@@ -151,44 +152,34 @@ pagina = st.sidebar.selectbox(
 
 if pagina == "📚 Teoria":
 
-    st.header("🎓 Curso Completo de Teoria Musical (Iniciante → Avançado)")
+    st.header("🎓 Curso Completo de Música")
 
     st.subheader("🟢 Iniciante")
-    st.write("Música é organização de sons no tempo.")
-
-    st.subheader("Notas musicais")
+    st.write("🎵 Música é organização de sons: melodia, harmonia, ritmo e timbre")
     st.code("C D E F G A B")
 
-    st.subheader("Tom e semitom")
-    st.write("Semitom = 1 passo | Tom = 2 passos")
-
-    st.subheader("Escala maior")
-    st.code("C D E F G A B")
+    st.write("🎹 Semitom = meio passo | Tom = dois semitons")
 
     st.subheader("🟡 Intermediário")
     st.write("C# = Db | D# = Eb | F# = Gb | G# = Ab | A# = Bb")
 
-    st.subheader("Acordes básicos")
-    st.code("Maior: C E G\nMenor: C Eb G")
+    st.write("🎼 Acordes:")
+    st.code("Maior: C E G | Menor: C Eb G")
 
-    st.subheader("Intervalos")
-    st.write("3ª maior = feliz | 3ª menor = triste")
+    st.write("🎹 Sétimas:")
+    st.code("C7 = C E G Bb | Cmaj7 = C E G B")
 
     st.subheader("🔴 Avançado")
-    st.subheader("Acordes com sétima")
-    st.code("C7 = C E G Bb\nCmaj7 = C E G B")
+    st.write("🎼 Campo harmônico de Dó maior")
+    st.code("C Dm Em F G Am Bdim")
 
-    st.subheader("Campo harmônico")
-    st.code("C - Dm - Em - F - G - Am - Bdim")
+    st.write("🎹 Progressão famosa:")
+    st.code("C - G - Am - F")
 
-    st.subheader("Harmonia")
-    st.write("Progressões criam emoção na música.")
-
-    st.subheader("🎯 Resumo")
-    st.write("Notas → Escalas → Acordes → Harmonia → Música")
+    st.write("🎯 Música = Escala → Acordes → Harmonia → Emoção")
 
 # =========================================
-# 🎹 PRÁTICA (SEM ALTERAÇÃO)
+# 🎹 PRÁTICA
 # =========================================
 
 elif pagina == "🎹 Prática":
@@ -206,7 +197,7 @@ elif pagina == "🎹 Prática":
             st.error("❌ Acorde inválido")
 
 # =========================================
-# 🎯 QUIZ (SEM ALTERAÇÃO)
+# 🎯 QUIZ (INALTERADO)
 # =========================================
 
 elif pagina == "🎯 Quiz":
@@ -215,32 +206,32 @@ elif pagina == "🎯 Quiz":
 
     escala = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"]
 
-    mapa = {n:i for i,n in enumerate(escala)}
+    mapa = {nota: i for i, nota in enumerate(escala)}
 
     maior = [0,4,7]
     menor = [0,3,7]
 
-    def montar(n,tipo):
-        i = mapa[n]
-        seq = maior if tipo=="maior" else menor
-        return " ".join([escala[(i+x)%12] for x in seq])
+    def montar_acorde(nota, tipo):
+        i = mapa[nota]
+        intervalos = maior if tipo == "maior" else menor
+        return " ".join([escala[(i+x)%12] for x in intervalos])
 
-    def gerar():
-        p=[]
+    def gerar_perguntas():
+        pool = []
         for n in escala:
-            p.append((f"{n} = ?", montar(n,"maior"), "maior"))
-            p.append((f"{n}m = ?", montar(n,"menor"), "menor"))
-        random.shuffle(p)
-        return p
+            pool.append((f"{n} = ?", montar_acorde(n,"maior"), "maior"))
+            pool.append((f"{n}m = ?", montar_acorde(n,"menor"), "menor"))
+        random.shuffle(pool)
+        return pool
 
     if "quiz" not in st.session_state:
-        st.session_state.quiz = gerar()
+        st.session_state.quiz = gerar_perguntas()
         st.session_state.finalizado = False
         st.session_state.respostas = {}
         st.session_state.opcoes = {}
 
-    if st.button("Novo quiz"):
-        st.session_state.quiz = gerar()
+    if st.button("🔄 Novo quiz"):
+        st.session_state.quiz = gerar_perguntas()
         st.session_state.finalizado = False
         st.session_state.respostas = {}
         st.session_state.opcoes = {}
@@ -248,38 +239,48 @@ elif pagina == "🎯 Quiz":
 
     perguntas = st.session_state.quiz[:6]
 
-    def opcoes(qid, correta):
+    def gerar_opcoes(qid, correta, tipo):
 
         if qid in st.session_state.opcoes:
             return st.session_state.opcoes[qid]
 
-        opts = {correta}
-        falsas = ["C Eb G","C D G","D F A","E G B","F A C","G B D","A C E"]
+        opcoes = {correta}
 
-        while len(opts) < 4:
-            opts.add(random.choice(falsas))
+        falsas = [
+            "C Eb G","C D G","C E G#",
+            "D F A","D F# A","E G B",
+            "F A C","F Ab C","G B D",
+            "G Bb D","A C E","A C# E",
+            "B D F","B D# F#"
+        ]
 
-        lista = list(opts)
-        random.shuffle(lista)
+        while len(opcoes) < 4:
+            opcoes.add(random.choice(falsas))
 
-        st.session_state.opcoes[qid] = lista
-        return lista
+        lista = list(opcoes)
+        lista.sort()
+
+        st.session_state.opcoes[qid] = lista[:4]
+        return lista[:4]
 
     if not st.session_state.finalizado:
 
-        for i,(q,correta,t) in enumerate(perguntas):
+        for i,(q,correta,tipo) in enumerate(perguntas):
+
             st.session_state.respostas[i] = st.radio(
                 q,
-                options=opcoes(i,correta),
-                key=f"q{i}",
+                options=gerar_opcoes(i,correta,tipo),
+                key=f"q_{i}",
                 index=None
             )
 
     else:
 
         acertos = 0
+        st.divider()
 
-        for i,(q,correta,t) in enumerate(perguntas):
+        for i,(q,correta,tipo) in enumerate(perguntas):
+
             r = st.session_state.respostas.get(i)
 
             if r == correta:
