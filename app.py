@@ -73,11 +73,11 @@ st.title("🎹 Sistema Completo de Acordes + Teoria")
 
 pagina = st.sidebar.selectbox(
     "📌 Menu",
-    ["📚 Teoria", "🎹 Prática", "🎯 Quiz"]
+    ["📚 Teoria", "🎹 Prática", "🎯 Quiz", "🎹 Teclado Interativo"]
 )
 
 # =========================================
-# 📚 TEORIA (ATUALIZADA E MAIS COMPLETA)
+# 📚 TEORIA
 # =========================================
 
 if pagina == "📚 Teoria":
@@ -95,70 +95,16 @@ Música é a organização dos sons no tempo, combinando:
 """)
 
     st.subheader("🎼 Notas musicais")
-    st.write("""
-O sistema musical usa 7 notas principais:
-
-C D E F G A B
-
-Elas se repetem em diferentes oitavas.
-""")
-
     st.code("C D E F G A B")
 
     st.subheader("🎹 Tom e semitom")
-    st.write("""
-Semitom = menor distância (C → C#)  
-Tom = dois semitons (C → D)
-""")
+    st.write("Semitom = menor distância | Tom = dois semitons")
 
-    st.subheader("🎼 Sustenidos e bemóis")
-    st.write("""
-C# = Db  
-D# = Eb  
-F# = Gb  
-G# = Ab  
-A# = Bb
-""")
-
-    st.subheader("🎼 Enarmonia")
-    st.write("""
-Mesma nota, nomes diferentes:
-
-C# = Db  
-F# = Gb
-""")
-
-    st.subheader("🎼 Escala maior")
-    st.write("Fórmula: T – T – S – T – T – T – S")
-    st.code("C D E F G A B")
-
-    st.subheader("🎼 Escala menor")
-    st.write("Fórmula: T – S – T – T – S – T – T")
-    st.code("A B C D E F G")
-
-    st.subheader("🎹 Formação de acordes")
-    st.write("""
-Maior: 1 + 3 + 5 → C E G  
-Menor: 1 + b3 + 5 → C Eb G
-""")
-
-    st.subheader("🎼 Intervalos")
-    st.write("""
-3ª maior = som alegre  
-3ª menor = som triste  
-5ª justa = estabilidade  
-7ª = tensão
-""")
-
-    st.subheader("🎼 Acordes com sétima")
-    st.code("C7 = C E G Bb")
-    st.code("Cmaj7 = C E G B")
-
-    st.subheader("🎯 Resumo final")
-    st.write("Escala → Intervalos → Acordes → Harmonia → Música")
+    st.subheader("🎼 Formação de acordes")
+    st.write("Maior: 1 + 3 + 5 | Menor: 1 + b3 + 5")
 
 # =========================================
-# 🎹 PRÁTICA (SEM ALTERAÇÃO)
+# 🎹 PRÁTICA
 # =========================================
 
 elif pagina == "🎹 Prática":
@@ -176,7 +122,7 @@ elif pagina == "🎹 Prática":
             st.error("❌ Acorde inválido")
 
 # =========================================
-# 🎯 QUIZ (NÃO ALTERADO)
+# 🎯 QUIZ
 # =========================================
 
 elif pagina == "🎯 Quiz":
@@ -273,3 +219,38 @@ elif pagina == "🎯 Quiz":
     if st.button("Ver resultado"):
         st.session_state.finalizado = True
         st.rerun()
+
+# =========================================
+# 🎹 TECLADO INTERATIVO (NOVO)
+# =========================================
+
+elif pagina == "🎹 Teclado Interativo":
+
+    st.header("🎹 Teclado Interativo")
+
+    acordes = {
+        "C": ["C", "E", "G"],
+        "G": ["G", "B", "D"],
+        "Am": ["A", "C", "E"],
+        "F": ["F", "A", "C"],
+        "Dm": ["D", "F", "A"]
+    }
+
+    acorde_escolhido = st.selectbox("Escolha um acorde:", list(acordes.keys()))
+
+    notas = acordes[acorde_escolhido]
+
+    st.subheader(f"Notas do acorde {acorde_escolhido}:")
+    st.write(notas)
+
+    teclas = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
+
+    st.subheader("🎹 Teclado")
+
+    cols = st.columns(len(teclas))
+
+    for i, nota in enumerate(teclas):
+        if nota in notas:
+            cols[i].button(nota, key=nota, help="Faz parte do acorde")
+        else:
+            cols[i].button(nota, key=nota+"_off")
