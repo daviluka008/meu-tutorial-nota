@@ -4,7 +4,7 @@ import json
 import os
 
 # =========================================
-# 🔐 LOGIN + PROGRESSO
+# 🔐 USUÁRIOS + PROGRESSO
 # =========================================
 
 ARQ_USUARIOS = "usuarios.json"
@@ -101,7 +101,7 @@ def get_progress():
     return st.session_state.progresso[u]
 
 # =========================================
-# 🎹 ACORDES (CORRIGIDO)
+# 🎹 ACORDES (INALTERADO)
 # =========================================
 
 notas = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"]
@@ -148,12 +148,12 @@ def gerar_acorde(acorde):
     return {"notas": notas_acorde, "baixo": baixo}
 
 # =========================================
-# 🌐 CONFIG
+# 🌐 MENU
 # =========================================
 
 st.set_page_config(page_title="🎹 Curso Musical", page_icon="🎹")
 
-st.title("🎹 Plataforma Completa de Música")
+st.title("🎹 Sistema Completo de Música")
 
 pagina = st.sidebar.selectbox(
     "Menu",
@@ -161,21 +161,19 @@ pagina = st.sidebar.selectbox(
 )
 
 # =========================================
-# 📚 TEORIA (VERSÃO CURSO REAL)
+# 📚 TEORIA (AGORA COMPLETA E ESTRUTURADA)
 # =========================================
 
 if pagina == "📚 Teoria":
 
-    st.header("🎓 Curso Completo de Música (Do Zero ao Avançado)")
+    st.header("🎓 Curso Completo de Música")
 
     prog = get_progress()
     nivel = prog["nivel"]
 
     st.write(f"📊 Nível atual: {nivel}")
 
-    # =========================
     # 🔰 FUNDAMENTOS
-    # =========================
     st.subheader("🔰 1. Fundamentos da Música")
 
     st.write("""
@@ -187,44 +185,42 @@ Elementos:
 - Ritmo
 - Timbre
 
-🎼 Sistema musical:
+🎼 Notas:
 C D E F G A B
 
 🎹 Semitom = menor distância  
 🎹 Tom = 2 semitons
+
+Ex:
+C → C# = semitom  
+C → D = tom
 """)
 
-    st.info("Exemplo: C → C# = semitom | C → D = tom")
-
-    # =========================
     # 🎹 ESCALAS
-    # =========================
     st.subheader("🎹 2. Escalas Musicais")
 
     st.write("""
 🎼 Escala maior:
-T - T - S - T - T - T - S
+T – T – S – T – T – T – S
 
 Exemplo:
 C D E F G A B
 
 🎼 Escala menor:
-T - S - T - T - S - T - T
+T – S – T – T – S – T – T
 
 Exemplo:
 A B C D E F G
 """)
 
-    # =========================
     # 🎼 ACORDES
-    # =========================
     st.subheader("🎼 3. Formação de Acordes")
 
     st.write("""
 ✔ Maior = 1 + 3 + 5  
 ✔ Menor = 1 + b3 + 5  
 
-Exemplo:
+Ex:
 C = C E G  
 Cm = C Eb G  
 
@@ -232,9 +228,7 @@ Cm = C Eb G
 ✔ Aumentado = 1 3 #5
 """)
 
-    # =========================
     # 🔥 HARMONIA
-    # =========================
     st.subheader("🔥 4. Harmonia Funcional")
 
     st.write("""
@@ -243,9 +237,9 @@ Campo harmônico de C:
 C Dm Em F G Am Bdim
 
 Funções:
-- Tônica (repouso)
-- Subdominante (movimento)
-- Dominante (tensão)
+- Tônica
+- Subdominante
+- Dominante
 
 Progressões:
 I–IV–V  
@@ -253,27 +247,21 @@ II–V–I
 I–V–VI–IV
 """)
 
-    # =========================
     # 🚀 AVANÇADO
-    # =========================
     st.subheader("🚀 5. Avançado")
 
     st.write("""
-🎹 Acordes com extensão:
-7ª, 9ª, 11ª, 13ª
+🎹 Acordes com extensão (7, 9, 11, 13)
 
-🎼 Modulação:
-Mudança de tonalidade
+🎼 Modulação (mudança de tonalidade)
 
-🎧 Reharmonização:
-Trocar acordes mantendo sentido
+🎧 Reharmonização
 
-🎛 Produção musical:
-EQ, compressão, reverb
+🎛 Produção musical básica (EQ, reverb, compressão)
 """)
 
 # =========================================
-# 🎹 PRÁTICA (INTACTA)
+# 🎹 PRÁTICA (SEM ALTERAÇÃO)
 # =========================================
 
 elif pagina == "🎹 Prática":
@@ -287,7 +275,6 @@ elif pagina == "🎹 Prática":
         r = gerar_acorde(acorde)
 
         if r:
-
             st.success("🎵 Notas:")
             st.write(r["notas"])
 
@@ -298,7 +285,7 @@ elif pagina == "🎹 Prática":
             st.error("Inválido")
 
 # =========================================
-# 🎯 QUIZ (INTACTO)
+# 🎯 QUIZ (SEM ALTERAÇÃO)
 # =========================================
 
 elif pagina == "🎯 Quiz":
@@ -341,6 +328,9 @@ elif pagina == "🎯 Quiz":
         acertos = 0
         for i,(q,c) in enumerate(perguntas):
             if st.session_state.res[i] == c:
+                acertos += 1
+
+        st.success(f"Você acertou {acertos}/6")
                 acertos += 1
 
         st.success(f"Você acertou {acertos}/6")
