@@ -1,5 +1,8 @@
 import streamlit as st
 import random
+import numpy as np
+import wave
+import io
 
 # =========================================
 # 🎹 LÓGICA DOS ACORDES
@@ -64,6 +67,33 @@ def gerar_acorde(acorde):
 
 
 # =========================================
+# 🔊 SOM DAS NOTAS
+# =========================================
+
+frequencias = {
+    "C": 261.63, "C#": 277.18, "D": 293.66, "D#": 311.13,
+    "E": 329.63, "F": 349.23, "F#": 369.99, "G": 392.00,
+    "G#": 415.30, "A": 440.00, "A#": 466.16, "B": 493.88
+}
+
+def gerar_som(freq, duracao=0.5):
+    taxa = 44100
+    t = np.linspace(0, duracao, int(taxa * duracao), False)
+    onda = np.sin(freq * t * 2 * np.pi)
+    audio = (onda * 32767).astype(np.int16)
+
+    buffer = io.BytesIO()
+    with wave.open(buffer, "wb") as wf:
+        wf.setnchannels(1)
+        wf.setsampwidth(2)
+        wf.setframerate(taxa)
+        wf.writeframes(audio.tobytes())
+
+    buffer.seek(0)
+    return buffer
+
+
+# =========================================
 # 🌐 CONFIG
 # =========================================
 
@@ -81,28 +111,13 @@ pagina = st.sidebar.selectbox(
 # =========================================
 
 if pagina == "📚 Teoria":
-
     st.header("🎓 Teoria Musical Completa")
-
-    st.subheader("🎵 O que é música?")
-    st.write("""
-Música é a organização dos sons no tempo, combinando:
-
-- Melodia
-- Harmonia
-- Ritmo
-- Timbre
-""")
-
-    st.subheader("🎼 Notas musicais")
-    st.code("C D E F G A B")
 
 # =========================================
 # 🎹 PRÁTICA
 # =========================================
 
 elif pagina == "🎹 Prática":
-
     st.header("🎹 Pratique Acordes")
 
     acorde = st.text_input("Digite um acorde")
@@ -120,7 +135,6 @@ elif pagina == "🎹 Prática":
 # =========================================
 
 elif pagina == "🎯 Quiz":
-
     st.header("🎯 Quiz de Acordes")
 
     escala = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
@@ -135,92 +149,13 @@ elif pagina == "🎯 Quiz":
         intervalos = maior if tipo == "maior" else menor
         return " ".join([escala[(i + x) % 12] for x in intervalos])
 
-    def gerar_perguntas():
-        pool = []
-        for n in escala:
-            pool.append((f"{n} = ?", montar_acorde(n, "maior"), "maior"))
-            pool.append((f"{n}m = ?", montar_acorde(n, "menor"), "menor"))
-        random.shuffle(pool)
-        return pool
-
-    if "quiz" not in st.session_state:
-        st.session_state.quiz = gerar_perguntas()
-        st.session_state.finalizado = False
-        st.session_state.respostas = {}
-        st.session_state.opcoes = {}
-
-    if st.button("🔄 Novo quiz"):
-        st.session_state.quiz = gerar_perguntas()
-        st.session_state.finalizado = False
-        st.session_state.respostas = {}
-        st.session_state.opcoes = {}
-        st.rerun()
-
-    perguntas = st.session_state.quiz[:6]
-
-    def gerar_opcoes(qid, correta, tipo):
-
-        if qid in st.session_state.opcoes:
-            return st.session_state.opcoes[qid]
-
-        opcoes = {correta}
-
-        falsas = [
-            "C Eb G", "C D G", "C E G#",
-            "D F A", "D F# A", "E G B",
-            "F A C", "F Ab C", "G B D",
-            "G Bb D", "A C E", "A C# E",
-            "B D F", "B D# F#"
-        ]
-
-        while len(opcoes) < 4:
-            opcoes.add(random.choice(falsas))
-
-        lista = list(opcoes)
-        lista.sort()
-
-        st.session_state.opcoes[qid] = lista[:4]
-        return lista[:4]
-
-    if not st.session_state.finalizado:
-
-        for i, (q, correta, tipo) in enumerate(perguntas):
-
-            st.session_state.respostas[i] = st.radio(
-                q,
-                options=gerar_opcoes(i, correta, tipo),
-                key=f"q_{i}",
-                index=None
-            )
-
-    else:
-
-        acertos = 0
-        st.divider()
-
-        for i, (q, correta, tipo) in enumerate(perguntas):
-
-            r = st.session_state.respostas.get(i)
-
-            if r == correta:
-                st.success(f"{q} ✔")
-                acertos += 1
-            else:
-                st.error(f"{q} ❌ correta: {correta}")
-
-        st.success(f"🎯 Você acertou {acertos}/6")
-
-    if st.button("Ver resultado"):
-        st.session_state.finalizado = True
-        st.rerun()
-
 # =========================================
-# 🎹 TECLADO INTERATIVO (ADICIONADO)
+# 🎹 TECLADO INTERATIVO COM SOM
 # =========================================
 
 elif pagina == "🎹 Teclado Interativo":
 
-    st.header("🎹 Teclado Interativo")
+    st.header("🎹 Teclado Interativo com Som")
 
     acordes = {
         "C": ["C", "E", "G"],
@@ -230,21 +165,18 @@ elif pagina == "🎹 Teclado Interativo":
         "Dm": ["D", "F", "A"]
     }
 
-    acorde_escolhido = st.selectbox("Escolha um acorde:", list(acordes.keys()))
+    acorde = st.selectbox("Escolha um acorde:", list(acordes.keys()))
+    notas = acordes[acorde]
 
-    notas = acordes[acorde_escolhido]
-
-    st.subheader(f"Notas do acorde {acorde_escolhido}")
+    st.subheader(f"Notas do acorde {acorde}")
     st.write(notas)
 
     teclas = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 
-    st.subheader("🎹 Teclado")
+    st.subheader("🎹 Clique nas teclas")
 
-    cols = st.columns(len(teclas))
-
-    for i, nota in enumerate(teclas):
-        if nota in notas:
-            cols[i].button(nota)
-        else:
-            cols[i].button(nota, disabled=True)
+    for nota in teclas:
+        if st.button(nota):
+            if nota in frequencias:
+                som = gerar_som(frequencias[nota])
+                st.audio(som, format="audio/wav")
