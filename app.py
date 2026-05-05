@@ -1,10 +1,8 @@
 import streamlit as st
 import random
-import smtplib
-from email.message import EmailMessage
 
 # =========================================
-# 🔐 LOGIN SYSTEM
+# 🔐 LOGIN SIMPLES (SEM EMAIL)
 # =========================================
 
 if "usuarios" not in st.session_state:
@@ -16,55 +14,6 @@ if "logado" not in st.session_state:
 if "usuario_atual" not in st.session_state:
     st.session_state.usuario_atual = ""
 
-if "codigo_verificacao" not in st.session_state:
-    st.session_state.codigo_verificacao = None
-
-if "email_temp" not in st.session_state:
-    st.session_state.email_temp = ""
-
-if "senha_temp" not in st.session_state:
-    st.session_state.senha_temp = ""
-
-# =========================================
-# 🔐 EMAIL (SECRETS OPCIONAL, NÃO QUEBRA)
-# =========================================
-
-EMAIL_ORIGEM = None
-SENHA_APP = None
-
-if hasattr(st, "secrets"):
-    if "EMAIL_ORIGEM" in st.secrets and "SENHA_APP" in st.secrets:
-        EMAIL_ORIGEM = st.secrets["EMAIL_ORIGEM"]
-        SENHA_APP = st.secrets["SENHA_APP"]
-
-# =========================================
-# 📩 ENVIAR CÓDIGO
-# =========================================
-
-def enviar_codigo(email, codigo):
-
-    if EMAIL_ORIGEM is None or SENHA_APP is None:
-        st.warning("E-mail não configurado. Conta será criada sem verificação.")
-        return
-
-    try:
-        msg = EmailMessage()
-        msg["Subject"] = "Código de verificação"
-        msg["From"] = EMAIL_ORIGEM
-        msg["To"] = email
-        msg.set_content(f"Seu código de verificação é: {codigo}")
-
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
-            smtp.login(EMAIL_ORIGEM, SENHA_APP)
-            smtp.send_message(msg)
-
-    except:
-        st.error("Erro ao enviar e-mail")
-
-# =========================================
-# 🔐 TELA LOGIN
-# =========================================
-
 def tela_login():
 
     st.title("🔐 Login")
@@ -73,46 +22,25 @@ def tela_login():
 
     if opcao == "Criar conta":
 
-        email = st.text_input("E-mail")
+        email = st.text_input("E-mail (usuário)")
         senha = st.text_input("Senha", type="password")
 
         if st.button("Criar conta"):
 
             if email == "" or senha == "":
-                st.error("Preencha tudo")
+                st.error("Preencha todos os campos")
                 return
 
             if email in st.session_state.usuarios:
                 st.error("Usuário já existe")
                 return
 
-            codigo = str(random.randint(100000, 999999))
-
-            st.session_state.codigo_verificacao = codigo
-            st.session_state.email_temp = email
-            st.session_state.senha_temp = senha
-
-            enviar_codigo(email, codigo)
-            st.success("Código enviado")
-
-        if st.session_state.codigo_verificacao:
-
-            codigo_input = st.text_input("Código de verificação")
-
-            if st.button("Validar"):
-
-                if codigo_input == st.session_state.codigo_verificacao:
-
-                    st.session_state.usuarios[st.session_state.email_temp] = st.session_state.senha_temp
-                    st.success("Conta criada!")
-                    st.session_state.codigo_verificacao = None
-
-                else:
-                    st.error("Código errado")
+            st.session_state.usuarios[email] = senha
+            st.success("Conta criada com sucesso!")
 
     else:
 
-        email = st.text_input("E-mail")
+        email = st.text_input("E-mail (usuário)")
         senha = st.text_input("Senha", type="password")
 
         if st.button("Entrar"):
@@ -126,16 +54,13 @@ def tela_login():
             else:
                 st.error("Login inválido")
 
-# =========================================
-# 🚪 BLOQUEIO DO APP
-# =========================================
-
+# bloqueia o app até logar
 if not st.session_state.logado:
     tela_login()
     st.stop()
 
 # =========================================
-# 🎹 LÓGICA DOS ACORDES (SEU ORIGINAL)
+# 🎹 LÓGICA DOS ACORDES
 # =========================================
 
 notas_sharp = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
@@ -172,20 +97,20 @@ def gerar_acorde(acorde):
     i = lista.index(raiz)
 
     tipos = {
-        "": [0,4,7],
-        "m": [0,3,7],
-        "7": [0,4,7,10],
-        "m7": [0,3,7,10],
-        "7m": [0,3,7,10],
-        "7M": [0,4,7,11],
-        "M7": [0,4,7,11],
-        "9": [0,4,7,10,14],
-        "m9": [0,3,7,10,14],
-        "add9": [0,4,7,14],
-        "sus2": [0,2,7],
-        "sus4": [0,5,7],
-        "dim": [0,3,6],
-        "aug": [0,4,8],
+        "": [0, 4, 7],
+        "m": [0, 3, 7],
+        "7": [0, 4, 7, 10],
+        "m7": [0, 3, 7, 10],
+        "7m": [0, 3, 7, 10],
+        "7M": [0, 4, 7, 11],
+        "M7": [0, 4, 7, 11],
+        "9": [0, 4, 7, 10, 14],
+        "m9": [0, 3, 7, 10, 14],
+        "add9": [0, 4, 7, 14],
+        "sus2": [0, 2, 7],
+        "sus4": [0, 5, 7],
+        "dim": [0, 3, 6],
+        "aug": [0, 4, 8],
     }
 
     if tipo not in tipos:
@@ -209,7 +134,7 @@ pagina = st.sidebar.selectbox(
 )
 
 # =========================================
-# 📚 TEORIA (SEU ORIGINAL INTACTO)
+# 📚 TEORIA (NÃO ALTERADA)
 # =========================================
 
 if pagina == "📚 Teoria":
@@ -256,7 +181,7 @@ Cmaj7 = C E G B
     st.write("Escala → Intervalos → Acordes → Música")
 
 # =========================================
-# 🎹 PRÁTICA (SEU ORIGINAL INTACTO)
+# 🎹 PRÁTICA (NÃO ALTERADA)
 # =========================================
 
 elif pagina == "🎹 Prática":
@@ -274,7 +199,7 @@ elif pagina == "🎹 Prática":
             st.error("❌ Acorde inválido")
 
 # =========================================
-# 🎯 QUIZ (SEU ORIGINAL INTACTO)
+# 🎯 QUIZ (NÃO ALTERADO)
 # =========================================
 
 elif pagina == "🎯 Quiz":
@@ -324,9 +249,11 @@ elif pagina == "🎯 Quiz":
         opcoes = {correta}
 
         falsas = [
-            "C Eb G","C D G","C E G#","D F A","D F# A",
-            "E G B","F A C","F Ab C","G B D","G Bb D",
-            "A C E","A C# E","B D F","B D# F#"
+            "C Eb G","C D G","C E G#",
+            "D F A","D F# A","E G B",
+            "F A C","F Ab C","G B D",
+            "G Bb D","A C E","A C# E",
+            "B D F","B D# F#"
         ]
 
         while len(opcoes) < 4:
