@@ -66,11 +66,9 @@ def tela_login():
         if st.button("Entrar"):
 
             if email in st.session_state.usuarios and st.session_state.usuarios[email] == senha:
-
                 st.session_state.logado = True
                 st.session_state.usuario_atual = email
                 st.rerun()
-
             else:
                 st.error("Login inválido")
 
@@ -110,20 +108,20 @@ def gerar_acorde(acorde):
     i = lista.index(raiz)
 
     tipos = {
-        "": [0, 4, 7],
-        "m": [0, 3, 7],
-        "7": [0, 4, 7, 10],
-        "m7": [0, 3, 7, 10],
-        "7m": [0, 3, 7, 10],
-        "7M": [0, 4, 7, 11],
-        "M7": [0, 4, 7, 11],
-        "9": [0, 4, 7, 10, 14],
-        "m9": [0, 3, 7, 10, 14],
-        "add9": [0, 4, 7, 14],
-        "sus2": [0, 2, 7],
-        "sus4": [0, 5, 7],
-        "dim": [0, 3, 6],
-        "aug": [0, 4, 8],
+        "": [0,4,7],
+        "m": [0,3,7],
+        "7": [0,4,7,10],
+        "m7": [0,3,7,10],
+        "7m": [0,3,7,10],
+        "7M": [0,4,7,11],
+        "M7": [0,4,7,11],
+        "9": [0,4,7,10,14],
+        "m9": [0,3,7,10,14],
+        "add9": [0,4,7,14],
+        "sus2": [0,2,7],
+        "sus4": [0,5,7],
+        "dim": [0,3,6],
+        "aug": [0,4,8],
     }
 
     if tipo not in tipos:
@@ -147,36 +145,150 @@ pagina = st.sidebar.selectbox(
 )
 
 # =========================================
-# 📚 TEORIA (CURSO COMPLETO)
+# 📚 TEORIA (EBOOK COMPLETO)
 # =========================================
 
 if pagina == "📚 Teoria":
 
-    st.header("🎓 Curso Completo de Música")
+    st.header("📘 Curso Completo de Música (Do Zero ao Avançado)")
 
-    st.subheader("🟢 Iniciante")
-    st.write("🎵 Música é organização de sons: melodia, harmonia, ritmo e timbre")
+    # =========================
+    # 🟢 INICIANTE
+    # =========================
+    st.subheader("🟢 1. Iniciante — Fundamentos")
+
+    st.write("""
+🎵 Música é a organização de sons.
+
+Ela é formada por 4 pilares:
+
+- Melodia (notas em sequência)
+- Harmonia (notas juntas)
+- Ritmo (tempo)
+- Timbre (identidade do som)
+""")
+
     st.code("C D E F G A B")
 
-    st.write("🎹 Semitom = meio passo | Tom = dois semitons")
+    st.write("""
+Essas são as 7 notas básicas.
 
-    st.subheader("🟡 Intermediário")
-    st.write("C# = Db | D# = Eb | F# = Gb | G# = Ab | A# = Bb")
+Elas se repetem em várias oitavas.
+""")
 
-    st.write("🎼 Acordes:")
-    st.code("Maior: C E G | Menor: C Eb G")
+    st.subheader("🎹 Semitom e Tom")
 
-    st.write("🎹 Sétimas:")
-    st.code("C7 = C E G Bb | Cmaj7 = C E G B")
+    st.write("""
+- Semitom = menor distância (C → C#)
+- Tom = dois semitons (C → D)
+""")
 
-    st.subheader("🔴 Avançado")
-    st.write("🎼 Campo harmônico de Dó maior")
-    st.code("C Dm Em F G Am Bdim")
+    st.subheader("🎼 Enarmonia")
 
-    st.write("🎹 Progressão famosa:")
-    st.code("C - G - Am - F")
+    st.write("""
+Mesma nota, nomes diferentes:
 
-    st.write("🎯 Música = Escala → Acordes → Harmonia → Emoção")
+C# = Db  
+D# = Eb  
+F# = Gb  
+G# = Ab  
+A# = Bb
+""")
+
+    # =========================
+    # 🟡 INTERMEDIÁRIO
+    # =========================
+    st.subheader("🟡 2. Intermediário — Escalas e Acordes")
+
+    st.write("""
+🎼 Escala maior segue padrão:
+
+T – T – S – T – T – T – S
+""")
+
+    st.code("C D E F G A B")
+
+    st.write("""
+🎼 Escala menor:
+
+T – S – T – T – S – T – T
+""")
+
+    st.code("A B C D E F G")
+
+    st.subheader("🎹 Formação de acordes")
+
+    st.write("""
+- Acorde maior: 1 + 3 + 5
+- Acorde menor: 1 + b3 + 5
+""")
+
+    st.code("C = C E G")
+    st.code("Cm = C Eb G")
+
+    st.subheader("🎼 Intervalos")
+
+    st.write("""
+- 3ª maior = som alegre
+- 3ª menor = som triste
+- 5ª justa = estabilidade
+- 7ª = tensão
+""")
+
+    # =========================
+    # 🔵 AVANÇADO
+    # =========================
+    st.subheader("🔵 3. Avançado — Harmonia Completa")
+
+    st.write("""
+🎹 Acordes com sétima:
+
+- C7 = dominante
+- Cmaj7 = suave / jazz
+- Cm7 = emocional
+""")
+
+    st.code("C7 = C E G Bb")
+    st.code("Cmaj7 = C E G B")
+
+    st.subheader("🎼 Campo harmônico")
+
+    st.write("""
+É o conjunto de acordes dentro de uma tonalidade.
+
+Exemplo: Campo de Dó maior
+""")
+
+    st.code("C Dm Em F G Am B°")
+
+    st.subheader("🎼 Progressões")
+
+    st.write("""
+Progressões comuns:
+
+- I – IV – V
+- I – V – vi – IV
+""")
+
+    st.subheader("🎹 Modos musicais (nível avançado)")
+
+    st.write("""
+- Jônio (maior)
+- Dórico
+- Frígio
+- Lídio
+- Mixolídio
+- Eólio (menor)
+- Lócrio
+""")
+
+    st.subheader("🎯 Resumo final")
+
+    st.write("""
+Dominar música é entender:
+
+Escalas → Acordes → Harmonia → Emoção
+""")
 
 # =========================================
 # 🎹 PRÁTICA
@@ -284,8 +396,8 @@ elif pagina == "🎯 Quiz":
             r = st.session_state.respostas.get(i)
 
             if r == correta:
-                st.success(f"{q} ✔")
                 acertos += 1
+                st.success(f"{q} ✔")
             else:
                 st.error(f"{q} ❌ correta: {correta}")
 
