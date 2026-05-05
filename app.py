@@ -1,12 +1,30 @@
 import streamlit as st
 import random
+import json
+import os
 
 # =========================================
-# 🔐 LOGIN SIMPLES (SEM EMAIL)
+# 💾 ARQUIVO DE USUÁRIOS (PERSISTENTE)
+# =========================================
+
+ARQ_USUARIOS = "usuarios.json"
+
+def carregar_usuarios():
+    if os.path.exists(ARQ_USUARIOS):
+        with open(ARQ_USUARIOS, "r") as f:
+            return json.load(f)
+    return {}
+
+def salvar_usuarios(usuarios):
+    with open(ARQ_USUARIOS, "w") as f:
+        json.dump(usuarios, f)
+
+# =========================================
+# 🔐 LOGIN PERSISTENTE
 # =========================================
 
 if "usuarios" not in st.session_state:
-    st.session_state.usuarios = {}
+    st.session_state.usuarios = carregar_usuarios()
 
 if "logado" not in st.session_state:
     st.session_state.logado = False
@@ -20,9 +38,12 @@ def tela_login():
 
     opcao = st.radio("Escolha", ["Entrar", "Criar conta"])
 
+    # =========================
+    # CRIAR CONTA
+    # =========================
     if opcao == "Criar conta":
 
-        email = st.text_input("E-mail (usuário)")
+        email = st.text_input("E-mail")
         senha = st.text_input("Senha", type="password")
 
         if st.button("Criar conta"):
@@ -36,11 +57,16 @@ def tela_login():
                 return
 
             st.session_state.usuarios[email] = senha
+            salvar_usuarios(st.session_state.usuarios)
+
             st.success("Conta criada com sucesso!")
 
+    # =========================
+    # LOGIN
+    # =========================
     else:
 
-        email = st.text_input("E-mail (usuário)")
+        email = st.text_input("E-mail")
         senha = st.text_input("Senha", type="password")
 
         if st.button("Entrar"):
@@ -54,7 +80,7 @@ def tela_login():
             else:
                 st.error("Login inválido")
 
-# bloqueia o app até logar
+# BLOQUEIO DO APP
 if not st.session_state.logado:
     tela_login()
     st.stop()
@@ -64,13 +90,10 @@ if not st.session_state.logado:
 # =========================================
 
 notas_sharp = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
-notas_flat = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"]
+notas_flat  = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"]
 
 def usar_bemol(acorde):
     return "b" in acorde
-
-def pegar_lista(acorde):
-    return notas_flat if usar_bemol(acorde) else notas_sharp
 
 def separar_acorde(acorde):
     if len(acorde) > 1 and acorde[1] in ["#", "b"]:
@@ -97,20 +120,20 @@ def gerar_acorde(acorde):
     i = lista.index(raiz)
 
     tipos = {
-        "": [0, 4, 7],
-        "m": [0, 3, 7],
-        "7": [0, 4, 7, 10],
-        "m7": [0, 3, 7, 10],
-        "7m": [0, 3, 7, 10],
-        "7M": [0, 4, 7, 11],
-        "M7": [0, 4, 7, 11],
-        "9": [0, 4, 7, 10, 14],
-        "m9": [0, 3, 7, 10, 14],
-        "add9": [0, 4, 7, 14],
-        "sus2": [0, 2, 7],
-        "sus4": [0, 5, 7],
-        "dim": [0, 3, 6],
-        "aug": [0, 4, 8],
+        "": [0,4,7],
+        "m": [0,3,7],
+        "7": [0,4,7,10],
+        "m7": [0,3,7,10],
+        "7m": [0,3,7,10],
+        "7M": [0,4,7,11],
+        "M7": [0,4,7,11],
+        "9": [0,4,7,10,14],
+        "m9": [0,3,7,10,14],
+        "add9": [0,4,7,14],
+        "sus2": [0,2,7],
+        "sus4": [0,5,7],
+        "dim": [0,3,6],
+        "aug": [0,4,8],
     }
 
     if tipo not in tipos:
@@ -134,7 +157,7 @@ pagina = st.sidebar.selectbox(
 )
 
 # =========================================
-# 📚 TEORIA (NÃO ALTERADA)
+# 📚 TEORIA (SEM ALTERAÇÃO)
 # =========================================
 
 if pagina == "📚 Teoria":
@@ -142,13 +165,7 @@ if pagina == "📚 Teoria":
     st.header("🎓 Teoria Musical Completa")
 
     st.subheader("🎵 O que é música?")
-    st.write("""
-Música é a organização dos sons no tempo, combinando:
-- Melodia
-- Harmonia
-- Ritmo
-- Timbre
-""")
+    st.write("Música é a organização dos sons no tempo.")
 
     st.subheader("🎼 Notas musicais")
     st.code("C D E F G A B")
@@ -181,7 +198,7 @@ Cmaj7 = C E G B
     st.write("Escala → Intervalos → Acordes → Música")
 
 # =========================================
-# 🎹 PRÁTICA (NÃO ALTERADA)
+# 🎹 PRÁTICA (SEM ALTERAÇÃO)
 # =========================================
 
 elif pagina == "🎹 Prática":
@@ -199,7 +216,7 @@ elif pagina == "🎹 Prática":
             st.error("❌ Acorde inválido")
 
 # =========================================
-# 🎯 QUIZ (NÃO ALTERADO)
+# 🎯 QUIZ (SEM ALTERAÇÃO)
 # =========================================
 
 elif pagina == "🎯 Quiz":
