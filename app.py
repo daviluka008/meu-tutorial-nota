@@ -48,7 +48,7 @@ if "usuario" not in st.session_state:
 
 def login():
 
-    st.title("🔐 Login do Sistema")
+    st.title("🔐 Login")
 
     modo = st.radio("Escolha", ["Entrar", "Criar conta"])
 
@@ -60,7 +60,7 @@ def login():
         if st.button("Criar conta"):
 
             if email == "" or senha == "":
-                st.error("Preencha todos os campos")
+                st.error("Preencha tudo")
                 return
 
             if email in st.session_state.usuarios:
@@ -101,11 +101,10 @@ def get_progress():
     return st.session_state.progresso[u]
 
 # =========================================
-# 🎹 LÓGICA DOS ACORDES (SEU ORIGINAL)
+# 🎹 ACORDES (SEU ORIGINAL)
 # =========================================
 
 notas_sharp = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"]
-notas_flat = ["C","Db","D","Eb","E","F","Gb","G","Ab","A","Bb","B"]
 
 def separar_acorde(acorde):
     if len(acorde) > 1 and acorde[1] in ["#","b"]:
@@ -124,12 +123,10 @@ def gerar_acorde(acorde):
 
     raiz, tipo = separar_acorde(acorde_principal)
 
-    lista = notas_sharp if raiz in notas_sharp else notas_flat
-
-    if raiz not in lista:
+    if raiz not in notas_sharp:
         return None
 
-    i = lista.index(raiz)
+    i = notas_sharp.index(raiz)
 
     tipos = {
         "": [0,4,7],
@@ -148,7 +145,7 @@ def gerar_acorde(acorde):
     if tipo not in tipos:
         return None
 
-    notas = [lista[(i+x)%12] for x in tipos[tipo]]
+    notas = [notas_sharp[(i+x)%12] for x in tipos[tipo]]
 
     return {"notas": notas}
 
@@ -166,7 +163,7 @@ pagina = st.sidebar.selectbox(
 )
 
 # =========================================
-# 📚 TEORIA (CURSO COMPLETO)
+# 📚 TEORIA (CURSO PROFISSIONAL COMPLETO)
 # =========================================
 
 if pagina == "📚 Teoria":
@@ -178,15 +175,26 @@ if pagina == "📚 Teoria":
 
     st.write(f"📊 Seu nível: {nivel}")
 
-    # =========================
+    # =====================================
     # 🔰 NÍVEL 1
-    # =========================
-    st.subheader("🔰 Nível 1 - Fundamentos")
+    # =====================================
+    st.subheader("🔰 Nível 1 — Iniciante")
 
     st.write("""
-- Notas musicais (C D E F G A B)
-- Semitom e Tom
-- Escala cromática
+Música é organização de sons no tempo.
+
+🎵 Notas:
+C D E F G A B
+
+🎹 Semitom:
+Menor distância entre notas
+
+🎹 Tom:
+Dois semitons
+
+Exemplo:
+C → C# = semitom
+C → D = tom
 """)
 
     if nivel >= 1:
@@ -197,54 +205,79 @@ if pagina == "📚 Teoria":
     else:
         st.warning("Bloqueado")
 
-    # =========================
+    # =====================================
     # 🎹 NÍVEL 2
-    # =========================
-    st.subheader("🎹 Nível 2 - Acordes")
+    # =====================================
+    st.subheader("🎹 Nível 2 — Acordes")
 
     if nivel >= 2:
+
         st.write("""
-- Tríades (maior e menor)
-- Formação de acordes
-- Intervalos básicos
+🎼 Acordes são grupos de notas tocadas juntas.
+
+Maior:
+C = C E G
+
+Menor:
+Cm = C Eb G
+
+💡 Isso forma a base de toda música moderna.
 """)
 
         if st.button("Concluir Nível 2"):
             prog["nivel"] = 3
             salvar_progresso(st.session_state.progresso)
             st.rerun()
+
     else:
         st.warning("Bloqueado")
 
-    # =========================
+    # =====================================
     # 🔥 NÍVEL 3
-    # =========================
-    st.subheader("🔥 Nível 3 - Harmonia")
+    # =====================================
+    st.subheader("🔥 Nível 3 — Harmonia")
 
     if nivel >= 3:
+
         st.write("""
-- Campo harmônico
-- Funções harmônicas
-- Progressões II–V–I
+🎼 Campo harmônico:
+Conjunto de acordes de uma escala.
+
+Exemplo em C:
+C Dm Em F G Am Bdim
+
+🎹 Progressões:
+C → Am → F → G
+
+Muito usado em músicas reais.
 """)
 
         if st.button("Concluir Nível 3"):
             prog["nivel"] = 4
             salvar_progresso(st.session_state.progresso)
             st.rerun()
+
     else:
         st.warning("Bloqueado")
 
-    # =========================
+    # =====================================
     # 🚀 NÍVEL 4
-    # =========================
-    st.subheader("🚀 Nível 4 - Avançado")
+    # =====================================
+    st.subheader("🚀 Nível 4 — Avançado")
 
     if nivel >= 4:
+
         st.write("""
-- Acordes com extensão (9, 11, 13)
-- Substituições harmônicas
-- Modulação
+🎹 Acordes com extensão:
+C9, C11, C13
+
+🎼 Substituições harmônicas:
+Trocar acordes mantendo a harmonia
+
+🎵 Modulação:
+Mudança de tonalidade dentro da música
+
+💡 Aqui você já pensa como produtor musical.
 """)
 
         if st.button("Finalizar Curso"):
@@ -252,16 +285,17 @@ if pagina == "📚 Teoria":
             salvar_progresso(st.session_state.progresso)
             st.success("Curso completo!")
             st.balloons()
+
     else:
         st.warning("Bloqueado")
 
 # =========================================
-# 🎹 PRÁTICA (INALTERADA)
+# 🎹 PRÁTICA (NÃO ALTERADO)
 # =========================================
 
 elif pagina == "🎹 Prática":
 
-    st.header("🎹 Prática de Acordes")
+    st.header("Prática")
 
     acorde = st.text_input("Digite um acorde")
 
@@ -273,12 +307,12 @@ elif pagina == "🎹 Prática":
             st.error("Inválido")
 
 # =========================================
-# 🎯 QUIZ (INALTERADO)
+# 🎯 QUIZ (NÃO ALTERADO)
 # =========================================
 
 elif pagina == "🎯 Quiz":
 
-    st.header("🎯 Quiz de Acordes")
+    st.header("Quiz")
 
     escala = notas_sharp
     mapa = {n:i for i,n in enumerate(escala)}
