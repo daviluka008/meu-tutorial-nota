@@ -2,27 +2,50 @@ import streamlit as st
 import random
 
 # =========================================
-# 🔐 LOGIN (NOVO - PRIMEIRO BLOCO)
+# 🔐 SISTEMA DE LOGIN + CRIAR CONTA
 # =========================================
 
-USUARIO = "admin"
-SENHA = "1234"
+if "usuarios" not in st.session_state:
+    st.session_state.usuarios = {"admin": "1234"}
 
 if "logado" not in st.session_state:
     st.session_state.logado = False
 
+if "usuario_atual" not in st.session_state:
+    st.session_state.usuario_atual = ""
+
 def tela_login():
-    st.title("🔐 Login do Sistema")
+    st.title("🔐 Sistema de Acesso")
 
-    user = st.text_input("Usuário")
-    senha = st.text_input("Senha", type="password")
+    aba = st.radio("Escolha uma opção", ["Entrar", "Criar conta"])
 
-    if st.button("Entrar"):
-        if user == USUARIO and senha == SENHA:
-            st.session_state.logado = True
-            st.rerun()
-        else:
-            st.error("Usuário ou senha incorretos")
+    if aba == "Entrar":
+        user = st.text_input("Usuário")
+        senha = st.text_input("Senha", type="password")
+
+        if st.button("Entrar"):
+            if user in st.session_state.usuarios and st.session_state.usuarios[user] == senha:
+                st.session_state.logado = True
+                st.session_state.usuario_atual = user
+                st.rerun()
+            else:
+                st.error("Usuário ou senha incorretos")
+
+    else:
+        novo_user = st.text_input("Novo usuário")
+        nova_senha = st.text_input("Nova senha", type="password")
+        confirmar = st.text_input("Confirmar senha", type="password")
+
+        if st.button("Criar conta"):
+            if novo_user in st.session_state.usuarios:
+                st.error("Usuário já existe")
+            elif nova_senha != confirmar:
+                st.error("Senhas não coincidem")
+            elif novo_user == "" or nova_senha == "":
+                st.error("Preencha todos os campos")
+            else:
+                st.session_state.usuarios[novo_user] = nova_senha
+                st.success("Conta criada! Agora faça login.")
 
 if not st.session_state.logado:
     tela_login()
@@ -112,7 +135,7 @@ if pagina == "📚 Teoria":
 
     st.subheader("🎵 O que é música?")
     st.write("""
-Música é organização de sons no tempo, combinando:
+Música é a organização dos sons no tempo, combinando:
 - Melodia
 - Harmonia
 - Ritmo
