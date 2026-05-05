@@ -1,8 +1,5 @@
 import streamlit as st
 import random
-import numpy as np
-import wave
-import io
 
 # =========================================
 # 🎹 LÓGICA DOS ACORDES
@@ -42,20 +39,20 @@ def gerar_acorde(acorde):
     i = lista.index(raiz)
 
     tipos = {
-        "": [0,4,7],
-        "m": [0,3,7],
-        "7": [0,4,7,10],
-        "m7": [0,3,7,10],
-        "7m": [0,3,7,10],
-        "7M": [0,4,7,11],
-        "M7": [0,4,7,11],
-        "9": [0,4,7,10,14],
-        "m9": [0,3,7,10,14],
-        "add9": [0,4,7,14],
-        "sus2": [0,2,7],
-        "sus4": [0,5,7],
-        "dim": [0,3,6],
-        "aug": [0,4,8],
+        "": [0, 4, 7],
+        "m": [0, 3, 7],
+        "7": [0, 4, 7, 10],
+        "m7": [0, 3, 7, 10],
+        "7m": [0, 3, 7, 10],
+        "7M": [0, 4, 7, 11],
+        "M7": [0, 4, 7, 11],
+        "9": [0, 4, 7, 10, 14],
+        "m9": [0, 3, 7, 10, 14],
+        "add9": [0, 4, 7, 14],
+        "sus2": [0, 2, 7],
+        "sus4": [0, 5, 7],
+        "dim": [0, 3, 6],
+        "aug": [0, 4, 8],
     }
 
     if tipo not in tipos:
@@ -64,33 +61,6 @@ def gerar_acorde(acorde):
     notas = [lista[(i + x) % 12] for x in tipos[tipo]]
 
     return {"notas": notas, "baixo": baixo}
-
-
-# =========================================
-# 🔊 SOM DAS NOTAS
-# =========================================
-
-frequencias = {
-    "C": 261.63, "C#": 277.18, "D": 293.66, "D#": 311.13,
-    "E": 329.63, "F": 349.23, "F#": 369.99, "G": 392.00,
-    "G#": 415.30, "A": 440.00, "A#": 466.16, "B": 493.88
-}
-
-def gerar_som(freq, duracao=0.5):
-    taxa = 44100
-    t = np.linspace(0, duracao, int(taxa * duracao), False)
-    onda = np.sin(freq * t * 2 * np.pi)
-    audio = (onda * 32767).astype(np.int16)
-
-    buffer = io.BytesIO()
-    with wave.open(buffer, "wb") as wf:
-        wf.setnchannels(1)
-        wf.setsampwidth(2)
-        wf.setframerate(taxa)
-        wf.writeframes(audio.tobytes())
-
-    buffer.seek(0)
-    return buffer
 
 
 # =========================================
@@ -103,7 +73,7 @@ st.title("🎹 Sistema Completo de Acordes + Teoria")
 
 pagina = st.sidebar.selectbox(
     "📌 Menu",
-    ["📚 Teoria", "🎹 Prática", "🎯 Quiz", "🎹 Teclado Interativo"]
+    ["📚 Teoria", "🎹 Prática", "🎯 Quiz"]
 )
 
 # =========================================
@@ -111,13 +81,88 @@ pagina = st.sidebar.selectbox(
 # =========================================
 
 if pagina == "📚 Teoria":
+
     st.header("🎓 Teoria Musical Completa")
+
+    st.subheader("🎵 O que é música?")
+    st.write("""
+Música é a organização dos sons no tempo, combinando:
+
+- Melodia (sequência de notas)
+- Harmonia (notas tocadas ao mesmo tempo)
+- Ritmo (tempo e duração dos sons)
+- Timbre (característica do som de cada instrumento)
+""")
+
+    st.subheader("🎼 Notas musicais")
+    st.write("""
+O sistema musical usa 7 notas principais:
+
+C D E F G A B
+
+Elas se repetem em diferentes oitavas.
+""")
+
+    st.code("C D E F G A B")
+
+    st.subheader("🎹 Tom e semitom")
+    st.write("""
+Semitom = menor distância (C → C#)  
+Tom = dois semitons (C → D)
+""")
+
+    st.subheader("🎼 Sustenidos e bemóis")
+    st.write("""
+C# = Db  
+D# = Eb  
+F# = Gb  
+G# = Ab  
+A# = Bb
+""")
+
+    st.subheader("🎼 Enarmonia")
+    st.write("""
+Mesma nota, nomes diferentes:
+
+C# = Db  
+F# = Gb
+""")
+
+    st.subheader("🎼 Escala maior")
+    st.write("Fórmula: T – T – S – T – T – T – S")
+    st.code("C D E F G A B")
+
+    st.subheader("🎼 Escala menor")
+    st.write("Fórmula: T – S – T – T – S – T – T")
+    st.code("A B C D E F G")
+
+    st.subheader("🎹 Formação de acordes")
+    st.write("""
+Maior: 1 + 3 + 5 → C E G  
+Menor: 1 + b3 + 5 → C Eb G
+""")
+
+    st.subheader("🎼 Intervalos")
+    st.write("""
+3ª maior = som alegre  
+3ª menor = som triste  
+5ª justa = estabilidade  
+7ª = tensão
+""")
+
+    st.subheader("🎼 Acordes com sétima")
+    st.code("C7 = C E G Bb")
+    st.code("Cmaj7 = C E G B")
+
+    st.subheader("🎯 Resumo final")
+    st.write("Escala → Intervalos → Acordes → Harmonia → Música")
 
 # =========================================
 # 🎹 PRÁTICA
 # =========================================
 
 elif pagina == "🎹 Prática":
+
     st.header("🎹 Pratique Acordes")
 
     acorde = st.text_input("Digite um acorde")
@@ -135,6 +180,7 @@ elif pagina == "🎹 Prática":
 # =========================================
 
 elif pagina == "🎯 Quiz":
+
     st.header("🎯 Quiz de Acordes")
 
     escala = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
@@ -149,34 +195,81 @@ elif pagina == "🎯 Quiz":
         intervalos = maior if tipo == "maior" else menor
         return " ".join([escala[(i + x) % 12] for x in intervalos])
 
-# =========================================
-# 🎹 TECLADO INTERATIVO COM SOM
-# =========================================
+    def gerar_perguntas():
+        pool = []
+        for n in escala:
+            pool.append((f"{n} = ?", montar_acorde(n, "maior"), "maior"))
+            pool.append((f"{n}m = ?", montar_acorde(n, "menor"), "menor"))
+        random.shuffle(pool)
+        return pool
 
-elif pagina == "🎹 Teclado Interativo":
+    if "quiz" not in st.session_state:
+        st.session_state.quiz = gerar_perguntas()
+        st.session_state.finalizado = False
+        st.session_state.respostas = {}
+        st.session_state.opcoes = {}
 
-    st.header("🎹 Teclado Interativo com Som")
+    if st.button("🔄 Novo quiz"):
+        st.session_state.quiz = gerar_perguntas()
+        st.session_state.finalizado = False
+        st.session_state.respostas = {}
+        st.session_state.opcoes = {}
+        st.rerun()
 
-    acordes = {
-        "C": ["C", "E", "G"],
-        "G": ["G", "B", "D"],
-        "Am": ["A", "C", "E"],
-        "F": ["F", "A", "C"],
-        "Dm": ["D", "F", "A"]
-    }
+    perguntas = st.session_state.quiz[:6]
 
-    acorde = st.selectbox("Escolha um acorde:", list(acordes.keys()))
-    notas = acordes[acorde]
+    def gerar_opcoes(qid, correta, tipo):
 
-    st.subheader(f"Notas do acorde {acorde}")
-    st.write(notas)
+        if qid in st.session_state.opcoes:
+            return st.session_state.opcoes[qid]
 
-    teclas = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
+        opcoes = {correta}
 
-    st.subheader("🎹 Clique nas teclas")
+        falsas = [
+            "C Eb G", "C D G", "C E G#",
+            "D F A", "D F# A", "E G B",
+            "F A C", "F Ab C", "G B D",
+            "G Bb D", "A C E", "A C# E",
+            "B D F", "B D# F#"
+        ]
 
-    for nota in teclas:
-        if st.button(nota):
-            if nota in frequencias:
-                som = gerar_som(frequencias[nota])
-                st.audio(som, format="audio/wav")
+        while len(opcoes) < 4:
+            opcoes.add(random.choice(falsas))
+
+        lista = list(opcoes)
+        lista.sort()
+
+        st.session_state.opcoes[qid] = lista[:4]
+        return lista[:4]
+
+    if not st.session_state.finalizado:
+
+        for i, (q, correta, tipo) in enumerate(perguntas):
+
+            st.session_state.respostas[i] = st.radio(
+                q,
+                options=gerar_opcoes(i, correta, tipo),
+                key=f"q_{i}",
+                index=None
+            )
+
+    else:
+
+        acertos = 0
+        st.divider()
+
+        for i, (q, correta, tipo) in enumerate(perguntas):
+
+            r = st.session_state.respostas.get(i)
+
+            if r == correta:
+                st.success(f"{q} ✔")
+                acertos += 1
+            else:
+                st.error(f"{q} ❌ correta: {correta}")
+
+        st.success(f"🎯 Você acertou {acertos}/6")
+
+    if st.button("Ver resultado"):
+        st.session_state.finalizado = True
+        st.rerun()
