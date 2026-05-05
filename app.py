@@ -4,7 +4,7 @@ import json
 import os
 
 # =========================================
-# 🔐 USUÁRIOS + PROGRESSO
+# 🔐 LOGIN + PROGRESSO
 # =========================================
 
 ARQ_USUARIOS = "usuarios.json"
@@ -69,6 +69,7 @@ def login():
 
             st.session_state.usuarios[email] = senha
             salvar_usuarios(st.session_state.usuarios)
+
             st.success("Conta criada!")
 
     else:
@@ -100,32 +101,32 @@ def get_progress():
     return st.session_state.progresso[u]
 
 # =========================================
-# 🎹 LÓGICA DOS ACORDES (INALTERADO)
+# 🎹 ACORDES (CORRIGIDO)
 # =========================================
 
-notas_sharp = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"]
+notas = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"]
 
-def separar_acorde(acorde):
-    if len(acorde) > 1 and acorde[1] in ["#","b"]:
-        return acorde[:2], acorde[2:].lower()
-    return acorde[0], acorde[1:].lower()
+def separar_acorde(a):
+    if len(a) > 1 and a[1] in ["#","b"]:
+        return a[:2], a[2:].lower()
+    return a[0], a[1:].lower()
 
 def gerar_acorde(acorde):
 
     acorde = acorde.strip()
 
     if "/" in acorde:
-        acorde_principal, baixo = acorde.split("/")
+        base, baixo = acorde.split("/")
     else:
-        acorde_principal = acorde
+        base = acorde
         baixo = None
 
-    raiz, tipo = separar_acorde(acorde_principal)
+    raiz, tipo = separar_acorde(base)
 
-    if raiz not in notas_sharp:
+    if raiz not in notas:
         return None
 
-    i = notas_sharp.index(raiz)
+    i = notas.index(raiz)
 
     tipos = {
         "": [0,4,7],
@@ -133,27 +134,26 @@ def gerar_acorde(acorde):
         "7": [0,4,7,10],
         "m7": [0,3,7,10],
         "7M": [0,4,7,11],
-        "M7": [0,4,7,11],
-        "9": [0,4,7,10,14],
-        "sus2": [0,2,7],
-        "sus4": [0,5,7],
         "dim": [0,3,6],
         "aug": [0,4,8],
+        "sus2": [0,2,7],
+        "sus4": [0,5,7]
     }
 
     if tipo not in tipos:
         return None
 
-    notas = [notas_sharp[(i+x)%12] for x in tipos[tipo]]
+    notas_acorde = [notas[(i+x)%12] for x in tipos[tipo]]
 
-    return {"notas": notas}
+    return {"notas": notas_acorde, "baixo": baixo}
 
 # =========================================
 # 🌐 CONFIG
 # =========================================
 
-st.set_page_config(page_title="🎹 Acordes App", page_icon="🎹")
-st.title("🎹 Sistema Completo de Música")
+st.set_page_config(page_title="🎹 Curso Musical", page_icon="🎹")
+
+st.title("🎹 Plataforma Completa de Música")
 
 pagina = st.sidebar.selectbox(
     "Menu",
@@ -161,112 +161,119 @@ pagina = st.sidebar.selectbox(
 )
 
 # =========================================
-# 📚 TEORIA (CURSO COMPLETO MELHORADO)
+# 📚 TEORIA (VERSÃO CURSO REAL)
 # =========================================
 
 if pagina == "📚 Teoria":
 
-    st.header("🎓 Curso de Música - Plataforma Completa")
+    st.header("🎓 Curso Completo de Música (Do Zero ao Avançado)")
 
     prog = get_progress()
     nivel = prog["nivel"]
 
     st.write(f"📊 Nível atual: {nivel}")
 
-    # =========================================
-    # 🔰 MÓDULO 1
-    # =========================================
-    st.subheader("🔰 Módulo 1 - Fundamentos")
+    # =========================
+    # 🔰 FUNDAMENTOS
+    # =========================
+    st.subheader("🔰 1. Fundamentos da Música")
 
     st.write("""
-Música = organização do som.
+🎵 Música é som organizado no tempo.
 
-Notas: C D E F G A B
+Elementos:
+- Melodia
+- Harmonia
+- Ritmo
+- Timbre
 
-Semitom = 1 passo  
-Tom = 2 passos
+🎼 Sistema musical:
+C D E F G A B
+
+🎹 Semitom = menor distância  
+🎹 Tom = 2 semitons
 """)
 
-    if nivel >= 1:
-        resp = st.radio("Exercício:", ["C D E F G A B", "A B C D E F G", "C D F G A B E"])
+    st.info("Exemplo: C → C# = semitom | C → D = tom")
 
-        if st.button("Enviar Módulo 1"):
-            if resp == "C D E F G A B":
-                prog["nivel"] = 2
-                salvar_progresso(st.session_state.progresso)
-                st.success("✔ Liberado")
-                st.rerun()
-            else:
-                st.error("❌ Errado")
-    else:
-        st.warning("Bloqueado")
+    # =========================
+    # 🎹 ESCALAS
+    # =========================
+    st.subheader("🎹 2. Escalas Musicais")
 
-    # =========================================
-    # 🎹 MÓDULO 2
-    # =========================================
-    st.subheader("🎹 Módulo 2 - Acordes")
+    st.write("""
+🎼 Escala maior:
+T - T - S - T - T - T - S
 
-    if nivel >= 2:
+Exemplo:
+C D E F G A B
 
-        st.write("""
-Maior = 1 3 5  
-Menor = 1 b3 5
+🎼 Escala menor:
+T - S - T - T - S - T - T
 
-Ex:
+Exemplo:
+A B C D E F G
+""")
+
+    # =========================
+    # 🎼 ACORDES
+    # =========================
+    st.subheader("🎼 3. Formação de Acordes")
+
+    st.write("""
+✔ Maior = 1 + 3 + 5  
+✔ Menor = 1 + b3 + 5  
+
+Exemplo:
 C = C E G  
-Cm = C Eb G
+Cm = C Eb G  
+
+✔ Diminuto = 1 b3 b5  
+✔ Aumentado = 1 3 #5
 """)
 
-        resp2 = st.radio("Qual é menor?", ["C E G", "C Eb G", "C E A"])
+    # =========================
+    # 🔥 HARMONIA
+    # =========================
+    st.subheader("🔥 4. Harmonia Funcional")
 
-        if st.button("Enviar Módulo 2"):
-            if resp2 == "C Eb G":
-                prog["nivel"] = 3
-                salvar_progresso(st.session_state.progresso)
-                st.success("✔ Liberado")
-                st.rerun()
-            else:
-                st.error("❌ Errado")
-
-    else:
-        st.warning("Bloqueado")
-
-    # =========================================
-    # 🔥 MÓDULO 3
-    # =========================================
-    st.subheader("🔥 Módulo 3 - Harmonia")
-
-    if nivel >= 3:
-
-        st.write("""
+    st.write("""
 Campo harmônico de C:
 
 C Dm Em F G Am Bdim
 
-Progressão:
-C → Am → F → G
+Funções:
+- Tônica (repouso)
+- Subdominante (movimento)
+- Dominante (tensão)
+
+Progressões:
+I–IV–V  
+II–V–I  
+I–V–VI–IV
 """)
 
-        resp3 = st.radio("Qual progressão é comum?", [
-            "C → F → G",
-            "C → A# → D#",
-            "E → F# → B"
-        ])
+    # =========================
+    # 🚀 AVANÇADO
+    # =========================
+    st.subheader("🚀 5. Avançado")
 
-        if st.button("Finalizar Módulo 3"):
-            if resp3 == "C → F → G":
-                prog["nivel"] = 4
-                salvar_progresso(st.session_state.progresso)
-                st.success("✔ Avançado liberado")
-                st.rerun()
-            else:
-                st.error("❌ Errado")
+    st.write("""
+🎹 Acordes com extensão:
+7ª, 9ª, 11ª, 13ª
 
-    else:
-        st.warning("Bloqueado")
+🎼 Modulação:
+Mudança de tonalidade
+
+🎧 Reharmonização:
+Trocar acordes mantendo sentido
+
+🎛 Produção musical:
+EQ, compressão, reverb
+""")
 
 # =========================================
-# 🎹 PRÁTICA (NÃO MEXIDO)
+# 🎹 PRÁTICA (INTACTA)
 # =========================================
 
 elif pagina == "🎹 Prática":
@@ -276,21 +283,29 @@ elif pagina == "🎹 Prática":
     acorde = st.text_input("Digite um acorde")
 
     if st.button("Analisar"):
+
         r = gerar_acorde(acorde)
+
         if r:
-            st.success(r["notas"])
+
+            st.success("🎵 Notas:")
+            st.write(r["notas"])
+
+            st.write("🎸 Baixo:")
+            st.write(r["baixo"] if r["baixo"] else "Sem baixo")
+
         else:
             st.error("Inválido")
 
 # =========================================
-# 🎯 QUIZ (NÃO MEXIDO)
+# 🎯 QUIZ (INTACTO)
 # =========================================
 
 elif pagina == "🎯 Quiz":
 
     st.header("🎯 Quiz")
 
-    escala = notas_sharp
+    escala = notas
     mapa = {n:i for i,n in enumerate(escala)}
 
     maior = [0,4,7]
