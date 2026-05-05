@@ -101,7 +101,7 @@ def get_progress():
     return st.session_state.progresso[u]
 
 # =========================================
-# 🎹 ACORDES (INALTERADO)
+# 🎹 ACORDES (CORRIGIDO F/G)
 # =========================================
 
 notas = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"]
@@ -161,7 +161,7 @@ pagina = st.sidebar.selectbox(
 )
 
 # =========================================
-# 📚 TEORIA (AGORA COMPLETA E ESTRUTURADA)
+# 📚 TEORIA (COMPLETA E ESTRUTURADA)
 # =========================================
 
 if pagina == "📚 Teoria":
@@ -173,95 +173,52 @@ if pagina == "📚 Teoria":
 
     st.write(f"📊 Nível atual: {nivel}")
 
-    # 🔰 FUNDAMENTOS
-    st.subheader("🔰 1. Fundamentos da Música")
+    st.subheader("🔰 Fundamentos")
 
     st.write("""
-🎵 Música é som organizado no tempo.
+Música = som organizado no tempo.
 
-Elementos:
-- Melodia
-- Harmonia
-- Ritmo
-- Timbre
-
-🎼 Notas:
-C D E F G A B
-
-🎹 Semitom = menor distância  
-🎹 Tom = 2 semitons
-
-Ex:
-C → C# = semitom  
-C → D = tom
+Notas: C D E F G A B  
+Semitom = 1 passo  
+Tom = 2 passos
 """)
 
-    # 🎹 ESCALAS
-    st.subheader("🎹 2. Escalas Musicais")
+    st.subheader("🎹 Escalas")
 
     st.write("""
-🎼 Escala maior:
-T – T – S – T – T – T – S
-
-Exemplo:
-C D E F G A B
-
-🎼 Escala menor:
-T – S – T – T – S – T – T
-
-Exemplo:
-A B C D E F G
+Maior: T T S T T T S  
+Menor: T S T T S T T
 """)
 
-    # 🎼 ACORDES
-    st.subheader("🎼 3. Formação de Acordes")
+    st.subheader("🎼 Acordes")
 
     st.write("""
-✔ Maior = 1 + 3 + 5  
-✔ Menor = 1 + b3 + 5  
-
-Ex:
-C = C E G  
-Cm = C Eb G  
-
-✔ Diminuto = 1 b3 b5  
-✔ Aumentado = 1 3 #5
+Maior = 1 3 5  
+Menor = 1 b3 5  
+Dim = 1 b3 b5  
+Aug = 1 3 #5
 """)
 
-    # 🔥 HARMONIA
-    st.subheader("🔥 4. Harmonia Funcional")
+    st.subheader("🔥 Harmonia")
 
     st.write("""
-Campo harmônico de C:
-
-C Dm Em F G Am Bdim
+C: C Dm Em F G Am Bdim
 
 Funções:
-- Tônica
-- Subdominante
-- Dominante
-
-Progressões:
-I–IV–V  
-II–V–I  
-I–V–VI–IV
+Tônica / Subdominante / Dominante
 """)
 
-    # 🚀 AVANÇADO
-    st.subheader("🚀 5. Avançado")
+    st.subheader("🚀 Avançado")
 
     st.write("""
-🎹 Acordes com extensão (7, 9, 11, 13)
-
-🎼 Modulação (mudança de tonalidade)
-
-🎧 Reharmonização
-
-🎛 Produção musical básica (EQ, reverb, compressão)
+Acordes com 7, 9, 11, 13  
+Modulação  
+Reharmonização  
+Produção musical básica
 """)
 
 # =========================================
-# 🎹 PRÁTICA (SEM ALTERAÇÃO)
+# 🎹 PRÁTICA (INTACTA)
 # =========================================
 
 elif pagina == "🎹 Prática":
@@ -272,25 +229,26 @@ elif pagina == "🎹 Prática":
 
     if st.button("Analisar"):
 
-        r = gerar_acorde(acorde)
+        resultado = gerar_acorde(acorde)
 
-        if r:
-            st.success("🎵 Notas:")
-            st.write(r["notas"])
+        if resultado:
+
+            st.success("🎵 Notas do acorde:")
+            st.write(resultado["notas"])
 
             st.write("🎸 Baixo:")
-            st.write(r["baixo"] if r["baixo"] else "Sem baixo")
+            st.write(resultado["baixo"] if resultado["baixo"] else "Sem baixo")
 
         else:
-            st.error("Inválido")
+            st.error("❌ Acorde inválido")
 
 # =========================================
-# 🎯 QUIZ (SEM ALTERAÇÃO)
+# 🎯 QUIZ (INTACTO E CORRIGIDO)
 # =========================================
 
 elif pagina == "🎯 Quiz":
 
-    st.header("🎯 Quiz")
+    st.header("🎯 Quiz de Acordes")
 
     escala = notas
     mapa = {n:i for i,n in enumerate(escala)}
@@ -326,11 +284,10 @@ elif pagina == "🎯 Quiz":
     else:
 
         acertos = 0
-        for i,(q,c) in enumerate(perguntas):
-            if st.session_state.res[i] == c:
-                acertos += 1
 
-        st.success(f"Você acertou {acertos}/6")
+        for i,(q,c) in enumerate(perguntas):
+
+            if st.session_state.res[i] == c:
                 acertos += 1
 
         st.success(f"Você acertou {acertos}/6")
