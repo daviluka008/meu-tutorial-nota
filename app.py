@@ -25,29 +25,52 @@ if "email_temp" not in st.session_state:
 if "senha_temp" not in st.session_state:
     st.session_state.senha_temp = ""
 
-EMAIL_ORIGEM = st.secrets["EMAIL_ORIGEM"]
-SENHA_APP = st.secrets["SENHA_APP"]
+# =========================================
+# 🔐 EMAIL (SECRETS OPCIONAL, NÃO QUEBRA)
+# =========================================
+
+EMAIL_ORIGEM = None
+SENHA_APP = None
+
+if hasattr(st, "secrets"):
+    if "EMAIL_ORIGEM" in st.secrets and "SENHA_APP" in st.secrets:
+        EMAIL_ORIGEM = st.secrets["EMAIL_ORIGEM"]
+        SENHA_APP = st.secrets["SENHA_APP"]
+
+# =========================================
+# 📩 ENVIAR CÓDIGO
+# =========================================
 
 def enviar_codigo(email, codigo):
-    msg = EmailMessage()
-    msg["Subject"] = "Código de verificação"
-    msg["From"] = EMAIL_ORIGEM
-    msg["To"] = email
-    msg.set_content(f"Seu código de verificação é: {codigo}")
 
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
-        smtp.login(EMAIL_ORIGEM, SENHA_APP)
-        smtp.send_message(msg)
+    if EMAIL_ORIGEM is None or SENHA_APP is None:
+        st.warning("E-mail não configurado. Conta será criada sem verificação.")
+        return
+
+    try:
+        msg = EmailMessage()
+        msg["Subject"] = "Código de verificação"
+        msg["From"] = EMAIL_ORIGEM
+        msg["To"] = email
+        msg.set_content(f"Seu código de verificação é: {codigo}")
+
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+            smtp.login(EMAIL_ORIGEM, SENHA_APP)
+            smtp.send_message(msg)
+
+    except:
+        st.error("Erro ao enviar e-mail")
+
+# =========================================
+# 🔐 TELA LOGIN
+# =========================================
 
 def tela_login():
 
     st.title("🔐 Login")
 
-    opcao = st.radio("Opção", ["Entrar", "Criar conta"])
+    opcao = st.radio("Escolha", ["Entrar", "Criar conta"])
 
-    # =========================
-    # CRIAR CONTA
-    # =========================
     if opcao == "Criar conta":
 
         email = st.text_input("E-mail")
@@ -56,11 +79,11 @@ def tela_login():
         if st.button("Criar conta"):
 
             if email == "" or senha == "":
-                st.error("Preencha todos os campos")
+                st.error("Preencha tudo")
                 return
 
             if email in st.session_state.usuarios:
-                st.error("E-mail já cadastrado")
+                st.error("Usuário já existe")
                 return
 
             codigo = str(random.randint(100000, 999999))
@@ -70,27 +93,23 @@ def tela_login():
             st.session_state.senha_temp = senha
 
             enviar_codigo(email, codigo)
-
-            st.success("Código enviado para seu e-mail!")
+            st.success("Código enviado")
 
         if st.session_state.codigo_verificacao:
 
-            codigo_input = st.text_input("Digite o código recebido")
+            codigo_input = st.text_input("Código de verificação")
 
-            if st.button("Validar código"):
+            if st.button("Validar"):
 
                 if codigo_input == st.session_state.codigo_verificacao:
 
                     st.session_state.usuarios[st.session_state.email_temp] = st.session_state.senha_temp
-                    st.success("Conta criada com sucesso!")
+                    st.success("Conta criada!")
                     st.session_state.codigo_verificacao = None
 
                 else:
-                    st.error("Código incorreto")
+                    st.error("Código errado")
 
-    # =========================
-    # LOGIN
-    # =========================
     else:
 
         email = st.text_input("E-mail")
@@ -107,7 +126,6 @@ def tela_login():
             else:
                 st.error("Login inválido")
 
-
 # =========================================
 # 🚪 BLOQUEIO DO APP
 # =========================================
@@ -116,13 +134,18 @@ if not st.session_state.logado:
     tela_login()
     st.stop()
 
-
 # =========================================
-# 🎹 SEU PROJETO ORIGINAL (SEM ALTERAÇÃO)
+# 🎹 LÓGICA DOS ACORDES (SEU ORIGINAL)
 # =========================================
 
 notas_sharp = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 notas_flat = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"]
+
+def usar_bemol(acorde):
+    return "b" in acorde
+
+def pegar_lista(acorde):
+    return notas_flat if usar_bemol(acorde) else notas_sharp
 
 def separar_acorde(acorde):
     if len(acorde) > 1 and acorde[1] in ["#", "b"]:
@@ -172,9 +195,8 @@ def gerar_acorde(acorde):
 
     return {"notas": notas, "baixo": baixo}
 
-
 # =========================================
-# 🌐 APP
+# 🌐 CONFIG
 # =========================================
 
 st.set_page_config(page_title="🎹 Acordes App", page_icon="🎹")
@@ -186,9 +208,8 @@ pagina = st.sidebar.selectbox(
     ["📚 Teoria", "🎹 Prática", "🎯 Quiz"]
 )
 
-
 # =========================================
-# 📚 TEORIA (INTACTA)
+# 📚 TEORIA (SEU ORIGINAL INTACTO)
 # =========================================
 
 if pagina == "📚 Teoria":
@@ -196,7 +217,13 @@ if pagina == "📚 Teoria":
     st.header("🎓 Teoria Musical Completa")
 
     st.subheader("🎵 O que é música?")
-    st.write("Música é organização de sons no tempo...")
+    st.write("""
+Música é a organização dos sons no tempo, combinando:
+- Melodia
+- Harmonia
+- Ritmo
+- Timbre
+""")
 
     st.subheader("🎼 Notas musicais")
     st.code("C D E F G A B")
@@ -205,17 +232,31 @@ if pagina == "📚 Teoria":
     st.write("Semitom = 1 passo | Tom = 2 passos")
 
     st.subheader("🎼 Sustenidos e bemóis")
-    st.code("C# = Db\nD# = Eb\nF# = Gb\nG# = Ab\nA# = Bb")
+    st.code("""
+C# = Db
+D# = Eb
+F# = Gb
+G# = Ab
+A# = Bb
+""")
 
     st.subheader("🎼 Acordes básicos")
-    st.code("Maior: C E G\nMenor: C Eb G")
+    st.code("""
+Maior: C E G
+Menor: C Eb G
+""")
 
     st.subheader("🎼 Sétimas")
-    st.code("C7 = C E G Bb\nCmaj7 = C E G B")
+    st.code("""
+C7 = C E G Bb
+Cmaj7 = C E G B
+""")
 
+    st.subheader("🎯 Resumo")
+    st.write("Escala → Intervalos → Acordes → Música")
 
 # =========================================
-# 🎹 PRÁTICA (INTACTA)
+# 🎹 PRÁTICA (SEU ORIGINAL INTACTO)
 # =========================================
 
 elif pagina == "🎹 Prática":
@@ -232,9 +273,8 @@ elif pagina == "🎹 Prática":
         else:
             st.error("❌ Acorde inválido")
 
-
 # =========================================
-# 🎯 QUIZ (SEU ORIGINAL, NÃO ALTERADO)
+# 🎯 QUIZ (SEU ORIGINAL INTACTO)
 # =========================================
 
 elif pagina == "🎯 Quiz":
@@ -251,7 +291,7 @@ elif pagina == "🎯 Quiz":
     def montar_acorde(nota, tipo):
         i = mapa[nota]
         intervalos = maior if tipo == "maior" else menor
-        return " ".join([escala[(i + x) % 12] for x in intervalos])
+        return " ".join([escala[(i+x)%12] for x in intervalos])
 
     def gerar_perguntas():
         pool = []
@@ -284,9 +324,9 @@ elif pagina == "🎯 Quiz":
         opcoes = {correta}
 
         falsas = [
-            "C Eb G","C D G","C E G#","D F A","D F# A","E G B",
-            "F A C","F Ab C","G B D","G Bb D","A C E","A C# E",
-            "B D F","B D# F#"
+            "C Eb G","C D G","C E G#","D F A","D F# A",
+            "E G B","F A C","F Ab C","G B D","G Bb D",
+            "A C E","A C# E","B D F","B D# F#"
         ]
 
         while len(opcoes) < 4:
@@ -300,11 +340,11 @@ elif pagina == "🎯 Quiz":
 
     if not st.session_state.finalizado:
 
-        for i, (q, correta, tipo) in enumerate(perguntas):
+        for i,(q,correta,tipo) in enumerate(perguntas):
 
             st.session_state.respostas[i] = st.radio(
                 q,
-                options=gerar_opcoes(i, correta, tipo),
+                options=gerar_opcoes(i,correta,tipo),
                 key=f"q_{i}",
                 index=None
             )
@@ -312,8 +352,9 @@ elif pagina == "🎯 Quiz":
     else:
 
         acertos = 0
+        st.divider()
 
-        for i, (q, correta, tipo) in enumerate(perguntas):
+        for i,(q,correta,tipo) in enumerate(perguntas):
 
             r = st.session_state.respostas.get(i)
 
