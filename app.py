@@ -69,7 +69,6 @@ def login():
 
             st.session_state.usuarios[email] = senha
             salvar_usuarios(st.session_state.usuarios)
-
             st.success("Conta criada!")
 
     else:
@@ -101,7 +100,7 @@ def get_progress():
     return st.session_state.progresso[u]
 
 # =========================================
-# 🎹 ACORDES (SEU ORIGINAL)
+# 🎹 LÓGICA DOS ACORDES (INALTERADO)
 # =========================================
 
 notas_sharp = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"]
@@ -154,7 +153,6 @@ def gerar_acorde(acorde):
 # =========================================
 
 st.set_page_config(page_title="🎹 Acordes App", page_icon="🎹")
-
 st.title("🎹 Sistema Completo de Música")
 
 pagina = st.sidebar.selectbox(
@@ -163,139 +161,117 @@ pagina = st.sidebar.selectbox(
 )
 
 # =========================================
-# 📚 TEORIA (CURSO PROFISSIONAL COMPLETO)
+# 📚 TEORIA (CURSO COMPLETO MELHORADO)
 # =========================================
 
 if pagina == "📚 Teoria":
 
-    st.header("📘 Curso Completo de Música")
+    st.header("🎓 Curso de Música - Plataforma Completa")
 
     prog = get_progress()
     nivel = prog["nivel"]
 
-    st.write(f"📊 Seu nível: {nivel}")
+    st.write(f"📊 Nível atual: {nivel}")
 
-    # =====================================
-    # 🔰 NÍVEL 1
-    # =====================================
-    st.subheader("🔰 Nível 1 — Iniciante")
+    # =========================================
+    # 🔰 MÓDULO 1
+    # =========================================
+    st.subheader("🔰 Módulo 1 - Fundamentos")
 
     st.write("""
-Música é organização de sons no tempo.
+Música = organização do som.
 
-🎵 Notas:
-C D E F G A B
+Notas: C D E F G A B
 
-🎹 Semitom:
-Menor distância entre notas
-
-🎹 Tom:
-Dois semitons
-
-Exemplo:
-C → C# = semitom
-C → D = tom
+Semitom = 1 passo  
+Tom = 2 passos
 """)
 
     if nivel >= 1:
-        if st.button("Concluir Nível 1"):
-            prog["nivel"] = 2
-            salvar_progresso(st.session_state.progresso)
-            st.rerun()
+        resp = st.radio("Exercício:", ["C D E F G A B", "A B C D E F G", "C D F G A B E"])
+
+        if st.button("Enviar Módulo 1"):
+            if resp == "C D E F G A B":
+                prog["nivel"] = 2
+                salvar_progresso(st.session_state.progresso)
+                st.success("✔ Liberado")
+                st.rerun()
+            else:
+                st.error("❌ Errado")
     else:
         st.warning("Bloqueado")
 
-    # =====================================
-    # 🎹 NÍVEL 2
-    # =====================================
-    st.subheader("🎹 Nível 2 — Acordes")
+    # =========================================
+    # 🎹 MÓDULO 2
+    # =========================================
+    st.subheader("🎹 Módulo 2 - Acordes")
 
     if nivel >= 2:
 
         st.write("""
-🎼 Acordes são grupos de notas tocadas juntas.
+Maior = 1 3 5  
+Menor = 1 b3 5
 
-Maior:
-C = C E G
-
-Menor:
+Ex:
+C = C E G  
 Cm = C Eb G
-
-💡 Isso forma a base de toda música moderna.
 """)
 
-        if st.button("Concluir Nível 2"):
-            prog["nivel"] = 3
-            salvar_progresso(st.session_state.progresso)
-            st.rerun()
+        resp2 = st.radio("Qual é menor?", ["C E G", "C Eb G", "C E A"])
+
+        if st.button("Enviar Módulo 2"):
+            if resp2 == "C Eb G":
+                prog["nivel"] = 3
+                salvar_progresso(st.session_state.progresso)
+                st.success("✔ Liberado")
+                st.rerun()
+            else:
+                st.error("❌ Errado")
 
     else:
         st.warning("Bloqueado")
 
-    # =====================================
-    # 🔥 NÍVEL 3
-    # =====================================
-    st.subheader("🔥 Nível 3 — Harmonia")
+    # =========================================
+    # 🔥 MÓDULO 3
+    # =========================================
+    st.subheader("🔥 Módulo 3 - Harmonia")
 
     if nivel >= 3:
 
         st.write("""
-🎼 Campo harmônico:
-Conjunto de acordes de uma escala.
+Campo harmônico de C:
 
-Exemplo em C:
 C Dm Em F G Am Bdim
 
-🎹 Progressões:
+Progressão:
 C → Am → F → G
-
-Muito usado em músicas reais.
 """)
 
-        if st.button("Concluir Nível 3"):
-            prog["nivel"] = 4
-            salvar_progresso(st.session_state.progresso)
-            st.rerun()
+        resp3 = st.radio("Qual progressão é comum?", [
+            "C → F → G",
+            "C → A# → D#",
+            "E → F# → B"
+        ])
 
-    else:
-        st.warning("Bloqueado")
-
-    # =====================================
-    # 🚀 NÍVEL 4
-    # =====================================
-    st.subheader("🚀 Nível 4 — Avançado")
-
-    if nivel >= 4:
-
-        st.write("""
-🎹 Acordes com extensão:
-C9, C11, C13
-
-🎼 Substituições harmônicas:
-Trocar acordes mantendo a harmonia
-
-🎵 Modulação:
-Mudança de tonalidade dentro da música
-
-💡 Aqui você já pensa como produtor musical.
-""")
-
-        if st.button("Finalizar Curso"):
-            prog["nivel"] = 5
-            salvar_progresso(st.session_state.progresso)
-            st.success("Curso completo!")
-            st.balloons()
+        if st.button("Finalizar Módulo 3"):
+            if resp3 == "C → F → G":
+                prog["nivel"] = 4
+                salvar_progresso(st.session_state.progresso)
+                st.success("✔ Avançado liberado")
+                st.rerun()
+            else:
+                st.error("❌ Errado")
 
     else:
         st.warning("Bloqueado")
 
 # =========================================
-# 🎹 PRÁTICA (NÃO ALTERADO)
+# 🎹 PRÁTICA (NÃO MEXIDO)
 # =========================================
 
 elif pagina == "🎹 Prática":
 
-    st.header("Prática")
+    st.header("🎹 Prática de Acordes")
 
     acorde = st.text_input("Digite um acorde")
 
@@ -307,12 +283,12 @@ elif pagina == "🎹 Prática":
             st.error("Inválido")
 
 # =========================================
-# 🎯 QUIZ (NÃO ALTERADO)
+# 🎯 QUIZ (NÃO MEXIDO)
 # =========================================
 
 elif pagina == "🎯 Quiz":
 
-    st.header("Quiz")
+    st.header("🎯 Quiz")
 
     escala = notas_sharp
     mapa = {n:i for i,n in enumerate(escala)}
